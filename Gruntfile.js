@@ -7,9 +7,9 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
-      build: {
-        src: 'src/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+      dist: {
+        src: 'js/<%= pkg.name %>.js',
+        dest: 'dist/<%= pkg.name %>.min.js'
       }
     },
     jshint: {
@@ -26,8 +26,28 @@ module.exports = function(grunt) {
           '$script': true
         }
       },
-      dist: ['src/*.js'],
+      code: ['js/*.js'],
       tests: ['tests/*.js'],
+    },
+    less: {
+      dev: {
+        options: {
+          paths: ["assets/css"]
+        },
+        files: {
+          "dist/nu.css": "less/nu.less"
+        }
+      },
+      dist: {
+        options: {
+          paths: ["assets/css"],
+          cleancss: true,
+          compress: true
+        },
+        files: {
+          "dist/nu.min.css": "less/nu.less"
+        }
+      }
     },
     karma: {
       dev : {
@@ -46,10 +66,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-karma');
   // grunt.loadNpmTasks('grunt-conventional-changelog');
-  grunt.loadNpmTasks('grunt-ngdocs');
+  //grunt.loadNpmTasks('grunt-ngdocs');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
   // Default task(s).
-  grunt.registerTask('default', ['uglify']);
-  grunt.registerTask('pre', ['jshint:dist']); // 'enforce', 'html2js'
-  grunt.registerTask('ut', ['jshint', 'karma']); 
+  grunt.registerTask('default', ['jshint', 'less:dev']);
+  grunt.registerTask('dist', ['jshint', 'less:dist', 'less:dist']);
+  grunt.registerTask('ut', ['jshint', 'less:dev', 'karma']); 
 };
