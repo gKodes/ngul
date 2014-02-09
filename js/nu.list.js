@@ -151,7 +151,6 @@
             
             for(var i = 0; i < selector.files.length; i++) {
               var src = selector.files[i];
-              console.info(src)
               if(src.type.match(/image.*/)) {
                 reader = new FileReader();
                 reader.onload = push_img;
@@ -174,7 +173,6 @@
               event.preventDefault();
               if (input !== '') {
                 if (input) {
-                  console.info(scope)
                   scope.$apply(function() { nuList.$add(input); });
                 }
               }
