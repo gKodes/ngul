@@ -2,7 +2,6 @@ NU
 =====================
 NU is a collection of angular derivatives [demo][1]
 
-<<<<<<< HEAD
 ####Switch
 A simple switch with two lables for on and off
 ```
@@ -11,6 +10,7 @@ A simple switch with two lables for on and off
 
 #####attrbutes
 **on** -- label and value of the model when the switch is on
+
 **off** -- label and value of the model when the switch is off 
 
 ####Press Button
@@ -27,10 +27,14 @@ Change icon on state change
 ```
 
 #####attrbutes
-**on** ***[optional optional]*** -- value of the model when the switch is on
+**on** ***[optional]*** -- value of the model when the switch is on
+
 **off** ***[optional]*** -- value of the model when the switch is off
+
 **icon** -- default * css class* (icon) to be set in all states of the switch
+
 **iconOn** ***[optional]*** -- *css class* on switch *on* state
+
 **iconOff** ***[optional]*** -- *css class* on switch *off* state
 
 Change icon using CSS
@@ -65,8 +69,11 @@ An list using an array of image url's of which each image is displayed in a 64px
 
 #####attrbutes
 **src** -- the list for which we display the items
+
 **nu-list-type** ***[default='text']*** -- it helps determine what the list is for is it `img` or `text`
+
 **nu-list-removable**  ***[optional]*** -- if present removes an list *item* on click on it
+
 **nu-list-addable** ***[optional]*** -- -- if present provieds an user interface to add new *items* to the list
 
 
@@ -82,7 +89,3 @@ Please raise an ticket if find any problem found or need any things else.
   [2]: http://designmodo.github.io/Flat-UI/
 =======
 AngularJS directives without any 3rd party JS dependencies
-
-
-Sample - http://gkodes.github.io/ngul/example.html
->>>>>>> f4eecccee86e39f95f739afd59c5ec784b14b087
