@@ -2,6 +2,7 @@ NU
 =====================
 NU is a collection of angular derivatives [demo][1]
 
+<<<<<<< HEAD
 ####Switch
 A simple switch with two lables for on and off
 ```
@@ -79,3 +80,9 @@ Please raise an ticket if find any problem found or need any things else.
 
   [1]: http://gkodes.github.io/ngul/
   [2]: http://designmodo.github.io/Flat-UI/
+=======
+AngularJS directives without any 3rd party JS dependencies
+
+
+Sample - http://gkodes.github.io/ngul/example.html
+>>>>>>> f4eecccee86e39f95f739afd59c5ec784b14b087
