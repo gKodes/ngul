@@ -1,0 +1,64 @@
+.nu.switch {
+  .src {
+    &:checked  + .label {
+      &:after {
+        left: 100%;
+        margin-left: -(@nu-switch-drop-diameter + @nu-switch-drop-bound); //-26px
+        background: @nu-switch-drop-on-bg;
+      }
+
+      &:before {
+        opacity: 0;
+        left: 100%;
+      }
+
+      padding: 0 @nu-switch-padding 0 (@nu-switch-padding/2);
+      background: @nu-switch-on-bg;
+    }
+
+    + .label {
+      // Icon, Circle, Square
+      &:after {
+        left: @nu-switch-drop-bound;
+        width: @nu-switch-drop-diameter;
+        height: @nu-switch-drop-diameter;
+        content: '';
+        position: absolute;
+        background: @nu-switch-drop-bg;
+        margin-top: ((@nu-switch-height - @nu-switch-drop-diameter) / 2);
+        border-radius: 50%;
+        transition: @nu-switch-transition;
+      }
+
+      &:before { // Off State
+        left: 0;
+        right: 0;
+        padding-left: @nu-switch-padding;
+        position: absolute;
+        background: @nu-switch-off-bg;
+        opacity: 1;
+        color: @nu-switch-off-color;
+        content: attr(switch-off);
+        transition: @nu-switch-transition;
+      }
+
+      // On State
+      width: 5em;
+      color: @nu-switch-on-color;
+      padding: 0 (@nu-switch-padding/2) 0 @nu-switch-padding;
+      position: relative;
+      overflow: hidden;
+      transition: @nu-switch-transition;
+      line-height: @nu-switch-height;
+      display: inline-block;
+      border-radius: 30px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+
+    display: none;
+  }
+
+  display: inline-block;
+}

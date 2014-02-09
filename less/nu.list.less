@@ -1,0 +1,99 @@
+
+@nu-list-remvoe-ratio: 1.3;
+@nu-list-remvoe-padding: (@nu-list-remvoe-font-size / 3) (@nu-list-remvoe-font-size / 3) 0;
+@nu-list-remvoe-font-size: round((@nu-list-font-size * @nu-list-remvoe-ratio));
+
+.nu.list {
+  .item {
+    &.editable {
+
+    }
+
+    // Style of the X button
+    &.remove {
+      &:before {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        content: '\d7';
+        position: absolute;
+        padding: @nu-list-remvoe-padding;
+      }
+
+      &:hover {
+        &:before {
+          opacity: 1;
+        }
+        // Padding to make the animation effect
+        padding-left: (@nu-list-margin-sides * 0.3);
+        padding-right: (@nu-list-margin-sides * 0.7);
+      }
+      
+      cursor: pointer;
+      position: relative;
+    }
+
+    &.thumb {
+      img {
+        width: @nu-list-img-width;
+        height: @nu-list-img-height;
+        padding: 0;
+        display: block;
+      }
+
+      &:hover { 
+        color: #fff;
+        padding: 0;
+      }
+      padding: 0;
+    }
+
+    cursor: default;
+    margin: 0 0 3px 3px;
+    display: inline-block;
+    padding: @nu-list-padding;
+    position: relative;
+    font-size: @nu-list-font-size;
+    transition: all 0.25s linear 0s;
+    background: #ccc;
+  }
+
+  .buffer {
+    &[contenteditable='false'] {
+      display:none;
+    }
+
+    //&:hover { padding: @nu-list-padding; }
+
+    &.img {
+      input[type='file'] {
+        display: none;
+      }
+      &:hover { padding: 0; }
+      &:before {
+        content: '+';
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        font-size: (@nu-list-img-height / 2);
+        text-align: center;
+        font-weight: bold;
+        line-height: @nu-list-img-height;
+        position: absolute;
+      }
+      // for image
+
+      width: @nu-list-img-width;
+      height: @nu-list-img-height;
+      display: inline-block;
+      position: relative;
+    }
+    
+    margin: 0 0 3px 3px;
+    background: none;
+  }
+
+  display: inline-block;
+}
