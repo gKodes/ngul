@@ -8,8 +8,7 @@ module.exports = function(grunt) {
         src : [
           'js/nu.list.js',
           'js/nu.pb.js',
-          'nu.switch.js',
-          'nu.type.js'
+          'js/nu.switch.js'
         ],
         dest : 'dist/<%= pkg.name %>.js'
       }
