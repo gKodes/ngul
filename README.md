@@ -2,6 +2,9 @@ NU
 =====================
 NU is a collection of angular derivatives [demo][1]
 
+[![devDependency Status](https://david-dm.org/gkodes/ngul/dev-status.png)](https://david-dm.org/gkodes/ngul#info=devDependencies)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gKodes/ngul/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 ####Switch
 A simple switch with two lables for on and off
 ```
