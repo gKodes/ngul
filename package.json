@@ -1,6 +1,6 @@
 {
-  "name": "ngul",
-  "version": "0.0.3",
+  "name": "nu",
+  "version": "0.0.4",
   "description": "An collection of AngularJS directives without any 3rd party JS dependencies",
   "repository": {
     "type": "git",
@@ -13,6 +13,10 @@
     "html5",
     "css3",
     "typeahead",
+    "button",
+    "press",
+    "list",
+    "switch",
     "tags",
     "cells",
     "autocomplete"

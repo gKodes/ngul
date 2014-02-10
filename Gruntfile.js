@@ -3,12 +3,30 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    concat: {
+      nu: {
+        src : [
+          'js/nu.list.js',
+          'js/nu.pb.js',
+          'nu.switch.js',
+          'nu.type.js'
+        ],
+        dest : 'dist/<%= pkg.name %>.js'
+      }
+    },
+    copy: {
+      devjs: {
+        expand: true,
+        src: 'js/*',
+        dest: 'dist/js/'
+      }
+    },
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       dist: {
-        src: 'js/<%= pkg.name %>.js',
+        src: 'dist/<%= pkg.name %>.js',
         dest: 'dist/<%= pkg.name %>.min.js'
       }
     },
@@ -70,7 +88,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint', 'less:dev']);
+  grunt.registerTask('default', ['jshint', 'less:dev', 'concat:nu']);
   grunt.registerTask('dist', ['jshint', 'less:dist', 'less:dist']);
   grunt.registerTask('ut', ['jshint', 'less:dev', 'karma']); 
 };
