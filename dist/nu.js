@@ -18,7 +18,8 @@
           this.$render = angular.noop; // invokde for rending an element, expected an compiler
           this.$filter = angular.noop; // invokde before render if return false wont render that element
           this.$link = angular.noop; // invokde after render with the element
-          var $src = this.$src = $attrs[$attrs.nuList? 'nuList' : 'src'];
+          var $srcVar = this.$srcVar = $attrs[$attrs.nuList? 'nuList' : 'src'];
+          var $src = this.$src = $parse($srcVar)($scope);
           // nuOnRender - before render is called translate to string if object
           var nuOnRender = this.$nuOnRender = null;
           // nuOnAppend - before appending to list (return value is appened)
@@ -37,7 +38,7 @@
               item = nuOnAppend(item);
             }
             if(item) {
-              $scope[$src].push(item);
+              $src.push(item);
             }
           };
 
@@ -46,7 +47,7 @@
               // TODO: find the index
             }
             $scope.$apply(function(scope) {
-              scope[$src].splice(index,1);
+              $src.splice(index,1);
             });
           };
 
@@ -65,23 +66,15 @@
                   this.append(item);
                 }
               }
-            }, angular.element(list_element).empty());
+            }, list_element.html(''));
           };
 
           this.$redraw = function() {
-            $scope.apply(function(scope) { $draw(scope[$src]); });
+            $scope.apply(function(scope) { $draw($src); });
           };
-/* see if we need pop here
-          $scope.remove = function(tag) {
-            for(var index = 0; index < $scope.tgTags.length; index++) {
-              if( angular.equals(tag, $scope.tgTags[index]) ) {
-                $scope.tgTags.splice(index, 1);
-              }
-            }
-          };*/
         },
         link: function(scope, element, attr, nuList) {
-          scope.$watchCollection(nuList.$src, nuList.$draw);
+          scope.$watchCollection(nuList.$srcVar, nuList.$draw);
         }
       };
     }
@@ -231,9 +224,9 @@ if(typeof($script) !== 'undefined' && typeof($script.done) === 'function') { $sc
     return dst;
   };
 
-  var nswitch = angular.module('nu.pb', []);
+  var pb = angular.module('nu.pb', []);
 
-  nswitch.directive('nuPressButton', [
+  pb.directive('nuPressButton', [
     function() {
       var _template =
       '<div class="nu button press">' +

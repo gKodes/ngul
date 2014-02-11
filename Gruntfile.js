@@ -24,7 +24,7 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
-      dist: {
+      nu: {
         src: 'dist/<%= pkg.name %>.js',
         dest: 'dist/<%= pkg.name %>.min.js'
       }
@@ -88,6 +88,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['jshint', 'less:dev', 'concat:nu']);
-  grunt.registerTask('dist', ['jshint', 'less:dist', 'less:dist']);
+  grunt.registerTask('dist', ['jshint', 'less:dist', 'concat:nu', 'uglify:nu']);
   grunt.registerTask('ut', ['jshint', 'less:dev', 'karma']); 
 };

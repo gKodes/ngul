@@ -25,9 +25,9 @@
     return dst;
   };
 
-  var nswitch = angular.module('nu.pb', []);
+  var pb = angular.module('nu.pb', []);
 
-  nswitch.directive('nuPressButton', [
+  pb.directive('nuPressButton', [
     function() {
       var _template =
       '<div class="nu button press">' +
