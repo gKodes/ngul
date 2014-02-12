@@ -6,7 +6,7 @@
 
 (function(angular) {
 'use strict';
-/*global angular: true, $script: true, FileReader: true*/
+/*global angular: true, FileReader: true*/
   var list = angular.module('nu.list', []);
   list.directive('nuList', ['$parse',
     function($parse) { // try to rename it to collection or list

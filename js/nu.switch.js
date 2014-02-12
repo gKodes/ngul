@@ -6,7 +6,7 @@
 
 (function(angular) {
 'use strict';
-/*global angular: true, $script: true*/
+/*global angular: true*/
   var randomId = function(options) {
     options = angular.extend({pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8}, options);
 
