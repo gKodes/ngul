@@ -87,5 +87,3 @@
   ]);
 
 })(angular);
-
-if (typeof($script) !== 'undefined' && typeof($script.done) === 'function') { $script.done('nu.switch'); }
