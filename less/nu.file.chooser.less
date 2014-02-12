@@ -1,0 +1,168 @@
+//nu.file.chooser.less
+.nu.file.chooser {
+  label {
+    input[type='file'] {
+      display: none;
+    }
+
+    &:after {
+      right: 0;
+      content: 'Click to select a file';
+      position: absolute;
+    }
+
+    &.selected {
+      &:after {
+        right: 0;
+        content: 'Click to re-selecte';
+        position: absolute;
+      }
+
+      &:before {
+        color: #000;
+        content: attr(ext);
+        background: #EEEEEE; // gray
+        margin-right: 5px;
+        padding: 5px;
+      }
+
+      &[ext$="zip"]:before, &[ext$="z"]:before, &[ext$="7z"]:before, &[ext$="rar"]:before,
+      &[ext$="deb"]:before, &[ext$="rpm"]:before, &[ext$="gz"]:before {
+        color: #fff;
+        background: #333333; // drak gray
+      }
+
+      &[ext$="adp"]:before, &[ext$="au"]:before, &[ext$="snd"]:before, &[ext$="mid"]:before, &[ext$="midi"]:before,
+      &[ext$="kar"]:before, &[ext$="rmi"]:before, &[ext$="mp4a"]:before, &[ext$="mpga"]:before, &[ext$="mp2"]:before,
+      &[ext$="mp2a"]:before, &[ext$="mp3"]:before, &[ext$="m2a"]:before, &[ext$="m3a"]:before, &[ext$="oga"]:before,
+      &[ext$="ogg"]:before, &[ext$="spx"]:before, &[ext$="s3m"]:before, &[ext$="sil"]:before, &[ext$="uva"]:before,
+      &[ext$="uvva"]:before, &[ext$="eol"]:before, &[ext$="dra"]:before, &[ext$="dts"]:before, &[ext$="dtshd"]:before,
+      &[ext$="lvp"]:before, &[ext$="pya"]:before, &[ext$="ecelp4800"]:before, &[ext$="ecelp7470"]:before,
+      &[ext$="ecelp9600"]:before, &[ext$="rip"]:before, &[ext$="weba"]:before, &[ext$="aac"]:before,
+      &[ext$="aif"]:before, &[ext$="aiff"]:before, &[ext$="aifc"]:before, &[ext$="caf"]:before, &[ext$="flac"]:before,
+      &[ext$="mka"]:before, &[ext$="m3u"]:before, &[ext$="wax"]:before, &[ext$="wma"]:before, &[ext$="ram"]:before,
+      &[ext$="ra"]:before, &[ext$="rmp"]:before, &[ext$="wav"]:before, &[ext$="xm"]:before, 
+      &[ext$="3gp"]:before, &[ext$="3g2"]:before, &[ext$="h261"]:before, &[ext$="h263"]:before,
+      &[ext$="h264"]:before, &[ext$="jpgv"]:before, &[ext$="jpm"]:before, &[ext$="jpgm"]:before,
+      &[ext$="mj2"]:before, &[ext$="mjp2"]:before, &[ext$="mp4"]:before, &[ext$="mp4v"]:before,
+      &[ext$="mpg4"]:before, &[ext$="mpeg"]:before, &[ext$="mpg"]:before, &[ext$="mpe"]:before,
+      &[ext$="m1v"]:before, &[ext$="m2v"]:before, &[ext$="ogv"]:before, &[ext$="qt"]:before,
+      &[ext$="mov"]:before, &[ext$="uvh"]:before, &[ext$="uvvh"]:before, &[ext$="uvm"]:before,
+      &[ext$="uvvm"]:before, &[ext$="uvp"]:before, &[ext$="uvvp"]:before, &[ext$="uvs"]:before,
+      &[ext$="uvvs"]:before, &[ext$="uvv"]:before, &[ext$="uvvv"]:before, &[ext$="dvb"]:before,
+      &[ext$="fvt"]:before, &[ext$="mxu"]:before, &[ext$="m4u"]:before, &[ext$="pyv"]:before,
+      &[ext$="uvu"]:before, &[ext$="uvvu"]:before, &[ext$="viv"]:before, &[ext$="webm"]:before,
+      &[ext$="f4v"]:before, &[ext$="fli"]:before, &[ext$="flv"]:before, &[ext$="m4v"]:before,
+      &[ext$="mkv"]:before, &[ext$="mk3d"]:before, &[ext$="mks"]:before, &[ext$="mng"]:before,
+      &[ext$="asf"]:before, &[ext$="asx"]:before, &[ext$="vob"]:before, &[ext$="wm"]:before,
+      &[ext$="wmv"]:before, &[ext$="wmx"]:before, &[ext$="wvx"]:before, &[ext$="avi"]:before,
+      &[ext$="movie"]:before, &[ext$="smv"]:before {
+        color: #fff;
+        background: #004C73; // blue
+      }
+
+      &[ext$="doc"]:before, &[ext$="docx"]:before, &[ext$="xls"]:before, &[ext$="xlsx"]:before, &[ext$="ppt"]:before,
+      &[ext$="pdf"]:before, &[ext$="txt"]:before {
+        color: #fff;
+        background: #FCB925 // orange
+      }
+
+      &[ext$="odi"]:before, &[ext$="oti"]:before, &[ext$="t3"]:before, &[ext$="bmp"]:before,
+      &[ext$="cgm"]:before, &[ext$="g3"]:before, &[ext$="gif"]:before, &[ext$="ief"]:before,
+      &[ext$="jpeg"]:before, &[ext$="jpg"]:before, &[ext$="jpe"]:before, &[ext$="png"]:before,
+      &[ext$="btif"]:before, &[ext$="sgi"]:before, &[ext$="svg"]:before, &[ext$="svgz"]:before,
+      &[ext$="tiff"]:before, &[ext$="tif"]:before, &[ext$="uvi"]:before, &[ext$="uvvi"]:before,
+      &[ext$="uvg"]:before, &[ext$="uvvg"]:before, &[ext$="sub"]:before, &[ext$="djvu"]:before,
+      &[ext$="djv"]:before, &[ext$="dwg"]:before, &[ext$="dxf"]:before, &[ext$="fbs"]:before,
+      &[ext$="fpx"]:before, &[ext$="fst"]:before, &[ext$="mmr"]:before, &[ext$="rlc"]:before,
+      &[ext$="mdi"]:before, &[ext$="wdp"]:before, &[ext$="npx"]:before, &[ext$="wbmp"]:before,
+      &[ext$="xif"]:before, &[ext$="webp"]:before, &[ext$="3ds"]:before, &[ext$="ras"]:before,
+      &[ext$="cmx"]:before, &[ext$="fh"]:before, &[ext$="fhc"]:before, &[ext$="fh4"]:before,
+      &[ext$="fh5"]:before, &[ext$="fh7"]:before, &[ext$="ico"]:before, &[ext$="sid"]:before,
+      &[ext$="pcx"]:before, &[ext$="pic"]:before, &[ext$="pct"]:before, &[ext$="pnm"]:before,
+      &[ext$="pb"]:before, &[ext$="pgm"]:before, &[ext$="ppm"]:before, &[ext$="rgb"]:before,
+      &[ext$="tga"]:before, &[ext$="xbm"]:before, &[ext$="xpm"]:before, xwd:before {
+        color: #fff;
+        background: #EC3330; // red
+      }
+    }
+
+    &.remove {
+      content: '\d7';
+    }
+
+    width: 100%;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 0;
+    position: relative;
+    min-height: 16px;
+  }
+
+  &.diplay-type {
+    label {
+      &.selected {
+        /*
+          #00A78D // green
+        */
+        &[ext$="zip"]:before, &[ext$="z"]:before, &[ext$="7z"]:before, &[ext$="rar"]:before,
+        &[ext$="deb"]:before, &[ext$="rpm"]:before, &[ext$="gz"]:before {
+          content: 'Compressed';
+        }
+
+        &[ext$="adp"]:before, &[ext$="au"]:before, &[ext$="snd"]:before, &[ext$="mid"]:before, &[ext$="midi"]:before,
+        &[ext$="kar"]:before, &[ext$="rmi"]:before, &[ext$="mp4a"]:before, &[ext$="mpga"]:before, &[ext$="mp2"]:before,
+        &[ext$="mp2a"]:before, &[ext$="mp3"]:before, &[ext$="m2a"]:before, &[ext$="m3a"]:before, &[ext$="oga"]:before,
+        &[ext$="ogg"]:before, &[ext$="spx"]:before, &[ext$="s3m"]:before, &[ext$="sil"]:before, &[ext$="uva"]:before,
+        &[ext$="uvva"]:before, &[ext$="eol"]:before, &[ext$="dra"]:before, &[ext$="dts"]:before, &[ext$="dtshd"]:before,
+        &[ext$="lvp"]:before, &[ext$="pya"]:before, &[ext$="ecelp4800"]:before, &[ext$="ecelp7470"]:before,
+        &[ext$="ecelp9600"]:before, &[ext$="rip"]:before, &[ext$="weba"]:before, &[ext$="aac"]:before,
+        &[ext$="aif"]:before, &[ext$="aiff"]:before, &[ext$="aifc"]:before, &[ext$="caf"]:before, &[ext$="flac"]:before,
+        &[ext$="mka"]:before, &[ext$="m3u"]:before, &[ext$="wax"]:before, &[ext$="wma"]:before, &[ext$="ram"]:before,
+        &[ext$="ra"]:before, &[ext$="rmp"]:before, &[ext$="wav"]:before, &[ext$="xm"]:before {
+          content: 'Audio';
+        }
+        &[ext$="3gp"]:before, &[ext$="3g2"]:before, &[ext$="h261"]:before, &[ext$="h263"]:before,
+        &[ext$="h264"]:before, &[ext$="jpgv"]:before, &[ext$="jpm"]:before, &[ext$="jpgm"]:before,
+        &[ext$="mj2"]:before, &[ext$="mjp2"]:before, &[ext$="mp4"]:before, &[ext$="mp4v"]:before,
+        &[ext$="mpg4"]:before, &[ext$="mpeg"]:before, &[ext$="mpg"]:before, &[ext$="mpe"]:before,
+        &[ext$="m1v"]:before, &[ext$="m2v"]:before, &[ext$="ogv"]:before, &[ext$="qt"]:before,
+        &[ext$="mov"]:before, &[ext$="uvh"]:before, &[ext$="uvvh"]:before, &[ext$="uvm"]:before,
+        &[ext$="uvvm"]:before, &[ext$="uvp"]:before, &[ext$="uvvp"]:before, &[ext$="uvs"]:before,
+        &[ext$="uvvs"]:before, &[ext$="uvv"]:before, &[ext$="uvvv"]:before, &[ext$="dvb"]:before,
+        &[ext$="fvt"]:before, &[ext$="mxu"]:before, &[ext$="m4u"]:before, &[ext$="pyv"]:before,
+        &[ext$="uvu"]:before, &[ext$="uvvu"]:before, &[ext$="viv"]:before, &[ext$="webm"]:before,
+        &[ext$="f4v"]:before, &[ext$="fli"]:before, &[ext$="flv"]:before, &[ext$="m4v"]:before,
+        &[ext$="mkv"]:before, &[ext$="mk3d"]:before, &[ext$="mks"]:before, &[ext$="mng"]:before,
+        &[ext$="asf"]:before, &[ext$="asx"]:before, &[ext$="vob"]:before, &[ext$="wm"]:before,
+        &[ext$="wmv"]:before, &[ext$="wmx"]:before, &[ext$="wvx"]:before, &[ext$="avi"]:before,
+        &[ext$="movie"]:before, &[ext$="smv"]:before {
+          content: 'Video';
+        }
+
+        &[ext$="doc"]:before, &[ext$="docx"]:before, &[ext$="xls"]:before, &[ext$="xlsx"]:before, &[ext$="ppt"]:before,
+        &[ext$="pdf"]:before, &[ext$="txt"]:before {
+          content: 'Document';
+        }
+
+        &[ext$="odi"]:before, &[ext$="oti"]:before, &[ext$="t3"]:before, &[ext$="bmp"]:before,
+        &[ext$="cgm"]:before, &[ext$="g3"]:before, &[ext$="gif"]:before, &[ext$="ief"]:before,
+        &[ext$="jpeg"]:before, &[ext$="jpg"]:before, &[ext$="jpe"]:before, &[ext$="png"]:before,
+        &[ext$="btif"]:before, &[ext$="sgi"]:before, &[ext$="svg"]:before, &[ext$="svgz"]:before,
+        &[ext$="tiff"]:before, &[ext$="tif"]:before, &[ext$="uvi"]:before, &[ext$="uvvi"]:before,
+        &[ext$="uvg"]:before, &[ext$="uvvg"]:before, &[ext$="sub"]:before, &[ext$="djvu"]:before,
+        &[ext$="djv"]:before, &[ext$="dwg"]:before, &[ext$="dxf"]:before, &[ext$="fbs"]:before,
+        &[ext$="fpx"]:before, &[ext$="fst"]:before, &[ext$="mmr"]:before, &[ext$="rlc"]:before,
+        &[ext$="mdi"]:before, &[ext$="wdp"]:before, &[ext$="npx"]:before, &[ext$="wbmp"]:before,
+        &[ext$="xif"]:before, &[ext$="webp"]:before, &[ext$="3ds"]:before, &[ext$="ras"]:before,
+        &[ext$="cmx"]:before, &[ext$="fh"]:before, &[ext$="fhc"]:before, &[ext$="fh4"]:before,
+        &[ext$="fh5"]:before, &[ext$="fh7"]:before, &[ext$="ico"]:before, &[ext$="sid"]:before,
+        &[ext$="pcx"]:before, &[ext$="pic"]:before, &[ext$="pct"]:before, &[ext$="pnm"]:before,
+        &[ext$="pb"]:before, &[ext$="pgm"]:before, &[ext$="ppm"]:before, &[ext$="rgb"]:before,
+        &[ext$="tga"]:before, &[ext$="xbm"]:before, &[ext$="xpm"]:before, xwd:before {
+          content: 'Picture';
+        }
+      }
+    }
+  }
+}
