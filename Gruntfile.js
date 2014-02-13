@@ -52,7 +52,8 @@ module.exports = function(grunt) {
           paths: ["assets/css"]
         },
         files: {
-          "dist/nu.css": "less/nu.less"
+          "dist/nu.css": "less/nu.less",
+          "dist/mime.fugue.css": "less/mime.fugue.less"
         }
       },
       dist: {
@@ -62,7 +63,8 @@ module.exports = function(grunt) {
           compress: true
         },
         files: {
-          "dist/nu.min.css": "less/nu.less"
+          "dist/nu.min.css": "less/nu.less",
+          "dist/mime.fugue.min.css": "less/mime.fugue.less"
         }
       }
     },
@@ -88,6 +90,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['jshint', 'less:dev', 'concat:nu']);
-  grunt.registerTask('dist', ['jshint', 'less:dist', 'concat:nu', 'uglify:nu']);
+  grunt.registerTask('dist', ['jshint', 'less', 'concat:nu', 'uglify:nu']);
   grunt.registerTask('ut', ['jshint', 'less:dev', 'karma']); 
 };

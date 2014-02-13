@@ -29,7 +29,7 @@
   pb.directive('nuFileChooser', ['$parse',
     function($parse) {
       var _template =
-      '<label class="nu file chooser" style="position: relative;" ext="{{ext}}">' +
+      '<label class="nu file chooser" style="position: relative;">' +
         '<input type="file"/>{{path}}' +
         '<a ng-click="clear()" class="remove"></a>' +
       '</label>';
@@ -42,21 +42,40 @@
         scope: {},
         controller: function($scope, $element, $attrs) {
           this.$guess_type = null; //function(type, path) {}; // type mime type, path
-          var $put_src = this.$put_src = angular.noop;
-          $put_src = $parse('src').assign;
-          var onSelection = this.$onSelection = angular.noop;
-          var onClear = this.$onClear = angular.noop;
-          var toPath = this.$toPath = null;
-          var toSrc = this.$toSrc = null;
+          var nuFile = this;
+          var update_src = function(put_src) {
+            return function(src) {
+              if( $scope.path !== src ) {
+                if(nuFile.$toSrc) {
+                  src = nuFile.$toSrc(src);
+                }
+                put_src(src.name);
+              }
+            };
+          };
+          this.$put_src = angular.noop;
+          this.$onSelection = angular.noop;
+          this.$onClear = angular.noop;
+          this.$toPath = function(src) {
+            return (src && src.name)? src.name : src;
+          };
+          this.$toSrc = null;
 
           $attrs.$observe('src', function (value) {
-            $put_src = $parse(value).assign;
+            // Can go to infinite loop need to check
+            nuFile.$put_src = angular.noop;
             var ext = '';
             var state = 'select';
             if(value) {
-              $scope.path = basename($parse(value)($scope));
-              ext = splitext($scope.path)[1];
-              state = 'selected';
+              var src = $parse(value);
+              $scope.path = basename(nuFile.$toPath(src($scope.$parent)));
+              if(src.assign) {
+                nuFile.$put_src = update_src(src.assign);
+              }
+              if ($scope.path && '' !== $scope.path.trim()) {
+                ext = splitext($scope.path)[1];
+                state = 'selected';
+              }
             }
             $element.attr('ext', ext);
             $element.attr('state', state);
@@ -101,6 +120,8 @@
               nuFile.$put_src(null);
               update_attrs('','','selected');
             };
+
+            //update_attrs('pdf','','selected');
           };
 
           return link;

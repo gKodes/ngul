@@ -45,6 +45,7 @@
                 return tag.tag.trim() + " " + tag.value + "%";
             return tag;
         }
+        //$scope.selectedFile = '';
     }
 </script>
 <style type="text/css">
@@ -111,7 +112,8 @@
 
         <section>
             <header>File Chooser - Extension</header>
-            <nu-file-chooser></nu-file-chooser>
+            <nu-file-chooser src="selectedFile"></nu-file-chooser>
+            File Name: {{selectedFile.name}}
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -119,7 +121,7 @@
 
         <section>
             <header>File Chooser - File Type Audio,Video,Document</header>
-            <nu-file-chooser class="diplay-type"></nu-file-chooser>
+            <nu-file-chooser class="diplay-type" src="'Happy to Play Song.mp3'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="diplay-type"&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -127,7 +129,7 @@
         
         <section>
             <header>File Chooser - Fugue icons</header>
-            <nu-file-chooser class="fugue"></nu-file-chooser>
+            <nu-file-chooser class="fugue"  src="'my doccument.pdf'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="fugue"&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -135,7 +137,7 @@
         
         <section>
             <header>File Chooser - Fugue blue</header>
-            <nu-file-chooser class="fugue blue" src="'test.xls'"></nu-file-chooser>
+            <nu-file-chooser class="fugue blue" src="'my sample excel document 0.1v.xls'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="fugue blue"&gt;&lt;/nu-file-chooser&gt;
             </pre>
