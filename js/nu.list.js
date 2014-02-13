@@ -20,22 +20,22 @@
           this.$link = angular.noop; // invokde after render with the element
           var $srcVar = this.$srcVar = $attrs[$attrs.nuList? 'nuList' : 'src'];
           var $src = this.$src = $parse($srcVar)($scope);
-          // nuOnRender - before render is called translate to string if object
-          var nuOnRender = this.$nuOnRender = null;
-          // nuOnAppend - before appending to list (return value is appened)
-          var nuOnAppend = this.$nuOnAppend = null;
+          // INFO: onRender - before render is called translate to string if object
+          var onRender = this.$onRender = null;
+          // INFO: onAppend - before appending to list (return value is appened)
+          var onAppend = this.$onAppend = null;
 
-          $attrs.$observe('nuOnRender', function (value) {
-            nuOnRender = $parse(value)($scope);
+          $attrs.$observe('onRender', function (value) {
+            onRender = $parse(value)($scope);
           });
 
-          $attrs.$observe('nuOnAppend', function (value) {
-            nuOnAppend = $parse(value)($scope);
+          $attrs.$observe('onAppend', function (value) {
+            onAppend = $parse(value)($scope);
           });
 
           this.$add = function(item) {
-            if(nuOnRender) {
-              item = nuOnAppend(item);
+            if(onRender) {
+              item = onAppend(item);
             }
             if(item) {
               $src.push(item);
@@ -55,8 +55,8 @@
           var $draw = this.$draw = function(values) {
             var list_element = angular.element($element);
             angular.forEach(values, function(value, index) {
-              if(this.$nuOnAppend) {
-                values = nuList.$nuOnAppend(values);
+              if(this.$onAppend) {
+                values = nuList.$onAppend(values);
               }
               if( value ) {
                 var item = nuList.$render(value);

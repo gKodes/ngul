@@ -113,7 +113,7 @@
 @web: url('data:image/jpg;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2lpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wUmlnaHRzPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvcmlnaHRzLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcFJpZ2h0czpNYXJrZWQ9IkZhbHNlIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjRBOUIwRDM0QkY0NjExRTA4NDZDOERGNTAyRjkyNTE2IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjRBOUIwRDMzQkY0NjExRTA4NDZDOERGNTAyRjkyNTE2IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzMgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ1dWlkOkFDMUYyRTgzMzI0QURGMTFBQUI4QzUzOTBEODVCNUIzIiBzdFJlZjpkb2N1bWVudElEPSJ1dWlkOkM5RDM0OTY2NEEzQ0REMTFCMDhBQkJCQ0ZGMTcyMTU2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+KeT9CwAAAh9JREFUeNp0Ur9r20AU/qQ7ycSh9mqSoVAoadAQqAvJGlqIp0KHgglkyNIOHUvB/0GGBjqm3TpkCIQUAoEuTpdAyGAPJTTNkKGFCjwUWieOXelOur47Rz+C7See3un0vu/9tJRS0GItWx/IVGHTWysjdW6UD60nntfJ/yKOY3zf2zM4jkyq3jOvOhgMYNs2OOdwHMeo67rwfR/qq3p843uRgGzkThrc7XbR6/XQ7/fNdxAECMMQQgh82919T9GfkPf9BMbzBDpyElFroVBIVROW35SBe9i6PL1sE+LRbQKqWadtwNylkh2wiIFJ+mEBC/ML4C7HdGkaB/0DjGZATUqia3DzRRMz5RnkpXPVwfrndUBhAgFzIJXE4uziCFhL5U4FIhQTCOjELIbmy2HkpbdLmJudw+rDVaw8WEndpJBAPCkD20kjH70+wlnnDBtfNqB3pTZfM/d6GnkCO0+le6Cl/bON2lYNJz9O0FhuYLu1nboZgmg8ga2nYDbqbhWHrw6x096BV/Fw7p+be/+vDxEZAnvcHliMsVtN23y6aRrbarSw9nENx7+OUSwVgTAjyDKI0WMuM6NKd5sySSJrsNRPRE28xtVoBgNEmqD+qQ4RCFNrENIaByFCSaus6E4KuNIFfmddyAiuUWScYao0BS44eMjBBDPWEY4hlFKatcYfFMdlcLr/br9ApSgzppgWWJ91rKFapAr/yJJvAvsvwAAwLdramA7N8wAAAABJRU5ErkJggg==');
 
 .nu.file.chooser.fugue {
-  label.selected {
+  &[state="selected"] {
     &:before { background: @document no-repeat scroll 0 0 transparent; }
     &[ext$="at"]:before { background: @at no-repeat scroll 0 0 transparent; }
     &[ext$="box"]:before { background: @box no-repeat scroll 0 0 transparent; }
@@ -226,13 +226,12 @@
       width: 16px;
       height: 16px;
       content: '';
-      margin-right: 20px;
+      padding: 0;
+      margin-right: 5px;
       display: inline-block;
     }
-  }
 
-  &.blue {
-    label.selected {
+  	&.blue {
       &:before { background: @blue no-repeat scroll 0 0 transparent; }
       &[ext$="pencil"]:before { background: @blue-pencil no-repeat scroll 0 0 transparent; }
       &[ext$="access"]:before { background: @blue-access no-repeat scroll 0 0 transparent; }

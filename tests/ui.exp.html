@@ -2,7 +2,7 @@
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}</style>
     <meta charset="utf-8">
-    <title>ngul</title>
+    <title>nu Angular JS UI derivatives Demo</title>
     <meta name="viewport" content="width=device-width">
     <script src="http://code.angularjs.org/1.2.9/angular.min.js "></script>
     <script type="text/javascript" src="../js/nu.pb.js"></script>
@@ -12,6 +12,7 @@
     <link rel="stylesheet/less" href="../less/nu.less" />
     <link rel="stylesheet/less" href="../less/mime.fugue.less" />
     <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <meta name="description" content=”An collection AngularJS UI derivatives button, press button, tags, list, picture list, file chooser under MIT Licence”>
 <style type="text/css">
     html {
         font-family: sans-serif;
@@ -56,45 +57,93 @@
 <body class="ng-scope" id="tagsCtrl" ng-controller="tagsCtrl"> 
     <h2>Nu demo</h2>
 
-    <div>
-        <h3>Text List/Tags</h3>
+    <article>
+        <header>
+            <h3>Text List/Tags</h3>
+        </header>
         <nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""></nu-list>
         <span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']">Add</span>
-        <pre>            &lt;nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""&gt;&lt;/nu-list&gt;
+        <pre>
+            &lt;nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""&gt;&lt;/nu-list&gt;
             &lt;span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']"&gt;Add&lt;/span&gt;
         </pre>
-    </div>
+    </article>
     
-    <div>
-        <h3>Picture List</h3>
+    <article>
+        <header>
+            <h3>Picture List</h3>
+        </header>
         <nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"></nu-list>
-        <pre>            &lt;nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"&gt;&lt;/nu-list&gt;
+        <pre>
+            &lt;nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"&gt;&lt;/nu-list&gt;
         </pre>
-    </div>
+    </article>
 
-    <div>
-        <h3>Switch</h3>
+    <article>
+        <header>
+            <h3>Switch</h3>
+        </header>
         <nu-switch on="Yes" off="No" ng-model="switchStatus"></nu-switch>
         Status: {{switchStatus}}
-        <pre class="ng-non-bindable">            &lt;nu-switch on="Yes" off="No" ng-model="switchStatus"&gt;&lt;/nu-switch&gt;
+        <pre class="ng-non-bindable">
+            &lt;nu-switch on="Yes" off="No" ng-model="switchStatus"&gt;&lt;/nu-switch&gt;
             Status: {{switchStatus}}
         </pre>
-    </div>
+    </article>
 
-    <div>
-        <h3>Press Button</h3>
+    <article>
+        <header>
+            <h3>Press Button</h3>
+        </header>
         <nu-press-button icon="fa fa-anchor" ng-model="pbStatus"></nu-press-button>
         Status: {{pbStatus}}
-        <pre class="ng-non-bindable">            &lt;nu-press-button icon="fa fa-anchor" ng-model="pbStatus"&gt;&lt;/nu-press-button&gt;
+        <pre class="ng-non-bindable">
+            &lt;nu-press-button icon="fa fa-anchor" ng-model="pbStatus"&gt;&lt;/nu-press-button&gt;
             Status: {{pbStatus}}
         </pre>
-    </div>
+    </article>
 
 
-    <div>
-        <h3>File Chooser</h3>
-        <nu-file-chooser></file-chooser>
-    </div>
+    <article>
+        <header>
+            <h3>File Chooser</h3>
+        </header>
+
+        <section>
+            <header>File Chooser - Extension</header>
+            <nu-file-chooser></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+
+        <section>
+            <header>File Chooser - File Type Audio,Video,Document</header>
+            <nu-file-chooser class="diplay-type"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="diplay-type"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+        
+        <section>
+            <header>File Chooser - Fugue icons</header>
+            <nu-file-chooser class="fugue"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="fugue"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+        
+        <section>
+            <header>File Chooser - Fugue blue</header>
+            <nu-file-chooser class="fugue blue" src="'test.xls'"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="fugue blue"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+
+        Please refer <a href="http://p.yusukekamiyamane.com/index.html.en">Fugue Icons</a> website for more details
+        regarding the icon's license
+    </article>
 
     <script type="text/javascript">
         angular.element(document).ready(function() {
