@@ -2,98 +2,149 @@
 <html>
 <head>
     <meta charset=utf-8 />
-    <title>nu Angular JS UI derivatives Demo</title>
+    <title>ngul</title>
     <meta name="viewport" content="width=device-width">
     <script src="http://code.angularjs.org/1.2.9/angular.min.js "></script>
-    <script type="text/javascript" src="dist/nu.js"></script>
-    <link rel="stylesheet" href="dist/nu.css" />
+    <script type="text/javascript" src="dist/nu.min.js"></script>
+    <link rel="stylesheet" href="dist/nu.min.css" />
+    <link rel="stylesheet" href="dist/mime.fugue.min.css" />
     <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
-    <meta name="description" content=”An collection AngularJS UI derivatives button, press button, tags, list, picture list, file chooser under MIT Licence”>
-<style type="text/css">
-    html {
-        font-family: sans-serif;
-    }
-</style>
-
-<script type="text/javascript">
-    var jsonFlickrFeed = function(result) {
-        var element = document.getElementById('tagsCtrl');
-         setTimeout(function(){
-            var $scope = angular.element(element).scope(); // angular.injector(['ng']).get('$rootScope');
-            $scope.$apply(function(scope){
-                scope.imgs = [];
-                for(var i = 0; i < result.items.length; i++) {
-                    scope.imgs.push(result.items[i].media.m);
-                }
-            });
-        }, 300);
-        //console.info($rootScope);
-    };
-    function tagsCtrl($scope) {
-        $scope.tags = ['Test1','Test2','Test3'];
-        $scope.imgs = [];
-        $scope.tagView = 'nu.default.tag';
-        $scope.switchStatus = "No";
-        $scope.pbStatus = false;
-        $scope.onAdd = function() { console.info(arguments); }
-        $scope.format = function(tag){ 
-            if(angular.isObject(tag) && tag.tag && tag.value)
-                return tag.tag.trim() + " " + tag.value + "%";
-            return tag;
+    <style type="text/css">
+        html {
+            font-family: sans-serif;
         }
-    }
-</script>
-<style type="text/css">
-    body {
-        margin: 0 auto;
-        width: 960px;
-    }
-</style>
+    </style>
+
+    <script type="text/javascript">
+        var jsonFlickrFeed = function(result) {
+            var element = document.getElementById('tagsCtrl');
+             setTimeout(function(){
+                var $scope = angular.element(element).scope(); // angular.injector(['ng']).get('$rootScope');
+                $scope.$apply(function(scope){
+                    scope.imgs = [];
+                    for(var i = 0; i < result.items.length; i++) {
+                        scope.imgs.push(result.items[i].media.m);
+                    }
+                });
+            }, 300);
+            //console.info($rootScope);
+        };
+        function tagsCtrl($scope) {
+            $scope.tags = ['Test1','Test2','Test3'];
+            $scope.imgs = [];
+            $scope.tagView = 'nu.default.tag';
+            $scope.switchStatus = "No";
+            $scope.pbStatus = false;
+            $scope.onAdd = function() { console.info(arguments); }
+            $scope.format = function(tag){ 
+                if(angular.isObject(tag) && tag.tag && tag.value)
+                    return tag.tag.trim() + " " + tag.value + "%";
+                return tag;
+            }
+        }
+    </script>
+    <style type="text/css">
+        body {
+            margin: 0 auto;
+            width: 960px;
+        }
+    </style>
 </head>
 <body id="tagsCtrl" ng-controller="tagsCtrl"> 
     <h2>Nu demo</h2>
 
-    <div>
-        <h3>Text List/Tags</h3>
+    <article>
+        <header>
+            <h3>Text List/Tags</h3>
+        </header>
         <nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""></nu-list>
         <span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']">Add</span>
         <pre>
             &lt;nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""&gt;&lt;/nu-list&gt;
             &lt;span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']"&gt;Add&lt;/span&gt;
         </pre>
-    </div>
+    </article>
     
-    <div>
-        <h3>Picture List</h3>
+    <article>
+        <header>
+            <h3>Picture List</h3>
+        </header>
         <nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"></nu-list>
         <pre>
             &lt;nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"&gt;&lt;/nu-list&gt;
         </pre>
-    </div>
+    </article>
 
-    <div>
-        <h3>Switch</h3>
+    <article>
+        <header>
+            <h3>Switch</h3>
+        </header>
         <nu-switch on="Yes" off="No" ng-model="switchStatus"></nu-switch>
         Status: {{switchStatus}}
         <pre class="ng-non-bindable">
             &lt;nu-switch on="Yes" off="No" ng-model="switchStatus"&gt;&lt;/nu-switch&gt;
             Status: {{switchStatus}}
         </pre>
-    </div>
+    </article>
 
-    <div>
-        <h3>Press Button</h3>
+    <article>
+        <header>
+            <h3>Press Button</h3>
+        </header>
         <nu-press-button icon="fa fa-anchor" ng-model="pbStatus"></nu-press-button>
         Status: {{pbStatus}}
         <pre class="ng-non-bindable">
             &lt;nu-press-button icon="fa fa-anchor" ng-model="pbStatus"&gt;&lt;/nu-press-button&gt;
             Status: {{pbStatus}}
         </pre>
-    </div>
+    </article>
+
+
+    <article>
+        <header>
+            <h3>File Chooser</h3>
+        </header>
+
+        <section>
+            <header>File Chooser - Extension</header>
+            <nu-file-chooser src="selectedFile"></nu-file-chooser>
+            File Name: {{selectedFile.name}}
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+
+        <section>
+            <header>File Chooser - File Type Audio,Video,Document</header>
+            <nu-file-chooser class="diplay-type" src="'Happy to Play Song.mp3'"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="diplay-type"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+        
+        <section>
+            <header>File Chooser - Fugue icons</header>
+            <nu-file-chooser class="fugue"  src="'my doccument.pdf'"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="fugue"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+        
+        <section>
+            <header>File Chooser - Fugue blue</header>
+            <nu-file-chooser class="fugue blue" src="'my sample excel document 0.1v.xls'"></nu-file-chooser>
+            <pre class="ng-non-bindable">
+                &lt;nu-file-chooser class="fugue blue"&gt;&lt;/nu-file-chooser&gt;
+            </pre>
+        </section>
+
+        Please refer <a href="http://p.yusukekamiyamane.com/index.html.en">Fugue Icons</a> website for more details
+        regarding the icon's license
+    </article>
 
     <script type="text/javascript">
         angular.element(document).ready(function() {
-            angular.module('testApp', ['nu.switch', 'nu.list', 'nu.pb']);
+            angular.module('testApp', ['nu.switch', 'nu.list', 'nu.pb', 'nu.file.chooser']);
             angular.bootstrap(document, ['testApp']);
         });
     </script>
