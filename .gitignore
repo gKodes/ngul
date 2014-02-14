@@ -1,0 +1,6 @@
+# Compiled source #
+###################
+node_modules/
+tmp/
+ngul.sublime-project
+ngul.sublime-workspace
