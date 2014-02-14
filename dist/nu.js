@@ -428,7 +428,7 @@
                 if(nuFile.$toSrc) {
                   src = nuFile.$toSrc(src);
                 }
-                put_src(src.name);
+                put_src($scope.$parent, src);
               }
             };
           };
