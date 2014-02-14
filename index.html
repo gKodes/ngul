@@ -108,7 +108,6 @@
         <section>
             <header>File Chooser - Extension</header>
             <nu-file-chooser src="selectedFile"></nu-file-chooser>
-            File Name: {{selectedFile.name}}
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -144,7 +143,7 @@
 
     <script type="text/javascript">
         angular.element(document).ready(function() {
-            angular.module('testApp', ['nu.switch', 'nu.list', 'nu.pb', 'nu.file.chooser']);
+            angular.module('testApp', ['nu.switch', 'nu.pb', 'nu.list', 'nu.file.chooser']);
             angular.bootstrap(document, ['testApp']);
         });
     </script>
