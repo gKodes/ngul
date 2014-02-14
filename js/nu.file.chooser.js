@@ -7,7 +7,7 @@
 (function(angular) {
 'use strict';
 /*global angular: true*/
-  var pb = angular.module('nu.file.chooser', []);
+  var chooser = angular.module('nu.file.chooser', []);
   var RE_EXT = /\.([\w\d]+)$/i;
   var RE_BASENAME = /([^\\\/]+)$/;
 
@@ -26,7 +26,7 @@
   var split = split_re(RE_BASENAME);
   var basename = function(path) { return split(path)[1]; };
 
-  pb.directive('nuFileChooser', ['$parse',
+  chooser.directive('nuFileChooser', ['$parse',
     function($parse) {
       var _template =
       '<label class="nu file chooser" style="position: relative;">' +
@@ -40,7 +40,7 @@
         replace: true,
         //require: '?ngModel',
         scope: {},
-        controller: function($scope, $element, $attrs) {
+        controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
           this.$guess_type = null; //function(type, path) {}; // type mime type, path
           var nuFile = this;
           var update_src = function(put_src) {
@@ -80,7 +80,7 @@
             $element.attr('ext', ext);
             $element.attr('state', state);
           });
-        },
+        }],
         compile: function compile($element) { // $attrs
           var input = $element.find('input');
 

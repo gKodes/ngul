@@ -14,7 +14,7 @@
         template: '<div class="nu list"></div>',
         restrict: 'EACM', // 145 550 ? 12118
         replace: true,
-        controller: function($scope, $element, $attrs) {
+        controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
           this.$render = angular.noop; // invokde for rending an element, expected an compiler
           this.$filter = angular.noop; // invokde before render if return false wont render that element
           this.$link = angular.noop; // invokde after render with the element
@@ -72,7 +72,7 @@
           this.$redraw = function() {
             $scope.apply(function(scope) { $draw($src); });
           };
-        },
+        }],
         link: function(scope, element, attr, nuList) {
           scope.$watchCollection(nuList.$srcVar, nuList.$draw);
         }
