@@ -1,12 +1,14 @@
 module.exports = function(config) {
   config.set({
     basePath: '.',
+    reporters: ['progress', 'junit'],
     frameworks: ['jasmine'],
     files: [
-		'deps/angular/angular.js',
-		'deps/angular/angular-mocks.js',
-    	'src/*.js',
-    	'tests/*.js',
+  		'deps/angular/angular.js',
+  		'deps/angular/angular-mocks.js',
+      'tests/matchers.js',
+      'js/*.js',
+      'tests/*.js',
     ],
     // reporters: ['progress', 'junit'],
     logLevel: config.LOG_INFO,
@@ -19,6 +21,9 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-junit-reporter'
-    ]
+    ],
+    junitReporter: {
+      outputFile : "ut.results.xml"
+    }
   });
 };

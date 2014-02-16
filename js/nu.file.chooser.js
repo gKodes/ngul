@@ -22,7 +22,11 @@
     };
   };
 
-  var splitext = split_re(RE_EXT);
+  var splitext = function(path) {
+    var split = split_re(RE_EXT);
+    var pair = split(path);
+    return pair.length > 1? pair : pair[0];
+  };
   var split = split_re(RE_BASENAME);
   var basename = function(path) { return split(path)[1]; };
 

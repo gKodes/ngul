@@ -5,6 +5,7 @@
     <title>nu Angular JS UI derivatives Demo</title>
     <meta name="viewport" content="width=device-width">
     <script src="http://code.angularjs.org/1.2.9/angular.min.js "></script>
+    <script type="text/javascript" src="../js/nu.js"></script>
     <script type="text/javascript" src="../js/nu.pb.js"></script>
     <script type="text/javascript" src="../js/nu.list.js"></script>
     <script type="text/javascript" src="../js/nu.switch.js"></script>
@@ -37,7 +38,7 @@
         $scope.tags = ['Test1','Test2','Test3'];
         $scope.imgs = [];
         $scope.tagView = 'nu.default.tag';
-        $scope.switchStatus = "No";
+        //$scope.switchStatus = "Yes";
         $scope.pbStatus = false;
         $scope.onAdd = function() { console.info(arguments); }
         $scope.format = function(tag){ 

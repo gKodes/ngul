@@ -4,26 +4,9 @@
  * @license : MIT
  */
 
-(function(angular) {
-'use strict';
-/*global angular: true*/
-  var randomId = function(options) {
-    options = angular.extend({pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8}, options);
-
-    var randStr = '';
-    for (var i = 0; i < options.size; i++) {
-      randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
-    }
-    return randStr;
-  };
-
-  var attr = function(dst, src, names) {
-    for (var count = 2; count < names.length; count++) {
-      dst.attr(names[count], src.attr(names[count]));
-      src.removeAttr(names[count]);
-    }
-    return dst;
-  };
+(function(angular, nu) {
+  'use strict';
+  /*global angular, nu: true*/
 
   var pb = angular.module('nu.pb', []);
 
@@ -31,7 +14,7 @@
     function() {
       var _template =
       '<div class="nu button press">' +
-        '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' + // ng-model=""
+        '<input class="src" type="radio" autocomplete="off" style="display:none;">' + // ng-model=""
         '<label class="icon {{icon}} {{state}}"></label>' + //nu-switch
       '</div>';
 
@@ -46,9 +29,9 @@
 
           if (id) {
             $element.removeAttr('id');
-          } else { id = randomId(); }
+          } else { id = nu.random.id(); }
 
-          attr($element.find('input'), $element, ['name', 'checked']).attr('id', id);
+          nu.attr.move($element.find('input'), $element, ['name', 'checked']).attr('id', id);
           var label = $element.find('label');
           label.attr('for', id);
 
@@ -64,8 +47,8 @@
             var input = element.find('input');
             if( ngModel ) {
               ngModel.$render = function() {
-                input.checked = (labelOn === ngModel.$viewValue || 
-                  (!labelOn & ngModel.$viewValue));
+                input[0].checked = (labelOn === ngModel.$viewValue ||
+                  (!labelOn && ngModel.$viewValue === true));
                 scope.state = (input.checked && iconOn)? iconOn : iconOff;
               };
 
@@ -73,12 +56,18 @@
                 var input = this;
                 scope.$apply(function() {
                   var isChecked = input.checked;
-                  if (attrs.on && attrs.off) {
-                    ngModel.$setViewValue(isChecked ? attrs.on : attrs.off);
-                  } else { ngModel.$setViewValue(isChecked); }
+                  ngModel.$setViewValue(
+                    nu['switch'](isChecked, attrs.on, attrs.off));
                   scope.state = (isChecked && iconOn)? iconOn : iconOff;
                 });
               });
+
+              if(angular.isDefined(scope.$parent[attrs.ngModel])) {
+                ngModel.$viewValue = scope.$parent[attrs.ngModel];
+                ngModel.$render();
+              }
+              ngModel.$setViewValue(
+                nu['switch'](input[0].checked, attrs.on, attrs.off));
             }
           };
 
@@ -88,4 +77,4 @@
     }
   ]);
 
-})(angular);
+})(angular, nu);
