@@ -38,13 +38,14 @@
         background: @nu-switch-off-bg;
         opacity: 1;
         color: @nu-switch-off-color;
-        content: attr(switch-off);
+        content: attr(label-off);
         transition: @nu-switch-transition;
       }
 
       // On State
       width: 5em;
       color: @nu-switch-on-color;
+      cursor: pointer;
       padding: 0 (@nu-switch-padding/2) 0 @nu-switch-padding;
       position: relative;
       overflow: hidden;

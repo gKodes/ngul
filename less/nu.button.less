@@ -1,13 +1,27 @@
 // nu.button.less
 
 .nu.button {
-	&.press {
-		input[type='checkbox']:checked + .icon {
-			color: @nu-button-color-on;
-		}
+  &.press {
+    input[type='checkbox'], input[type='radio'] {
+      &:checked + label {
+        & + label {
+          color: @nu-button-color-on;
+          display: inherit;
+        }
+        display: none;
+      }
+    }
 
-		color: @nu-button-color-off;
-		display: inline-block;
-		font-size: @nu-button-size;
-	}
+    label {
+      cursor: pointer;
+    }
+
+    label + label {
+      display: none;
+    }
+
+    color: @nu-button-color-off;
+    display: inline-block;
+    font-size: @nu-button-size;
+  }
 }

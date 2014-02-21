@@ -73,7 +73,7 @@
                 nuFile.$put_src = update_src(src.assign);
               }
               if ($scope.path && '' !== $scope.path.trim()) {
-                ext = splitext($scope.path)[1];
+                ext = splitext($scope.path).pop();
                 state = 'selected';
               }
             }

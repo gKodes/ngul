@@ -4,26 +4,9 @@
  * @license : MIT
  */
 
-(function(angular) {
-'use strict';
-/*global angular: true*/
-  var randomId = function(options) {
-    options = angular.extend({pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8}, options);
-
-    var randStr = '';
-    for (var i = 0; i < options.size; i++) {
-      randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
-    }
-    return randStr;
-  };
-
-  var attr = function(dst, src, names) {
-    for (var count = 2; count < names.length; count++) {
-      dst.attr(names[count], src.attr(names[count]));
-      src.removeAttr(names[count]);
-    }
-    return dst;
-  };
+(function(angular, nu) {
+  'use strict';
+  /*global angular, nu: true*/
 
   var nswitch = angular.module('nu.switch', []);
 
@@ -32,7 +15,7 @@
       var _template =
       '<div class="nu switch">' +
         '<input class="src" type="checkbox" autocomplete="off">' + // ng-model=""
-        '<label class="label" switch-off="{{labelOff}}" ng-bind="labelOn"></label>' + //nu-switch
+        '<label class="label"></label>' + //nu-switch
       '</div>';
 
       return {
@@ -40,43 +23,63 @@
         restrict: 'EACM',
         replace: true,
         require: '?ngModel',
-        scope: {},
+        //scope: true,
         compile: function compile($element, $attrs) {
           var id = $attrs.id;
+          var $input = $element.find('input');
+          var $label = $element.find('label');
 
           if (id) {
             $element.removeAttr('id');
-          } else { id = randomId(); }
+          } else { id = nu.random.id(); }
 
-          attr($element.find('input'), $element, ['name', 'checked']).attr('id', id);
-          $element.find('label').attr('for', id);
+          nu.attr.move($input, $element, ['type', 'name', 'checked']).attr('id', id);
+          $label.attr('for', id);
+
+          $attrs.$observe('on', function (value) {
+            $label.text(value? value : 'On');
+          });
+
+          $attrs.$observe('off', function (value) {
+            $label.attr('label-off', value? value : 'Off');
+          });
 
           var link = function(scope, element, attrs, ngModel) {
-            var labelOn = true, labelOff = false;
-
-            attrs.$observe('on', function (value) {
-              labelOn = scope.labelOn = value;
-            });
-
-            attrs.$observe('off', function (value) {
-              labelOff = scope.labelOff = value;
-            });
 
             if( ngModel ) {
-              var input = element.find('input');
-              ngModel.$render = function() {
-                input.checked = (labelOn === ngModel.$viewValue || 
-                  (!labelOn & ngModel.$viewValue));
+
+              ngModel.$formatters.push(function(value) {
+                return ( (angular.isDefined(attrs.value) &&
+                  value === attrs.value) || value === true);
+              });
+
+              ngModel.$parsers.push(function(value) {
+                if(attrs.value) {
+                  return value ? attrs.value : attrs.valueOff;
+                }
+                return value;
+              });
+
+              ngModel.$isEmpty = function(value) {
+                return value !== attrs.value; // this.type !== 'radio'
               };
 
-              input.on('change', function() {
-                var input = this;
-                scope.$apply(function(){
-                  if (angular.isDefined(attrs.on) && angular.isDefined(attrs.off)) {
-                    ngModel.$setViewValue(input.checked ? attrs.on : attrs.off);
-                  } else { ngModel.$setViewValue(input.checked); }
-                });
+              ngModel.$render = function() {
+                $input[0].checked = ngModel.$viewValue;
+              };
+
+              $input.on('change', function(event) {
+                event.stopPropagation();
+                var isChecked = this.checked;
+                if( this.type !== 'radio' || isChecked ) {
+                  ngModel.$setViewValue(isChecked);
+                  scope.$digest();
+                }
               });
+
+              if(angular.isDefined(scope[attrs.ngModel])) {
+                ngModel.$setViewValue(scope[attrs.ngModel]);
+              } else if($input[0].defaultChecked) { ngModel.$setViewValue($input[0].checked); }
             }
           };
 
@@ -86,4 +89,4 @@
     }
   ]);
 
-})(angular);
+})(angular, nu);
