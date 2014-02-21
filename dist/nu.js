@@ -296,8 +296,9 @@ var nu = {
                 $input[0].checked = ngModel.$viewValue;
               };
 
-              $input.on('change', function() {
+              $input.on('change', function(event) {
                 var isChecked = this.checked;
+                event.stopPropagation();
                 if( this.type !== 'radio' || isChecked ) {
                   scope.$apply(function() {
                     ngModel.$setViewValue(isChecked);
@@ -388,12 +389,12 @@ var nu = {
                 $input[0].checked = ngModel.$viewValue;
               };
 
-              $input.on('change', function() {
+              $input.on('change', function(event) {
+                event.stopPropagation();
                 var isChecked = this.checked;
                 if( this.type !== 'radio' || isChecked ) {
-                  scope.$apply(function() {
-                    ngModel.$setViewValue(isChecked);
-                  });
+                  ngModel.$setViewValue(isChecked);
+                  scope.$digest();
                 }
               });
 
