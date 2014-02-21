@@ -1,0 +1,30 @@
+<div unit="" ng-controller="angular.noop">
+  <nu-switch name="switchName" ng-model="unitCase"></nu-switch>
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="angular.noop">
+  <nu-switch name="switchName" ng-model="unitCase" checked="false"></nu-switch>
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="angular.noop">
+  <input nu-switch="" on="Yes" off="No"/>
+  <div result=""></div>
+</div>
+
+<div unit="" ng-controller="angular.noop">
+  <input nu-switch="" ng-model="unitCase" value="Working"/>
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="angular.noop">
+  <input nu-switch="" ng-model="unitCase" value="Working" value-off="It's Off" />
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="angular.noop">
+  <nu-switch name="switchName" type="radio" value="Case1" ng-model="unitCase"></nu-switch>
+  <nu-switch name="switchName" type="radio" value="Case2" ng-model="unitCase"></nu-switch>
+  <div result="">{{unitCase}}</div>
+</div>

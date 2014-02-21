@@ -1,14 +1,15 @@
+/*global module: true*/
 module.exports = function(config) {
+  'use strict';
   config.set({
     basePath: '.',
     reporters: ['progress', 'junit'],
     frameworks: ['jasmine'],
     files: [
-  		'deps/angular/angular.js',
-  		'deps/angular/angular-mocks.js',
-      'tests/matchers.js',
+      'deps/angular/angular.js',
+      'deps/angular/angular-mocks.js',
       'js/*.js',
-      'tests/*.js',
+      'tests/*.js'
     ],
     // reporters: ['progress', 'junit'],
     logLevel: config.LOG_INFO,
@@ -23,7 +24,7 @@ module.exports = function(config) {
       'karma-junit-reporter'
     ],
     junitReporter: {
-      outputFile : "ut.results.xml"
+      outputFile : 'ut.results.xml'
     }
   });
 };

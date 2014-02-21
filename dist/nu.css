@@ -3,8 +3,20 @@
   display: inline-block;
   font-size: 24px;
 }
-.nu.button.press input[type='checkbox']:checked + .icon {
+.nu.button.press input[type='checkbox']:checked + label,
+.nu.button.press input[type='radio']:checked + label {
+  display: none;
+}
+.nu.button.press input[type='checkbox']:checked + label + label,
+.nu.button.press input[type='radio']:checked + label + label {
   color: #000000;
+  display: inherit;
+}
+.nu.button.press label {
+  cursor: pointer;
+}
+.nu.button.press label + label {
+  display: none;
 }
 .nu.list {
   display: inline-block;
@@ -105,6 +117,7 @@
 .nu.switch .src + .label {
   width: 5em;
   color: #1abc9c;
+  cursor: pointer;
   padding: 0 15px 0 30px;
   position: relative;
   overflow: hidden;
@@ -135,7 +148,7 @@
   background: #bdc3c7;
   opacity: 1;
   color: #ffffff;
-  content: attr(switch-off);
+  content: attr(label-off);
   transition: all 0.25s ease-out 0s;
 }
 .nu.type {

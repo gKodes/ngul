@@ -1,5 +1,5 @@
 // nu.js
-'use strict';
+//'use strict';
 /*global angular: true*/
 var nu = {
   random : {

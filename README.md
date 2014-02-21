@@ -79,6 +79,26 @@ An list using an array of image url's of which each image is displayed in a 64px
 
 **nu-list-addable** ***[optional]*** -- -- if present provieds an user interface to add new *items* to the list
 
+#### File Chooser
+```html
+<nu-file-chooser></nu-file-chooser>
+File Name &lt;&gt; {{selectedFile.name}}
+```
+Using Fugue
+
+```html
+<nu-file-chooser class="fugue blue"></nu-file-chooser>
+```
+An list using an array of image url's of which each image is displayed in a 64px thumbnail
+
+#####attrbutes
+**src** -- the list for which we display the items
+
+**nu-list-type** ***[default='text']*** -- it helps determine what the list is for is it `img` or `text`
+
+**nu-list-removable**  ***[optional]*** -- if present removes an list *item* on click on it
+
+**nu-list-addable** ***[optional]*** -- -- if present provieds an user interface to add new *items* to the list
 
 ### Inspired from
 [Flat UI][2] by designmodo

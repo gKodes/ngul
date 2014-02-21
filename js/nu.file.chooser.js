@@ -22,11 +22,7 @@
     };
   };
 
-  var splitext = function(path) {
-    var split = split_re(RE_EXT);
-    var pair = split(path);
-    return pair.length > 1? pair : pair[0];
-  };
+  var splitext = split_re(RE_EXT);
   var split = split_re(RE_BASENAME);
   var basename = function(path) { return split(path)[1]; };
 
@@ -77,7 +73,7 @@
                 nuFile.$put_src = update_src(src.assign);
               }
               if ($scope.path && '' !== $scope.path.trim()) {
-                ext = splitext($scope.path)[1];
+                ext = splitext($scope.path).pop();
                 state = 'selected';
               }
             }
