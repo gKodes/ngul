@@ -1,4 +1,4 @@
-angular.module('nu.test', [
+var testApp = angular.module('nu.test', [
   'ngRoute',
   'nu.pb',
   'nu.list',
@@ -7,9 +7,13 @@ angular.module('nu.test', [
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/:path', {templateUrl: function(parameters){
-    return parameters['path'] + '.html'
+    return 'partial/' + parameters['path'] + '.html'
   }, controller: angular.noop });
 }]);
+
+testApp.controller('listTest', function($scope){
+  $scope.list = ['Elm 1', 'Elm 2', 'Elm 3', 'Elm 4'];
+});
 
 angular.element(document).ready(function() {
     angular.bootstrap(document, ['nu.test']);
