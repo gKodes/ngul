@@ -14,7 +14,11 @@ A simple switch with two lables for on and off
 #####attrbutes
 **on** -- label and value of the model when the switch is on
 
-**off** -- label and value of the model when the switch is off 
+**off** -- label and value of the model when the switch is off
+
+**value** ***[optional]*** -- an value to be set in case the switch is On
+
+**value-off** ***[optional]*** -- an value to be set in case the switch is Off
 
 ####Press Button
 An simple press button which can change icon (by using different style) for the state its in
@@ -30,24 +34,27 @@ Change icon on state change
 ```
 
 #####attrbutes
-**on** ***[optional]*** -- value of the model when the switch is on
-
-**off** ***[optional]*** -- value of the model when the switch is off
-
 **icon** -- default * css class* (icon) to be set in all states of the switch
 
 **iconOn** ***[optional]*** -- *css class* on switch *on* state
 
 **iconOff** ***[optional]*** -- *css class* on switch *off* state
 
+**value** ***[optional]*** -- an value to be set in case the switch is On
+
+**value-off** ***[optional]*** -- an value to be set in case the switch is Off
+
 Change icon using CSS
 ```css
 .custom_button {
-input[type='checkbox']:checked + .icon:before {
-    content: '\f024';
+[icon='On']:before {
+        content: '\f024';
+        font-size: 24px;
+        font-family: FontAwesome;
+    }
 }
 
-.icon:before {
+[icon='Off']:before {
         content: '\f11d';
         font-size: 24px;
         font-family: FontAwesome;
@@ -92,13 +99,7 @@ Using Fugue
 An list using an array of image url's of which each image is displayed in a 64px thumbnail
 
 #####attrbutes
-**src** -- the list for which we display the items
-
-**nu-list-type** ***[default='text']*** -- it helps determine what the list is for is it `img` or `text`
-
-**nu-list-removable**  ***[optional]*** -- if present removes an list *item* on click on it
-
-**nu-list-addable** ***[optional]*** -- -- if present provieds an user interface to add new *items* to the list
+**src** -- model to be bound in the given scope
 
 ### Inspired from
 [Flat UI][2] by designmodo
