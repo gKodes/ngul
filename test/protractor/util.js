@@ -1,8 +1,8 @@
 /*global exports, angular, by, require: true*/
 exports.pressButtonNode = function(node) {
   'use strict';
-  this.labelOn = node.findElement(by.css('label:nth-of-type(1)'));
-  this.labelOff = node.findElement(by.css('label:nth-of-type(2)'));
+  this.labelOn = node.findElement(by.css('label:nth-of-type(2)'));
+  this.labelOff = node.findElement(by.css('label:nth-of-type(1)'));
   this.input = node.findElement(by.tagName('input'));
 };
 
