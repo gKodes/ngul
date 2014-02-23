@@ -11,8 +11,16 @@ config(['$routeProvider', function($routeProvider) {
   }, controller: angular.noop });
 }]);
 
-testApp.controller('listTest', function($scope){
+testApp.controller('listTest', function($scope, $log){
+  $scope.$log = $log;
+  //array_element
+  //$scope.list = Faker.Lorem.words(Faker.random.number(15));
   $scope.list = ['Elm 1', 'Elm 2', 'Elm 3', 'Elm 4'];
+});
+
+testApp.controller('listImgTest', function($scope, $log){
+  $scope.$log = $log;
+  $scope.list = ['imgs/sample1.gif', 'imgs/sample2.gif', 'imgs/sample3.gif', 'imgs/sample4.gif'];
 });
 
 angular.element(document).ready(function() {

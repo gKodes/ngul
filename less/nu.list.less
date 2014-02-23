@@ -5,8 +5,8 @@
 
 .nu.list {
   .item {
-    &.editable {
-
+    &.async, &.pool {
+      display: none;
     }
 
     // Style of the X button
@@ -57,6 +57,7 @@
     font-size: @nu-list-font-size;
     transition: all 0.25s linear 0s;
     background: #ccc;
+    .unselectable();
   }
 
   .buffer {
@@ -87,10 +88,12 @@
 
       width: @nu-list-img-width;
       height: @nu-list-img-height;
+      padding: 0;
       display: inline-block;
       position: relative;
     }
     
+    padding: 0 5px;
     margin: 0 0 3px 3px;
     background: none;
   }
