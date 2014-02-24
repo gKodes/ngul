@@ -34,7 +34,7 @@ Change icon on state change
 ```
 
 #####attrbutes
-**icon** -- default * css class* (icon) to be set in all states of the switch
+**icon** -- default *css class* (icon) to be set in all states of the switch
 
 **iconOn** ***[optional]*** -- *css class* on switch *on* state
 
@@ -67,24 +67,7 @@ Change icon using CSS
 ```
 
 ####List
-```html
-<nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""></nu-list>
-```
-An list using an array of strings (Text)
-
-```html
-<nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"></nu-list>
-```
-An list using an array of image url's of which each image is displayed in a 64px thumbnail
-
-#####attrbutes
-**src** -- the list for which we display the items
-
-**nu-list-type** ***[default='text']*** -- it helps determine what the list is for is it `img` or `text`
-
-**nu-list-removable**  ***[optional]*** -- if present removes an list *item* on click on it
-
-**nu-list-addable** ***[optional]*** -- -- if present provieds an user interface to add new *items* to the list
+[Wiki Page](https://github.com/gKodes/ngul/wiki/nuList)
 
 #### File Chooser
 ```html
