@@ -221,25 +221,15 @@
           
           var updateView = function() {
             var nodes = element.find('span');
-            if(canRemove === false) {
-              nodes.removeClass('remove').off('click');
+            if(canRemove) {
+              nodes.addClass('remove').on('click', remove_event);
               return;
             }
-            nodes.addClass('remove').on('click', remove_event);
+            nodes.removeClass('remove').off('click');
           };
 
           attr.$observe('nuListRemovable', function(value) {
-            var watch;
-            if(watch){ watch.deregister(); }
-            if(value === 'false') {
-              canRemove = false;
-            } else {
-              watch = scope.$watch(value, function(value) {
-                canRemove = value;
-                updateView();
-              });
-              canRemove = $parse(value)(scope);
-            }
+            canRemove = value === 'false'? false: true;
             updateView();
           });
         }
@@ -261,7 +251,7 @@
             }
           });
           attr.$observe('multiple', function(value) {
-            if(angular.isDefined(value)) { input.attr('multiple',''); }
+            if(angular.isDefined(value) && value) { input.attr('multiple',''); }
               else { input.removeAttr('multiple'); }
           });
 
@@ -332,7 +322,7 @@
             this.done(this.result);
           };
 
-          var picture_formatter = function(value){
+          var picture_formatter = function(value) {
             if(value.name && value.type && value.type.match(/image.*/)) {
               var reader = new FileReader();
               reader.done = this.async();
@@ -345,7 +335,7 @@
           var updateBuffer = function() {
             element.off('mouseup');
             if(buffer) {
-              if(hasBuffer === false && buffer[0].parentNode === element[0]) {
+              if( !hasBuffer && buffer[0].parentNode === element[0]) {
                 element[0].removeChild(buffer[0]);
                 nuList.$empty = nuList$empty;
                 nuList.$render.append = nuList$render_append;
@@ -360,17 +350,7 @@
           };
 
           attr.$observe('nuListAddable', function(value) {
-            var watch;
-            if(watch){ watch.deregister(); }
-            if(value === 'false') {
-              hasBuffer = false;
-            } else {
-              watch = scope.$watch(value, function(value) {
-                hasBuffer = value;
-                updateBuffer();
-              });
-              hasBuffer = $parse(value)(scope);
-            }
+            hasBuffer = value !== 'false'? true: false;
             updateBuffer();
           });
 
@@ -404,7 +384,7 @@
         link: function(scope, element, attr, nuList) {
           var type;
           nuList.$parsers.push(function(file){
-            if( !angular.isDefinedAndNotNull(type) ||
+            if( !nu.isDefinedAndNotNull(type) ||
                     file.type.match(type) ) {
               return file;
             }
