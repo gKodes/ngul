@@ -13,6 +13,7 @@ NU is a collection of angular derivatives [demo][1]
 
 ### Build
 We need node.js and grunt for building and `distribution` of _**nu**_
+
 [Installing grunt](http://gruntjs.com/getting-started)
 
 To build and test the `distribution`
