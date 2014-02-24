@@ -1,8 +1,6 @@
 /*global describe, expect, it, browser, require: true*/ // element
 var pressButtonNode = require('./util.js').pressButtonNode;
-var util = require('./util.js');
-
-var get_unit = util.get_unit;
+var get_unit = require('./util.js').get_unit;
 
 describe('nu press button', function() {
   'use strict';

@@ -16,6 +16,19 @@ exports.switchNode = function(node) {
   };
 };
 
+exports.listNode = function(node) {
+  'use strict';
+
+  this.buffer = function() {
+    return node.findElement(by.css('.buffer'));
+  };
+
+  this.node = function(index) {
+    index = index? 1 : index;
+    return node.findElement(by.css('span:nth-of-type(' + index + ')'));
+  };
+};
+
 var unit = function(node) {
   'use strict';
   this.node = node;
@@ -33,6 +46,10 @@ var unit = function(node) {
 
   this.findAll = function(locator, pipe) {
     return this.node.findElements(locator);
+  };
+
+  this.$digest = function() {
+    return browser.executeScript('angular.element(arguments[0]).scope().$digest();', this.node);
   };
 };
 

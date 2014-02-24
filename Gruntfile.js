@@ -95,6 +95,7 @@ module.exports = function(grunt) {
       },
       dev: {
         options: {
+          //debug: true,
           configFile: 'config/protractor.dev.conf',
         }
       }

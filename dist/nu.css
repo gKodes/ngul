@@ -30,6 +30,13 @@
   font-size: 14px;
   transition: all 0.25s linear 0s;
   background: #ccc;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.nu.list .item.async,
+.nu.list .item.pool {
+  display: none;
 }
 .nu.list .item.remove {
   cursor: pointer;
@@ -65,6 +72,7 @@
   padding: 0;
 }
 .nu.list .buffer {
+  padding: 0 5px;
   margin: 0 0 3px 3px;
   background: none;
 }
@@ -74,6 +82,7 @@
 .nu.list .buffer.img {
   width: 64px;
   height: 64px;
+  padding: 0;
   display: inline-block;
   position: relative;
 }
