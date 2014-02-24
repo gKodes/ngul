@@ -90,18 +90,17 @@
 'use strict';
 /*global nu, angular: true, FileReader: true*/
   var list = angular.module('nu.list', []);
-  list.directive('nuList', ['$parse',
-    function($parse) { // try to rename it to collection or list
+  list.directive('nuList', [
+    function() { // try to rename it to collection or list
       return {
         template: '<div class="nu list"></div>',
         restrict: 'EACM', // 145 550 ? 12118
         replace: true,
-        controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
+        controller: ['$scope', '$element', '$attrs', function($scope, $element) {
           this.$render = angular.noop; // invokde for rending an element, expected an compiler
           this.$filter = angular.noop; // invokde before render if return false wont render that element
           this.$link = angular.noop; // invokde after render with the element
-          this.$srcVar = $attrs[$attrs.nuList? 'nuList' : 'src'];
-          this.$src = $parse(this.$srcVar)($scope);
+
           this.$indexOf = angular.noop;
           var nuList = this;
 
@@ -143,8 +142,12 @@
             });
           };
         }],
-        link: function(scope, element, attr, nuList) {
-          scope.$watchCollection(nuList.$srcVar, nuList.$draw);
+        link: function(scope, element, attrs, nuList) {
+          var src = attrs[attrs.nuList? 'nuList' : 'src'];
+          scope.$watchCollection(src, function(value) {
+            nuList.$src = value? value : [];
+            nuList.$draw();
+          });
         }
       };
     }
@@ -202,8 +205,8 @@
     }
   ]);
 
-  list.directive('nuListRemovable', ['$parse',
-    function($parse) { // ClickToRemove
+  list.directive('nuListRemovable', [
+    function() { // ClickToRemove
       return {
         restrict: 'A',
         require: 'nuList',
@@ -237,8 +240,8 @@
     }
   ]);
 
-  list.directive('nuListAddable', ['$parse',
-    function($parse) { // ClickToRemove
+  list.directive('nuListAddable', [
+    function() { // ClickToRemove
       var linkers = {
         'img' : function(scope, element, attr, nuList) {
           var buffer = angular.element('<label class="buffer img">' +
