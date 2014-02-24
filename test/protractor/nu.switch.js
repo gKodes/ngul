@@ -90,35 +90,79 @@ describe('nu switch', function() {
         });
       });
     });
-
-
   });
-});
 
-describe('multiple radio nu switchs', function() {
-  'use strict';
-  var unit,derivative;
-  it('should have first input checked to true', function() {
-    unit = get_unit(6);
-    derivative = [new switchNode(unit.find('.nu.switch')),
-      new switchNode(unit.find('.nu.switch', 2))];
+  describe('multiple radio', function() {
+    var unit,derivative;
+    it('should have first input checked to true', function() {
+      unit = get_unit(6);
+      derivative = [new switchNode(unit.find('.nu.switch')),
+        new switchNode(unit.find('.nu.switch', 2))];
 
-    derivative[0].click().then(function() {
-      expect(derivative[0].input.isSelected()).toEqual(true);
-      expect(derivative[1].input.isSelected()).toEqual(false);
-      unit.result().then(function(value) {
-        expect(value).toEqual('Case1');
+      derivative[0].click().then(function() {
+        expect(derivative[0].input.isSelected()).toEqual(true);
+        expect(derivative[1].input.isSelected()).toEqual(false);
+        unit.result().then(function(value) {
+          expect(value).toEqual('Case1');
+        });
+      });
+    });
+
+    it('should have second input checked to true', function() {
+      derivative[1].click().then(function() {
+        expect(derivative[0].input.isSelected()).toEqual(false);
+        expect(derivative[1].input.isSelected()).toEqual(true);
+        unit.result().then(function(value) {
+          expect(value).toEqual('Case2');
+        });
       });
     });
   });
 
-  it('should have second input checked to true', function() {
-    derivative[1].click().then(function() {
-      expect(derivative[0].input.isSelected()).toEqual(false);
-      expect(derivative[1].input.isSelected()).toEqual(true);
+  it('should disabled & value should not change on click', function() {
+    var unit = get_unit(7);
+    var derivative = new switchNode(unit.find('.nu.switch'));
+    derivative.click().then(function() {
       unit.result().then(function(value) {
-        expect(value).toEqual('Case2');
+        expect(value).toEqual('');
+      });
+      expect(derivative.input.isSelected()).toEqual(false);
+    });
+  });
+
+  it('should have default value as true as set in scope', function() {
+    var unit = get_unit(8);
+    var derivative = new switchNode(unit.find('.nu.switch'));
+
+    unit.result().then(function(value) {
+      expect(value).toEqual('true');
+    });
+  });
+
+  it('should disabled & value should not change on click', function() {
+    var unit = get_unit(8);
+    var derivative = new switchNode(unit.find('.nu.switch'));
+    expect(derivative.input.isSelected()).toEqual(true);
+
+    unit.find('button', 1).click().then(function() {
+      derivative.click().then(function() {
+        unit.result().then(function(value) {
+          console.info(value);
+          expect(value).toEqual('false');
+        });
       });
     });
+
+    unit.find('button', 2).click().then(function() {
+      derivative.click().then(function() {
+        unit.result().then(function(value) {
+          console.info(value);
+          expect(value).toEqual('false');
+        });
+        expect(derivative.input.isSelected()).toEqual(false);
+      });
+    });
+
+    browser.debugger();
   });
 });

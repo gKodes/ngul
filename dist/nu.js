@@ -446,17 +446,26 @@
               angular.element($label[0]).attr('class',
                 (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
             });
+
             attrs.$observe('iconOff', function(value) {
               angular.element($label[1]).attr('class',
                 (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
             });
 
+            attrs.$observe('disabled', function(value) {
+              if( angular.isDefined(value) && value !== 'false' ) {
+                $input.attr('disabled', value);
+              } else { $input.removeAttr('disabled'); }
+            });
+
+            var formater = function(value) {
+              return ( (angular.isDefined(attrs.value) &&
+                value === attrs.value) || value === true);
+            };
+
             if( ngModel ) {
 
-              ngModel.$formatters.push(function(value) {
-                return ( (angular.isDefined(attrs.value) &&
-                  value === attrs.value) || value === true);
-              });
+              ngModel.$formatters.push(formater);
 
               ngModel.$parsers.push(function(value) {
                 if(attrs.value) {
@@ -483,9 +492,11 @@
                 }
               });
 
-              if(angular.isDefined(scope[attrs.ngModel])) {
-                ngModel.$setViewValue(scope[attrs.ngModel]);
-              } else if($input[0].defaultChecked) { ngModel.$setViewValue($input[0].checked); }
+              if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+                ngModel.$setViewValue( formater(scope[attrs.ngModel]) || 
+                  ($input[0].defaultChecked && $input[0].checked) );
+                ngModel.$render();
+              }
             }
           };
 
@@ -542,14 +553,22 @@
             $label.attr('label-off', value? value : 'Off');
           });
 
+          $attrs.$observe('disabled', function(value) {
+            if( angular.isDefined(value) && value !== 'false' ) {
+              $input.attr('disabled', value);
+            } else { $input.removeAttr('disabled'); }
+          });
+
           var link = function(scope, element, attrs, ngModel) {
+
+            var formater = function(value) {
+              return ( (angular.isDefined(attrs.value) &&
+                value === attrs.value) || value === true);
+            };
 
             if( ngModel ) {
 
-              ngModel.$formatters.push(function(value) {
-                return ( (angular.isDefined(attrs.value) &&
-                  value === attrs.value) || value === true);
-              });
+              ngModel.$formatters.push(formater);
 
               ngModel.$parsers.push(function(value) {
                 if(attrs.value) {
@@ -575,9 +594,11 @@
                 }
               });
 
-              if(angular.isDefined(scope[attrs.ngModel])) {
-                ngModel.$setViewValue(scope[attrs.ngModel]);
-              } else if($input[0].defaultChecked) { ngModel.$setViewValue($input[0].checked); }
+              if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+                ngModel.$setViewValue( formater(scope[attrs.ngModel]) || 
+                  ($input[0].defaultChecked && $input[0].checked) );
+                ngModel.$render();
+              }
             }
           };
 

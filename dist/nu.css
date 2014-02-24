@@ -18,6 +18,9 @@
 .nu.button.press label + label {
   display: none;
 }
+.nu.button.press [disabled] label {
+  cursor: not-allowed;
+}
 .nu.list {
   display: inline-block;
 }
@@ -137,6 +140,9 @@
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 .nu.switch .src + .label:after {
   left: 5px;
@@ -159,6 +165,9 @@
   color: #ffffff;
   content: attr(label-off);
   transition: all 0.25s ease-out 0s;
+}
+.nu.switch[disabled] .label {
+  cursor: not-allowed;
 }
 .nu.type {
   width: 100%;

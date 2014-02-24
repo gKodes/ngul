@@ -26,3 +26,17 @@
     value="Case2" ng-model="unitCase"></nu-press-button>
   <div result="">{{unitCase}}</div>
 </div>
+
+<div unit="" ng-controller="angular.noop">
+  <nu-press-button name="switchName" icon="fa fa-anchor" ng-model="unitCase" disabled="disabled"></nu-press-button>
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="angular.noop" ng-init="unitCase = true; isDisabled = true">
+  <nu-press-button name="switchName" icon="fa fa-anchor" ng-model="unitCase" disabled="{{isDisabled}}"></nu-press-button>
+  <div>
+    <button ng-click="isDisabled = false;">Enable</button>
+    <button ng-click="isDisabled = true;">Disable</button>
+  </div>
+  <div result="">{{unitCase}}</div>
+</div>

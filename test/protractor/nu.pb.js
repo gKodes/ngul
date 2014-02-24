@@ -162,5 +162,48 @@ describe('nu press button', function() {
     });
   });
 
-  //TODO: Value from scope defaulting
+  it('should disabled & value should not change on click', function() {
+    var unit = get_unit(5);
+    var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+      derivative.labelOff.click().then(function(){
+        unit.result().then(function(value) {
+          expect(value).toEqual('');
+        });
+        expect(derivative.labelOff.isDisplayed()).toEqual(true);
+        expect(derivative.labelOn.isDisplayed()).toEqual(false);
+      });
+  });
+
+  it('should have default value as true as set in scope', function() {
+    var unit = get_unit(6);
+
+    unit.result().then(function(value) {
+      expect(value).toEqual('true');
+    });
+  });
+
+  it('should disabled & value should not change on click', function() {
+    var unit = get_unit(6);
+    var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+    expect(derivative.labelOff.isDisplayed()).toEqual(false);
+    expect(derivative.labelOn.isDisplayed()).toEqual(true);
+
+    unit.find('button', 1).click().then(function() {
+      derivative.labelOn.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('false');
+        });
+      });
+    });
+
+    unit.find('button', 2).click().then(function() {
+      derivative.labelOff.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('false');
+        });
+        expect(derivative.labelOff.isDisplayed()).toEqual(true);
+        expect(derivative.labelOn.isDisplayed()).toEqual(false);
+      });
+    });
+  });
 });
