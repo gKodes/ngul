@@ -130,9 +130,8 @@
         require: 'nuList',
         link: function(scope, element, attr, nuList) {
           var canRemove, remove_event = function(event) {
-            var target = angular.element(event.currentTarget);
             nuList.$remove(target.data('src'));
-            target.remove();
+            scope.$digest();
           };
           
           nuList.$link = function(node) {
