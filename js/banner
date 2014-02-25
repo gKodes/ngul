@@ -1,0 +1,9 @@
+/**
+ * ngul 0.4
+ * Copyright 2013 Kamalakar Gadireddy. and other contributors; https://github.com/gkodes/ngul
+ * @license : MIT
+ */
+
+(function(angular) {
+'use strict';
+/*global angular: true*/

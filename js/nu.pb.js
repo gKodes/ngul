@@ -1,104 +1,94 @@
-/**
- * ngul 0.4
- * Copyright 2013 Kamalakar Gadireddy. and other contributors; https://github.com/gkodes/ngul
- * @license : MIT
- */
+/*global angular, random, attribute*/
 
-(function(angular, nu) {
-  'use strict';
-  /*global angular, nu: true*/
+var pb = angular.module('nu.pb', []);
 
-  var pb = angular.module('nu.pb', []);
+pb.directive('nuPressButton', [
+  function() {
+    var _template =
+    '<div class="nu button press">' +
+      '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' +
+      '<label icon="Off"></label>' +
+      '<label icon="On"></label>' +
+    '</div>';
 
-  pb.directive('nuPressButton', [
-    function() {
-      var _template =
-      '<div class="nu button press">' +
-        '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' +
-        '<label icon="Off"></label>' +
-        '<label icon="On"></label>' +
-      '</div>';
+    return {
+      template: _template,
+      restrict: 'EACM',
+      replace: true,
+      require: '?ngModel',
+      compile: function compile($element, $attrs) {
+        var id = $attrs.id;
+        var $input = $element.find('input');
+        var $label = $element.find('label');
 
-      return {
-        template: _template,
-        restrict: 'EACM',
-        replace: true,
-        require: '?ngModel',
-        compile: function compile($element, $attrs) {
-          var id = $attrs.id;
-          var $input = $element.find('input');
-          var $label = $element.find('label');
+        if (id) {
+          $element.removeAttr('id');
+        } else { id = random.id(); }
 
-          if (id) {
-            $element.removeAttr('id');
-          } else { id = nu.random.id(); }
+        attribute.move($input, $element, ['type', 'name', 'checked']).attr('id', id);
+        $label.attr('for', id);
 
-          nu.attr.move($input, $element, ['type', 'name', 'checked']).attr('id', id);
-          $label.attr('for', id);
+        var link = function(scope, element, attrs, ngModel) {
+          attrs.$observe('iconOn', function(value) {
+            angular.element($label[0]).attr('class',
+              (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
+          });
 
-          var link = function(scope, element, attrs, ngModel) {
-            attrs.$observe('iconOn', function(value) {
-              angular.element($label[0]).attr('class',
-                (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-            });
+          attrs.$observe('iconOff', function(value) {
+            angular.element($label[1]).attr('class',
+              (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
+          });
 
-            attrs.$observe('iconOff', function(value) {
-              angular.element($label[1]).attr('class',
-                (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-            });
+          attrs.$observe('disabled', function(value) {
+            if( angular.isDefined(value) && value !== 'false' ) {
+              $input.attr('disabled', value);
+            } else { $input.removeAttr('disabled'); }
+          });
 
-            attrs.$observe('disabled', function(value) {
-              if( angular.isDefined(value) && value !== 'false' ) {
-                $input.attr('disabled', value);
-              } else { $input.removeAttr('disabled'); }
-            });
-
-            var formater = function(value) {
-              return ( (angular.isDefined(attrs.value) &&
-                value === attrs.value) || value === true);
-            };
-
-            if( ngModel ) {
-
-              ngModel.$formatters.push(formater);
-
-              ngModel.$parsers.push(function(value) {
-                if(attrs.value) {
-                  return value ? attrs.value : attrs.valueOff;
-                }
-                return value;
-              });
-
-              ngModel.$isEmpty = function(value) {
-                return value !== attrs.value; // this.type !== 'radio'
-              };
-
-              ngModel.$render = function() {
-                $input[0].checked = ngModel.$viewValue;
-              };
-
-              $input.on('change', function(event) {
-                var isChecked = this.checked;
-                event.stopPropagation();
-                if( this.type !== 'radio' || isChecked ) {
-                  scope.$apply(function() {
-                    ngModel.$setViewValue(isChecked);
-                  });
-                }
-              });
-
-              if(scope[attrs.ngModel] || $input[0].defaultChecked) {
-                ngModel.$setViewValue( formater(scope[attrs.ngModel]) || 
-                  ($input[0].defaultChecked && $input[0].checked) );
-                ngModel.$render();
-              }
-            }
+          var formater = function(value) {
+            return ( (angular.isDefined(attrs.value) &&
+              value === attrs.value) || value === true);
           };
 
-          return link;
-        }
-      };
-    }
-  ]);
+          if( ngModel ) {
 
-})(angular, nu);
+            ngModel.$formatters.push(formater);
+
+            ngModel.$parsers.push(function(value) {
+              if(attrs.value) {
+                return value ? attrs.value : attrs.valueOff;
+              }
+              return value;
+            });
+
+            ngModel.$isEmpty = function(value) {
+              return value !== attrs.value; // this.type !== 'radio'
+            };
+
+            ngModel.$render = function() {
+              $input[0].checked = ngModel.$viewValue;
+            };
+
+            $input.on('change', function(event) {
+              var isChecked = this.checked;
+              event.stopPropagation();
+              if( this.type !== 'radio' || isChecked ) {
+                scope.$apply(function() {
+                  ngModel.$setViewValue(isChecked);
+                });
+              }
+            });
+
+            if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+              ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
+                ($input[0].defaultChecked && $input[0].checked) );
+              ngModel.$render();
+            }
+          }
+        };
+
+        return link;
+      }
+    };
+  }
+]);
