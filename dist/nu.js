@@ -678,7 +678,8 @@ chooser.directive('nuFileChooser', ['$parse',
 
             if(event.target.files.length > 0) {
               file = event.target.files[0];
-              ext = splitext(file.name)[1].toLowerCase();
+              var splitPath = splitext(file.name);
+              ext = splitPath.length > 1? splitPath[1].toLowerCase() : splitPath[0];
               mime = file.type;
               if( nuFile.$guess_type ) {
                 mime = nuFile.$guess_type.call(file, mime, file.name, ext);
