@@ -110,17 +110,17 @@
 
         <section>
             <header>File Chooser - Extension</header>
-            <nu-file-chooser src="selectedFile"></nu-file-chooser>
+            <nu-file-chooser ng-model="selectedFile"></nu-file-chooser>
             File&nbsp;Name&nbsp;<>&nbsp;{{selectedFile.name}}
             <pre class="ng-non-bindable">
-                &lt;nu-file-chooser src="selectedFile"&gt;&lt;/nu-file-chooser&gt;
+                &lt;nu-file-chooser ng-model="selectedFile"&gt;&lt;/nu-file-chooser&gt;
                 File&nbsp;Name&nbsp;<>&nbsp;{{selectedFile.name}}
             </pre>
         </section>
 
         <section>
             <header>File Chooser - File Type Audio,Video,Document</header>
-            <nu-file-chooser class="diplay-type" src="'Happy to Play Song.mp3'"></nu-file-chooser>
+            <nu-file-chooser class="diplay-type" ng-model="'Happy to Play Song.mp3'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="diplay-type"&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -128,7 +128,7 @@
         
         <section>
             <header>File Chooser - Fugue icons</header>
-            <nu-file-chooser class="fugue"  src="'my doccument.pdf'"></nu-file-chooser>
+            <nu-file-chooser class="fugue"  ng-model="'my doccument.pdf'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="fugue"&gt;&lt;/nu-file-chooser&gt;
             </pre>
@@ -136,7 +136,7 @@
         
         <section>
             <header>File Chooser - Fugue blue</header>
-            <nu-file-chooser class="fugue blue" src="'my sample excel document 0.1v.xls'"></nu-file-chooser>
+            <nu-file-chooser class="fugue blue" ng-model="'my sample excel document 0.1v.xls'"></nu-file-chooser>
             <pre class="ng-non-bindable">
                 &lt;nu-file-chooser class="fugue blue"&gt;&lt;/nu-file-chooser&gt;
             </pre>
