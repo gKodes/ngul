@@ -46,7 +46,7 @@ chooser.directive('nuFileChooser', [
             return value;
           };
 
-          ngModel.$formatters.push(fileFormatter);
+          ngModel.$formatters.unshift(fileFormatter);
 
           ngModel.$render = function() {
             name.html(ngModel.$viewValue);

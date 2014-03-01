@@ -52,9 +52,9 @@ pb.directive('nuPressButton', [
 
           if( ngModel ) {
 
-            ngModel.$formatters.push(formater);
+            ngModel.$formatters.unshift(formater);
 
-            ngModel.$parsers.push(function(value) {
+            ngModel.$parsers.unshift(function(value) {
               if(attrs.value) {
                 return value ? attrs.value : attrs.valueOff;
               }

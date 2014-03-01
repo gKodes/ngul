@@ -12,6 +12,8 @@ list.directive('nuList', [
         this.$link = angular.noop; // invokde after render with the element
 
         this.$indexOf = angular.noop;
+        this.$formatters = [];
+        this.$parsers = [];
         var nuList = this;
 
         var render = function(item) {
@@ -31,7 +33,7 @@ list.directive('nuList', [
 
         this.$add = function(item) {
           if(item) {
-            nuList.$src.push(item);
+            nuList.$src.unshift(item);
           }
         };
 
@@ -89,7 +91,6 @@ list.directive('nuListType', [
       require: 'nuList',
       link: function(scope, element, attr, nuList) {
         var engine, baseNode;
-        nuList.$formatters = [];
 
         attr.$observe('nuListType', function(value) {
           var isIMG = value == 'img';
@@ -214,7 +215,7 @@ list.directive('nuListAddable', [
       require: 'nuList',
       link: function(scope, element, attr, nuList) {
         var buffer, elementRaw = element[0], hasBuffer, base$add = nuList.$add;
-        nuList.$parsers = [];
+
         nuList.$add = function(item) {
           pipeLine(nuList.$parsers, base$add).next(item);
         };
@@ -281,7 +282,7 @@ list.directive('nuListAddable', [
           updateBuffer();
 
           if(isIMG) { // TODO: remove the formater if type changes
-            nuList.$formatters.push(picture_formatter);
+            nuList.$formatters.unshift(picture_formatter);
           }
         });
       }
@@ -296,7 +297,7 @@ list.directive('nuListTypeFilter', [
       require: 'nuList', // nuListAddable
       link: function(scope, element, attr, nuList) {
         var type;
-        nuList.$parsers.push(function(file){
+        nuList.$parsers.unshift(function(file){
           if( !isDefinedAndNotNull(type) ||
                   file.type.match(type) ) {
             return file;

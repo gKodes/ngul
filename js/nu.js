@@ -73,7 +73,7 @@ var pipeLine = function(pipe, done) {
       while(index < pipe.length) {
         item = pipe[index++].call(scope, item);
         if( isAsync ) {
-          this.isAsync = false;
+          isAsync = false;
           return this;
         }
       }
