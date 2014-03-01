@@ -136,7 +136,7 @@ list.directive('nuList', [
 
         this.$add = function(item) {
           if(item) {
-            nuList.$src.unshift(item);
+            nuList.$src.push(item);
           }
         };
 
