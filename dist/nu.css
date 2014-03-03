@@ -624,3 +624,59 @@
 .nu.file.chooser.diplay-type[state="selected"] xwd:before {
   content: 'Picture';
 }
+.nu.gallery {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.nu.gallery img {
+  margin: auto;
+  display: none;
+  max-width: 100%;
+  max-height: 100%;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.nu.gallery img.active {
+  display: block;
+}
+.nu.gallery .arrow {
+  top: 0;
+  width: 40px;
+  height: 70px;
+  bottom: 0;
+  margin: auto;
+  cursor: pointer;
+  position: absolute;
+  overflow: hidden;
+}
+.nu.gallery .arrow:after {
+  content: ' ';
+  display: block;
+  width: 40px;
+  height: 40px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  position: absolute;
+  background: #999;
+  border: 5px solid rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+}
+.nu.gallery .arrow.left {
+  left: 30px;
+}
+.nu.gallery .arrow.left:after {
+  top: 10px;
+  left: 15px;
+}
+.nu.gallery .arrow.right {
+  right: 30px;
+}
+.nu.gallery .arrow.right:after {
+  top: 10px;
+  left: -25px;
+}
