@@ -66,21 +66,23 @@ nswitch.directive('nuSwitch', [
             $input[0].checked = ngModel.$viewValue;
           };
 
-          $input.on('change', function(event) {
-            event.stopPropagation();
-            var isChecked = this.checked;
-            if( this.type !== 'radio' || isChecked ) {
-              ngModel.$setViewValue(isChecked);
-              scope.$digest();
-            }
-          });
-
           if(scope[attrs.ngModel] || $input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
               ($input[0].defaultChecked && $input[0].checked) );
             ngModel.$render();
           }
         }
+
+
+        $input.on('change', function(event) {
+          event.stopPropagation();
+          var isChecked = this.checked;
+          if( ngModel && (this.type !== 'radio' || isChecked) ) {
+            ngModel.$setViewValue(isChecked);
+            scope.$digest();
+          }
+          if(attrs.nuChange) { scope.$eval(attrs.nuChange); }
+        });
       }
     };
   }

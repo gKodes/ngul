@@ -11,7 +11,7 @@ describe('nu file chooser', function() {
     var unit = get_unit(1);
     var derivative = new fileChooser(unit.find('.nu.file.chooser'));
     
-    derivative.span.getText().then(function(value) {
+    derivative.span.getInnerHtml().then(function(value) {
       expect(value).toEqual('My Fav Song.MP3');
     });
   });

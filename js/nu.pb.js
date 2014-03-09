@@ -68,22 +68,23 @@ pb.directive('nuPressButton', [
             $input[0].checked = ngModel.$viewValue;
           };
 
-          $input.on('change', function(event) {
-            var isChecked = this.checked;
-            event.stopPropagation();
-            if( this.type !== 'radio' || isChecked ) {
-              scope.$apply(function() {
-                ngModel.$setViewValue(isChecked);
-              });
-            }
-          });
-
           if(scope[attrs.ngModel] || $input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
               ($input[0].defaultChecked && $input[0].checked) );
             ngModel.$render();
           }
         }
+
+        $input.on('change', function(event) {
+          var isChecked = this.checked;
+          event.stopPropagation();
+          if( ngModel && (this.type !== 'radio' || isChecked) ) {
+            scope.$apply(function() {
+              ngModel.$setViewValue(isChecked);
+            });
+          }
+          if(attrs.nuChange) { scope.$eval(attrs.nuChange); }
+        });
       }
     };
   }
