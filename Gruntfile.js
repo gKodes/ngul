@@ -17,7 +17,8 @@ module.exports = function(grunt) {
           'js/nu.switch.js',
           'js/nu.file.chooser.js',
           'js/nu.gallery.js',
-          'js/nu.slider.js'
+          'js/nu.slider.js',
+          'js/nu.event.js'
         ],
         dest : 'dist/<%= pkg.name %>.js'
       }
@@ -73,26 +74,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    karma: {
-      options: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      },
-      dev : {
-        browsers: ['PhantomJS']
-      },
-      ga : {
-        options: {
-          files: [
-            'deps/angular/angular.js',
-            'deps/angular/angular-mocks.js',
-            'dist/nu.min.js',
-            'test/unit/*.js'
-          ],
-        },
-        browsers: ['PhantomJS', 'Chrome', 'Firefox']
-      }
-    },
     protractor: {
       ga: {
         options: {
@@ -125,7 +106,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-karma');
   // grunt.loadNpmTasks('grunt-conventional-changelog');
   //grunt.loadNpmTasks('grunt-ngdocs');
   grunt.loadNpmTasks('grunt-contrib-less');
@@ -138,7 +118,6 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['jshint:code', 'jshint:test', 'less', 'merge:nu', 'jshint:dist', 'uglify:nu']);
   grunt.registerTask('test', ['localweb', 'protractor:ga']);
   grunt.registerTask('ga', ['build', 'test']);
-  //karma:ga
 
   grunt.registerTask('selenium', 'Task to initialize selenium-webdriver', function() {
     var selenium = require('selenium-standalone');

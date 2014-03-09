@@ -206,4 +206,22 @@ describe('nu press button', function() {
       });
     });
   });
+
+
+  it('should no model', function() {
+    var unit = get_unit(7);
+    var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+    expect(derivative.labelOff.isDisplayed()).toEqual(true);
+    expect(derivative.labelOn.isDisplayed()).toEqual(false);
+
+    derivative.labelOff.click().then(function() {
+      expect(derivative.labelOff.isDisplayed()).toEqual(false);
+      expect(derivative.labelOn.isDisplayed()).toEqual(true);
+    });
+
+    derivative.labelOn.click().then(function() {
+      expect(derivative.labelOff.isDisplayed()).toEqual(true);
+      expect(derivative.labelOn.isDisplayed()).toEqual(false);
+    });
+  });
 });
