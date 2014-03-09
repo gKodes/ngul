@@ -434,78 +434,74 @@ pb.directive('nuPressButton', [
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
-      compile: function compile($element, $attrs) {
-        var id = $attrs.id;
-        var $input = $element.find('input');
-        var $label = $element.find('label');
+      link: function(scope, element, attrs, ngModel) {
+        var id = attrs.id;
+        var $input = element.find('input');
+        var $label = element.find('label');
 
         if (id) {
-          $element.removeAttr('id');
+          element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move($input, $element, ['type', 'name', 'checked']).attr('id', id);
+        attribute.move($input, element, ['type', 'name', 'checked']).attr('id', id);
         $label.attr('for', id);
 
-        var link = function(scope, element, attrs, ngModel) {
-          attrs.$observe('iconOn', function(value) {
-            angular.element($label[0]).attr('class',
-              (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-          });
+        attrs.$observe('iconOn', function(value) {
+          angular.element($label[0]).attr('class',
+            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
+        });
 
-          attrs.$observe('iconOff', function(value) {
-            angular.element($label[1]).attr('class',
-              (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-          });
+        attrs.$observe('iconOff', function(value) {
+          angular.element($label[1]).attr('class',
+            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
+        });
 
-          attrs.$observe('disabled', function(value) {
-            if( angular.isDefined(value) && value !== 'false' ) {
-              $input.attr('disabled', value);
-            } else { $input.removeAttr('disabled'); }
-          });
+        attrs.$observe('disabled', function(value) {
+          if( angular.isDefined(value) && value !== 'false' ) {
+            $input.attr('disabled', value);
+          } else { $input.removeAttr('disabled'); }
+        });
 
-          var formater = function(value) {
-            return ( (angular.isDefined(attrs.value) &&
-              value === attrs.value) || value === true);
-          };
-
-          if( ngModel ) {
-
-            ngModel.$formatters.unshift(formater);
-
-            ngModel.$parsers.unshift(function(value) {
-              if(attrs.value) {
-                return value ? attrs.value : attrs.valueOff;
-              }
-              return value;
-            });
-
-            ngModel.$isEmpty = function(value) {
-              return value !== attrs.value;
-            };
-
-            ngModel.$render = function() {
-              $input[0].checked = ngModel.$viewValue;
-            };
-
-            $input.on('change', function(event) {
-              var isChecked = this.checked;
-              event.stopPropagation();
-              if( this.type !== 'radio' || isChecked ) {
-                scope.$apply(function() {
-                  ngModel.$setViewValue(isChecked);
-                });
-              }
-            });
-
-            if(scope[attrs.ngModel] || $input[0].defaultChecked) {
-              ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-                ($input[0].defaultChecked && $input[0].checked) );
-              ngModel.$render();
-            }
-          }
+        var formater = function(value) {
+          return ( (angular.isDefined(attrs.value) &&
+            value === attrs.value) || value === true);
         };
 
-        return link;
+        if( ngModel ) {
+
+          ngModel.$formatters.unshift(formater);
+
+          ngModel.$parsers.unshift(function(value) {
+            if(attrs.value) {
+              return value ? attrs.value : attrs.valueOff;
+            }
+            return value;
+          });
+
+          ngModel.$isEmpty = function(value) {
+            return value !== attrs.value;
+          };
+
+          ngModel.$render = function() {
+            $input[0].checked = ngModel.$viewValue;
+          };
+
+          $input.on('change', function(event) {
+            var isChecked = this.checked;
+            event.stopPropagation();
+            if( this.type !== 'radio' || isChecked ) {
+              scope.$apply(function() {
+                ngModel.$setViewValue(isChecked);
+              });
+            }
+          });
+
+          if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
+              ($input[0].defaultChecked && $input[0].checked) );
+            ngModel.$render();
+          }
+        }
       }
     };
   }
@@ -528,76 +524,71 @@ nswitch.directive('nuSwitch', [
       replace: true,
       require: '?ngModel',
 
-      compile: function compile($element, $attrs) {
-        var id = $attrs.id;
-        var $input = $element.find('input');
-        var $label = $element.find('label');
+      link: function(scope, element, attrs, ngModel) {
+        var id = attrs.id;
+        var $input = element.find('input');
+        var $label = element.find('label');
 
         if (id) {
-          $element.removeAttr('id');
+          element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move($input, $element, ['type', 'name', 'checked']).attr('id', id);
+        attribute.move($input, element, ['type', 'name', 'checked']).attr('id', id);
         $label.attr('for', id);
 
-        $attrs.$observe('on', function (value) {
+        attrs.$observe('on', function (value) {
           $label.text(value? value : 'On');
         });
 
-        $attrs.$observe('off', function (value) {
+        attrs.$observe('off', function (value) {
           $label.attr('label-off', value? value : 'Off');
         });
 
-        $attrs.$observe('disabled', function(value) {
+        attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
             $input.attr('disabled', value);
           } else { $input.removeAttr('disabled'); }
         });
 
-        var link = function(scope, element, attrs, ngModel) {
-
-          var formater = function(value) {
-            return ( (angular.isDefined(attrs.value) &&
-              value === attrs.value) || value === true);
-          };
-
-          if( ngModel ) {
-
-            ngModel.$formatters.push(formater);
-
-            ngModel.$parsers.push(function(value) {
-              if(attrs.value) {
-                return value ? attrs.value : attrs.valueOff;
-              }
-              return value;
-            });
-
-            ngModel.$isEmpty = function(value) {
-              return value !== attrs.value;
-            };
-
-            ngModel.$render = function() {
-              $input[0].checked = ngModel.$viewValue;
-            };
-
-            $input.on('change', function(event) {
-              event.stopPropagation();
-              var isChecked = this.checked;
-              if( this.type !== 'radio' || isChecked ) {
-                ngModel.$setViewValue(isChecked);
-                scope.$digest();
-              }
-            });
-
-            if(scope[attrs.ngModel] || $input[0].defaultChecked) {
-              ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-                ($input[0].defaultChecked && $input[0].checked) );
-              ngModel.$render();
-            }
-          }
+        var formater = function(value) {
+          return ( (angular.isDefined(attrs.value) &&
+            value === attrs.value) || value === true);
         };
 
-        return link;
+        if( ngModel ) {
+
+          ngModel.$formatters.push(formater);
+
+          ngModel.$parsers.push(function(value) {
+            if(attrs.value) {
+              return value ? attrs.value : attrs.valueOff;
+            }
+            return value;
+          });
+
+          ngModel.$isEmpty = function(value) {
+            return value !== attrs.value;
+          };
+
+          ngModel.$render = function() {
+            $input[0].checked = ngModel.$viewValue;
+          };
+
+          $input.on('change', function(event) {
+            event.stopPropagation();
+            var isChecked = this.checked;
+            if( this.type !== 'radio' || isChecked ) {
+              ngModel.$setViewValue(isChecked);
+              scope.$digest();
+            }
+          });
+
+          if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
+              ($input[0].defaultChecked && $input[0].checked) );
+            ngModel.$render();
+          }
+        }
       }
     };
   }
@@ -619,42 +610,44 @@ chooser.directive('nuFileChooser', [
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
-      compile: function compile($element) {
-        var input = $element.find('input');
-        var name = $element.find('span');
-        var remove = $element.find('a');
+      link: function(scope, element, attrs, ngModel) {
+        var input = element.find('input');
+        var name = element.find('span');
+        var remove = element.find('a');
 
         var update_attrs = function(ext, mime, state) {
-          $element.attr('ext', ext);
-          $element.attr('mime', mime);
-          $element.attr('state', state);
+          element.attr('ext', ext);
+          element.attr('mime', mime);
+          element.attr('state', state);
         };
 
-        var link = function(scope, element, attrs, ngModel) {
+        /**
+         * Derive to name only and then update attrs ext and mime
+         */
+        var nameOnly = function(value) {
+          if(angular.isDefined(value)) {
+            var ext, mime, path;
+            
+            if(angular.isDefined(value.name)) {
+              mime = value.type;
+              path = value.name;
+            } else { path = value; }
 
-          var fileFormatter = function(value) {
-            if(angular.isDefined(value)) {
-              var ext, mime, path;
-              
-              if(angular.isDefined(value.name)) {
-                mime = value.type;
-                path = value.name;
-              } else { path = value; }
+            var splitPath = splitext(path);
+            ext = (splitPath.length > 1? splitPath[1] : splitPath[0]).toLowerCase();
+            update_attrs(ext, mime, 'selected');
+            return basename(path);
+          }
+          return value;
+        };
 
-              var splitPath = splitext(path);
-              ext = (splitPath.length > 1? splitPath[1] : splitPath[0]).toLowerCase();
-              update_attrs(ext, mime, 'selected');
-              return basename(path);
-            }
-            return value;
-          };
-
-          ngModel.$formatters.unshift(fileFormatter);
+        if( ngModel ) {
+          ngModel.$formatters.unshift(nameOnly);
 
           ngModel.$render = function() {
             name.html(ngModel.$viewValue);
           };
-  
+
           remove.on('click', function() {
             name.html('');
             update_attrs('', '','','select');
@@ -662,19 +655,19 @@ chooser.directive('nuFileChooser', [
               ngModel.$setViewValue(undefined);
             });
           });
+        }
 
-          input.on('change', function(event) {
-            if( event.currentTarget.files.length > 0 ) {
+        input.on('change', function(event) {
+          if( event.currentTarget.files.length > 0 ) {
+            var file = event.currentTarget.files[0];
+            if(ngModel) {
               scope.$apply(function() {
-                ngModel.$setViewValue(event.currentTarget.files[0]);
-                ngModel.$viewValue = fileFormatter(ngModel.$viewValue);
-                ngModel.$render();
+                ngModel.$setViewValue(file);
               });
             }
-          });
-        };
-
-        return link;
+            name.html(nameOnly(file));
+          }
+        });
       }
     };
   }
@@ -726,6 +719,7 @@ gallery.directive('nuGallery', [
         });
 
         ngModel.$render = chainIt(ngModel.$render, function() {
+          element.find('img').remove();
           ngModel.index = 2;
           angular.forEach(ngModel.$viewValue, function(item) {
             element.append(angular.element('<img/>').attr('src', item.src || item));
@@ -737,10 +731,10 @@ gallery.directive('nuGallery', [
   }
 ]);
 
-gallery.directive('nuGallerySlideBar', [
+gallery.directive('nuPreviewStrip', [
   function() {
         return {
-      restrict: 'A',
+      restrict: 'EACM',
       replace: true,
       require: 'ngModel',
       link: function(scope, element, attrs, ngModel) {
@@ -751,4 +745,62 @@ gallery.directive('nuGallerySlideBar', [
     };
   }
 ]);
+
+gallery.service('scrollSize', ['$window', function($window) {
+  var height, width,
+  scrollNode = angular.element(
+    '<div style="width:100px;height:100px;overflow:scroll;">' +
+      '<div style="width:200px;height:200px;"></div>' +
+    '</div>');
+  
+  this.estimate = function() {
+    angular.element($window.document.body).append(scrollNode);
+    height = (scrollNode[0].offsetHeight - scrollNode[0].clientHeight);
+    width = (scrollNode[0].offsetWidth - scrollNode[0].clientWidth);
+    scrollNode.remove();
+  };
+
+  this.height = function() { return height; };
+  this.width = function() { return width; };
+  this.hideBars = function(element, frame) {
+    var rawElement = element[0];
+    var rawFrame = frame[0];
+
+    if(rawFrame.offsetWidth >= rawElement.clientWidth) {
+      element.css({'maxHeight': rawFrame.clientHeight + 'px'});
+    }
+
+    frame.css({
+      'height': (100 + ((height / rawElement.clientHeight)* 100)) + '%',
+      'width': (100 + ((width / rawElement.clientWidth) * 100)) + '%'
+    });
+  };
+  this.estimate();
+}]);
+
+gallery.directive('nuSlider', ['scrollSize',
+  function(scrollSize) {
+        var template = 
+      '<div class="nu slider">' +
+        '<div class="frame" style="overflow:scroll;"></div>'+
+      '</div>';
+
+    return {
+      replace: true,
+      template: template,
+      restrict: 'EACM',
+      transclude: true,
+      link: function(scope, element, attrs, ngController, transclude) {
+        var frame = element.css('overflow','hidden').find('div');
+
+        transclude(scope, function(clone) {
+          frame.append(clone);
+          scrollSize.hideBars(element, frame);
+        });
+      }
+    };
+  }
+]);
+
+
 })(angular);

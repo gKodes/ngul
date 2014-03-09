@@ -16,6 +16,13 @@ exports.switchNode = function(node) {
   };
 };
 
+exports.fileChooser = function(node) {
+  'use strict';
+  this.label = node;
+  this.span = node.findElement(by.tagName('span'));
+  this.input = node.findElement(by.tagName('input'));
+};
+
 exports.listNode = function(node) {
   'use strict';
 

@@ -626,7 +626,7 @@
 }
 .nu.gallery {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -653,6 +653,9 @@
   cursor: pointer;
   position: absolute;
   overflow: hidden;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .nu.gallery .arrow:after {
   content: ' ';
@@ -665,18 +668,21 @@
   background: #999;
   border: 5px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .nu.gallery .arrow.left {
   left: 30px;
 }
 .nu.gallery .arrow.left:after {
   top: 10px;
-  left: 15px;
+  left: 19px;
 }
 .nu.gallery .arrow.right {
   right: 30px;
 }
 .nu.gallery .arrow.right:after {
   top: 10px;
-  left: -25px;
+  left: -19px;
 }

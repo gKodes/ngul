@@ -26,12 +26,13 @@
         background: #999;
         border: 5px solid rgba(0, 0, 0, 0.2);
         background-clip: padding-box;
+        .box-sizing(border-box);
     }
 
     &.left {
       &:after {
           top: (@gallery-arrow / 4);
-          left: ((@gallery-arrow / 2) - 5px);
+          left: ((@gallery-arrow / 2) - 1px);
       }
       left: 30px; 
     }
@@ -40,7 +41,7 @@
     &.right {
       &:after {
         top: (@gallery-arrow / 4);
-        left: -((@gallery-arrow / 2) + 5px);
+        left: -((@gallery-arrow / 2) - 1px);
       }
       right: 30px; 
     }
@@ -53,10 +54,11 @@
     cursor: pointer;
     position: absolute;
     overflow: hidden;
+    .box-sizing(border-box);
   }
 
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   .unselectable();
 }

@@ -46,6 +46,7 @@ gallery.directive('nuGallery', [
         });
 
         ngModel.$render = chainIt(ngModel.$render, function() {
+          element.find('img').remove();
           ngModel.index = 2;
           angular.forEach(ngModel.$viewValue, function(item) {
             element.append(angular.element('<img/>').attr('src', item.src || item));
@@ -57,11 +58,11 @@ gallery.directive('nuGallery', [
   }
 ]);
 
-gallery.directive('nuGallerySlideBar', [
+gallery.directive('nuPreviewStrip', [ // Gallery
   function() {
     'use strict';
     return {
-      restrict: 'A',
+      restrict: 'EACM',
       replace: true,
       require: 'ngModel',
       link: function(scope, element, attrs, ngModel) {
@@ -72,3 +73,10 @@ gallery.directive('nuGallerySlideBar', [
     };
   }
 ]);
+
+/*
+frame[0].scrollHeight: 604
+scrollLeft: 0
+scrollTop: 289
+scrollWidth: 800
+*/

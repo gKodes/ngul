@@ -147,7 +147,6 @@ describe('nu switch', function() {
     unit.find('button', 1).click().then(function() {
       derivative.click().then(function() {
         unit.result().then(function(value) {
-          console.info(value);
           expect(value).toEqual('false');
         });
       });
@@ -156,7 +155,6 @@ describe('nu switch', function() {
     unit.find('button', 2).click().then(function() {
       derivative.click().then(function() {
         unit.result().then(function(value) {
-          console.info(value);
           expect(value).toEqual('false');
         });
         expect(derivative.input.isSelected()).toEqual(false);
