@@ -84,7 +84,7 @@ nswitch.directive('nuSwitch', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return parser(event.currentTarget.value);
+          return parser(isChecked);
         });
 
         Event.bind($label, 'focus blur');

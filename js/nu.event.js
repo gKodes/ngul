@@ -6,10 +6,12 @@ Event.service('nuEvent', ['$parse', function($parse) {
   var nuEventCreator = function(scope, attrs) {
     var NUEvent = function(scope, attrs) {
       var Event = {};
-      angular.forEach(attrs.attrs, function(name) {
-        var indexOfnu = name.indexOf('nu');
-        if( indexOfnu === -1 ) {
-          Event[name.substr(indexOfnu)] = $parse(name);
+      angular.forEach(attrs, function(value, name) {
+        if(angular.isString(name)) {
+          var indexOfnu = name.indexOf('nu');
+          if( indexOfnu === 0 ) {
+            Event[name.substr(2).toLowerCase()] = $parse(value);
+          }
         }
       });
 
