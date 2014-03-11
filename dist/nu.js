@@ -418,11 +418,11 @@ list.directive('nuListTypeFilter', [
 
 
 
-var pb = angular.module('nu.pb', []);
+var pb = angular.module('nu.pb', ['nu.event']);
 
-pb.directive('nuPressButton', [
-  function() {
-    var _template =
+pb.directive('nuPressButton', ['nuEvent',
+  function(nuEvent) {
+        var _template =
     '<div class="nu button press">' +
       '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' +
       '<label icon="Off"></label>' +
@@ -438,6 +438,7 @@ pb.directive('nuPressButton', [
         var id = attrs.id;
         var $input = element.find('input');
         var $label = element.find('label');
+        var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
@@ -467,16 +468,17 @@ pb.directive('nuPressButton', [
             value === attrs.value) || value === true);
         };
 
+        var parser = function(value) {
+          if(attrs.value) {
+            return value ? attrs.value : attrs.valueOff;
+          }
+          return value;
+        };
+
         if( ngModel ) {
 
           ngModel.$formatters.unshift(formater);
-
-          ngModel.$parsers.unshift(function(value) {
-            if(attrs.value) {
-              return value ? attrs.value : attrs.valueOff;
-            }
-            return value;
-          });
+          ngModel.$parsers.unshift(parser);
 
           ngModel.$isEmpty = function(value) {
             return value !== attrs.value;
@@ -486,33 +488,36 @@ pb.directive('nuPressButton', [
             $input[0].checked = ngModel.$viewValue;
           };
 
-          $input.on('change', function(event) {
-            var isChecked = this.checked;
-            event.stopPropagation();
-            if( this.type !== 'radio' || isChecked ) {
-              scope.$apply(function() {
-                ngModel.$setViewValue(isChecked);
-              });
-            }
-          });
-
           if(scope[attrs.ngModel] || $input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
               ($input[0].defaultChecked && $input[0].checked) );
             ngModel.$render();
           }
         }
+
+        Event.bind($input, 'change', function(event) {
+          var isChecked = this.checked;
+          event.stopPropagation();
+          if( ngModel && (this.type !== 'radio' || isChecked) ) {
+            scope.$apply(function() {
+              ngModel.$setViewValue(isChecked);
+            });
+          }
+          return parser(event.currentTarget.value);
+        });
+
+        Event.bind($label, 'focus blur');
       }
     };
   }
 ]);
 
 
-var nswitch = angular.module('nu.switch', []);
+var nswitch = angular.module('nu.switch', ['nu.event']);
 
-nswitch.directive('nuSwitch', [
-  function() {
-    var _template =
+nswitch.directive('nuSwitch', ['nuEvent',
+  function(nuEvent) {
+        var _template =
     '<div class="nu switch">' +
       '<input class="src" type="checkbox" autocomplete="off">' +
       '<label class="label"></label>' +
@@ -528,6 +533,7 @@ nswitch.directive('nuSwitch', [
         var id = attrs.id;
         var $input = element.find('input');
         var $label = element.find('label');
+        var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
@@ -555,16 +561,17 @@ nswitch.directive('nuSwitch', [
             value === attrs.value) || value === true);
         };
 
+        var parser = function(value) {
+          if(attrs.value) {
+            return value ? attrs.value : attrs.valueOff;
+          }
+          return value;
+        };
+
         if( ngModel ) {
 
           ngModel.$formatters.push(formater);
-
-          ngModel.$parsers.push(function(value) {
-            if(attrs.value) {
-              return value ? attrs.value : attrs.valueOff;
-            }
-            return value;
-          });
+          ngModel.$parsers.push(parser);
 
           ngModel.$isEmpty = function(value) {
             return value !== attrs.value;
@@ -574,21 +581,25 @@ nswitch.directive('nuSwitch', [
             $input[0].checked = ngModel.$viewValue;
           };
 
-          $input.on('change', function(event) {
-            event.stopPropagation();
-            var isChecked = this.checked;
-            if( this.type !== 'radio' || isChecked ) {
-              ngModel.$setViewValue(isChecked);
-              scope.$digest();
-            }
-          });
-
           if(scope[attrs.ngModel] || $input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
               ($input[0].defaultChecked && $input[0].checked) );
             ngModel.$render();
           }
         }
+
+        Event.bind($input, 'change', function(event) {
+          var isChecked = this.checked;
+          event.stopPropagation();
+          if( ngModel && (this.type !== 'radio' || isChecked) ) {
+            scope.$apply(function() {
+              ngModel.$setViewValue(isChecked);
+            });
+          }
+          return parser(event.currentTarget.value);
+        });
+
+        Event.bind($label, 'focus blur');
       }
     };
   }
@@ -746,13 +757,38 @@ gallery.directive('nuPreviewStrip', [
   }
 ]);
 
-gallery.service('scrollSize', ['$window', function($window) {
-  var height, width,
+
+
+
+var slider = angular.module('nu.slider', []);
+slider.service('_ScrollSize', ['$window', function($window) {
+    var height, width, sliders = [],
   scrollNode = angular.element(
     '<div style="width:100px;height:100px;overflow:scroll;">' +
       '<div style="width:200px;height:200px;"></div>' +
     '</div>');
   
+  var calcDimension = function(element, frame) {
+    var rawElement = element[0],
+        rawFrame = frame[0];
+    if(rawFrame.offsetWidth >= rawElement.clientWidth) {
+      element.css({'maxHeight': rawFrame.clientHeight + 'px'});
+    }
+
+    sliders.push([rawElement, rawFrame]);
+
+    frame.css({
+      'height': (100 + ((height / rawElement.clientHeight)* 100)) + '%',
+      'width': (100 + ((width / rawElement.clientWidth) * 100)) + '%'
+    });
+  };
+
+  angular.element($window).on('resize', function() {
+    angular.forEach(sliders, function(slider) {
+      calcDimension.apply(null, slider);
+    });
+  });
+
   this.estimate = function() {
     angular.element($window.document.body).append(scrollNode);
     height = (scrollNode[0].offsetHeight - scrollNode[0].clientHeight);
@@ -763,24 +799,15 @@ gallery.service('scrollSize', ['$window', function($window) {
   this.height = function() { return height; };
   this.width = function() { return width; };
   this.hideBars = function(element, frame) {
-    var rawElement = element[0];
-    var rawFrame = frame[0];
-
-    if(rawFrame.offsetWidth >= rawElement.clientWidth) {
-      element.css({'maxHeight': rawFrame.clientHeight + 'px'});
-    }
-
-    frame.css({
-      'height': (100 + ((height / rawElement.clientHeight)* 100)) + '%',
-      'width': (100 + ((width / rawElement.clientWidth) * 100)) + '%'
-    });
+    calcDimension(element, frame);
   };
+
   this.estimate();
 }]);
 
-gallery.directive('nuSlider', ['scrollSize',
+slider.directive('nuSlider', ['_ScrollSize',
   function(scrollSize) {
-        var template = 
+        var template =
       '<div class="nu slider">' +
         '<div class="frame" style="overflow:scroll;"></div>'+
       '</div>';
@@ -802,5 +829,38 @@ gallery.directive('nuSlider', ['scrollSize',
   }
 ]);
 
+var Event = angular.module('nu.event', []);
 
-})(angular);
+Event.service('nuEvent', ['$parse', function($parse) {
+    var nuEventCreator = function(scope, attrs) {
+    var NUEvent = function(scope, attrs) {
+      var Event = {};
+      angular.forEach(attrs.attrs, function(name) {
+        var indexOfnu = name.indexOf('nu');
+        if( indexOfnu === -1 ) {
+          Event[name.substr(indexOfnu)] = $parse(name);
+        }
+      });
+
+      var trigger = this.trigger = function(name, event) {
+        if(Event[name]) {
+          Event[name](scope, {'$event': event});
+        }
+      };
+
+      this.bind = function(element, name, transformationFn) {
+        angular.forEach(name.split(' '), function(ename) {
+          if(Event[ename] || transformationFn) {
+            element.on(ename, function(event) {
+              trigger(ename, (transformationFn || angular.identity).call(this, event));
+            });
+          }
+        });
+      };
+    };
+
+    return new NUEvent(scope, attrs);
+  };
+
+  return nuEventCreator;
+}]);})(angular);

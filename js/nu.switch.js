@@ -1,9 +1,10 @@
 /*global angular, random, attribute*/
 
-var nswitch = angular.module('nu.switch', []);
+var nswitch = angular.module('nu.switch', ['nu.event']);
 
-nswitch.directive('nuSwitch', [
-  function() {
+nswitch.directive('nuSwitch', ['nuEvent',
+  function(nuEvent) {
+    'use strict';
     var _template =
     '<div class="nu switch">' +
       '<input class="src" type="checkbox" autocomplete="off">' + // ng-model=""
@@ -20,6 +21,7 @@ nswitch.directive('nuSwitch', [
         var id = attrs.id;
         var $input = element.find('input');
         var $label = element.find('label');
+        var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
@@ -47,16 +49,17 @@ nswitch.directive('nuSwitch', [
             value === attrs.value) || value === true);
         };
 
+        var parser = function(value) {
+          if(attrs.value) {
+            return value ? attrs.value : attrs.valueOff;
+          }
+          return value;
+        };
+
         if( ngModel ) {
 
           ngModel.$formatters.push(formater);
-
-          ngModel.$parsers.push(function(value) {
-            if(attrs.value) {
-              return value ? attrs.value : attrs.valueOff;
-            }
-            return value;
-          });
+          ngModel.$parsers.push(parser);
 
           ngModel.$isEmpty = function(value) {
             return value !== attrs.value; // this.type !== 'radio'
@@ -73,16 +76,18 @@ nswitch.directive('nuSwitch', [
           }
         }
 
-
-        $input.on('change', function(event) {
-          event.stopPropagation();
+        Event.bind($input, 'change', function(event) {
           var isChecked = this.checked;
+          event.stopPropagation(); // 
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
-            ngModel.$setViewValue(isChecked);
-            scope.$digest();
+            scope.$apply(function() {
+              ngModel.$setViewValue(isChecked);
+            });
           }
-          if(attrs.nuChange) { scope.$eval(attrs.nuChange); }
+          return parser(event.currentTarget.value);
         });
+
+        Event.bind($label, 'focus blur');
       }
     };
   }

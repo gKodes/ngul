@@ -1,9 +1,10 @@
 /*global angular, random, attribute*/
 
-var pb = angular.module('nu.pb', []);
+var pb = angular.module('nu.pb', ['nu.event']);
 
-pb.directive('nuPressButton', [
-  function() {
+pb.directive('nuPressButton', ['nuEvent',
+  function(nuEvent) {
+    'use strict';
     var _template =
     '<div class="nu button press">' +
       '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' +
@@ -20,6 +21,7 @@ pb.directive('nuPressButton', [
         var id = attrs.id;
         var $input = element.find('input');
         var $label = element.find('label');
+        var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
@@ -49,16 +51,17 @@ pb.directive('nuPressButton', [
             value === attrs.value) || value === true);
         };
 
+        var parser = function(value) {
+          if(attrs.value) {
+            return value ? attrs.value : attrs.valueOff;
+          }
+          return value;
+        };
+
         if( ngModel ) {
 
           ngModel.$formatters.unshift(formater);
-
-          ngModel.$parsers.unshift(function(value) {
-            if(attrs.value) {
-              return value ? attrs.value : attrs.valueOff;
-            }
-            return value;
-          });
+          ngModel.$parsers.unshift(parser);
 
           ngModel.$isEmpty = function(value) {
             return value !== attrs.value; // this.type !== 'radio'
@@ -75,16 +78,18 @@ pb.directive('nuPressButton', [
           }
         }
 
-        $input.on('change', function(event) {
+        Event.bind($input, 'change', function(event) {
           var isChecked = this.checked;
-          event.stopPropagation();
+          event.stopPropagation(); // 
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
             scope.$apply(function() {
               ngModel.$setViewValue(isChecked);
             });
           }
-          if(attrs.nuChange) { scope.$eval(attrs.nuChange); }
+          return parser(event.currentTarget.value);
         });
+
+        Event.bind($label, 'focus blur');
       }
     };
   }

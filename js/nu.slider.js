@@ -8,7 +8,9 @@ slider.service('_ScrollSize', ['$window', function($window) {
       '<div style="width:200px;height:200px;"></div>' +
     '</div>');
   
-  var calcDimension = function(rawElement, rawFrame) {
+  var calcDimension = function(element, frame) {
+    var rawElement = element[0],
+        rawFrame = frame[0];
     if(rawFrame.offsetWidth >= rawElement.clientWidth) {
       element.css({'maxHeight': rawFrame.clientHeight + 'px'});
     }
@@ -37,7 +39,7 @@ slider.service('_ScrollSize', ['$window', function($window) {
   this.height = function() { return height; };
   this.width = function() { return width; };
   this.hideBars = function(element, frame) {
-    calcDimension(element[0], frame[0]);
+    calcDimension(element, frame);
   };
 
   this.estimate();
