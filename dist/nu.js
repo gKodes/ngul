@@ -447,31 +447,31 @@ pb.directive('nuPressButton', ['nuEvent',
       require: '?ngModel',
       link: function(scope, element, attrs, ngModel) {
         var id = attrs.id;
-        var $input = element.find('input');
-        var $label = element.find('label');
+        var input = element.find('input');
+        var label = element.find('label');
         var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move($input, element, ['type', 'name', 'checked']).attr('id', id);
-        $label.attr('for', id);
+        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        label.attr('for', id);
 
         attrs.$observe('iconOn', function(value) {
-          angular.element($label[0]).attr('class',
+          angular.element(label[0]).attr('class',
             (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
         });
 
         attrs.$observe('iconOff', function(value) {
-          angular.element($label[1]).attr('class',
+          angular.element(label[1]).attr('class',
             (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
         });
 
         attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
-            $input.attr('disabled', value);
-          } else { $input.removeAttr('disabled'); }
+            input.attr('disabled', value);
+          } else { input.removeAttr('disabled'); }
         });
 
         var formater = function(value) {
@@ -496,17 +496,17 @@ pb.directive('nuPressButton', ['nuEvent',
           };
 
           ngModel.$render = function() {
-            $input[0].checked = ngModel.$viewValue;
+            input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+          if(scope[attrs.ngModel] || input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              ($input[0].defaultChecked && $input[0].checked) );
+              (input[0].defaultChecked && input[0].checked) );
             ngModel.$render();
           }
         }
 
-        Event.bind($input, 'change', function(event) {
+        Event.bind(input, 'change', function(event) {
           var isChecked = this.checked;
           event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -517,7 +517,7 @@ pb.directive('nuPressButton', ['nuEvent',
           return {'target': attrs.name, 'value': parser(isChecked)};
         });
 
-        Event.bind($label, 'focus blur');
+        Event.bind(label, 'focus blur');
       }
     };
   }
@@ -544,29 +544,29 @@ nswitch.directive('nuSwitch', ['nuEvent',
 
       link: function(scope, element, attrs, ngModel) {
         var id = attrs.id;
-        var $input = element.find('input');
-        var $label = element.find('label');
+        var input = element.find('input');
+        var label = element.find('label');
         var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move($input, element, ['type', 'name', 'checked']).attr('id', id);
-        $label.attr('for', id);
+        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        label.attr('for', id);
 
         attrs.$observe('on', function (value) {
-          $label.text(value? value : 'On');
+          label.text(value? value : 'On');
         });
 
         attrs.$observe('off', function (value) {
-          $label.attr('label-off', value? value : 'Off');
+          label.attr('label-off', value? value : 'Off');
         });
 
         attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
-            $input.attr('disabled', value);
-          } else { $input.removeAttr('disabled'); }
+            input.attr('disabled', value);
+          } else { input.removeAttr('disabled'); }
         });
 
         var formater = function(value) {
@@ -591,17 +591,17 @@ nswitch.directive('nuSwitch', ['nuEvent',
           };
 
           ngModel.$render = function() {
-            $input[0].checked = ngModel.$viewValue;
+            input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+          if(scope[attrs.ngModel] || input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              ($input[0].defaultChecked && $input[0].checked) );
+              (input[0].defaultChecked && input[0].checked) );
             ngModel.$render();
           }
         }
 
-        Event.bind($input, 'change', function(event) {
+        Event.bind(input, 'change', function(event) {
           var isChecked = this.checked;
           event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -612,17 +612,17 @@ nswitch.directive('nuSwitch', ['nuEvent',
           return {'target': attrs.name, 'value': parser(isChecked)};
         });
 
-        Event.bind($label, 'focus blur');
+        Event.bind(label, 'focus blur');
       }
     };
   }
 ]);
 
 
-var chooser = angular.module('nu.file.chooser', []);
+var chooser = angular.module('nu.file.chooser', ['nu.event']);
 
-chooser.directive('nuFileChooser', [
-  function() {
+chooser.directive('nuFileChooser', ['nuEvent',
+  function(nuEvent) {
         var _template =
     '<label class="nu file chooser" style="position: relative;">' +
       '<input type="file"/><span></span>' +
@@ -638,6 +638,7 @@ chooser.directive('nuFileChooser', [
         var input = element.find('input');
         var name = element.find('span');
         var remove = element.find('a');
+        var Event = nuEvent(scope, attrs);
 
         var update_attrs = function(ext, mime, state) {
           element.attr('ext', ext);
