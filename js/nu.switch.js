@@ -19,29 +19,29 @@ nswitch.directive('nuSwitch', ['nuEvent',
       //scope: true,
       link: function(scope, element, attrs, ngModel) {
         var id = attrs.id;
-        var $input = element.find('input');
-        var $label = element.find('label');
+        var input = element.find('input');
+        var label = element.find('label');
         var Event = nuEvent(scope, attrs);
 
         if (id) {
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move($input, element, ['type', 'name', 'checked']).attr('id', id);
-        $label.attr('for', id);
+        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        label.attr('for', id);
 
         attrs.$observe('on', function (value) {
-          $label.text(value? value : 'On');
+          label.text(value? value : 'On');
         });
 
         attrs.$observe('off', function (value) {
-          $label.attr('label-off', value? value : 'Off');
+          label.attr('label-off', value? value : 'Off');
         });
 
         attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
-            $input.attr('disabled', value);
-          } else { $input.removeAttr('disabled'); }
+            input.attr('disabled', value);
+          } else { input.removeAttr('disabled'); }
         });
 
         var formater = function(value) {
@@ -66,17 +66,17 @@ nswitch.directive('nuSwitch', ['nuEvent',
           };
 
           ngModel.$render = function() {
-            $input[0].checked = ngModel.$viewValue;
+            input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || $input[0].defaultChecked) {
+          if(scope[attrs.ngModel] || input[0].defaultChecked) {
             ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              ($input[0].defaultChecked && $input[0].checked) );
+              (input[0].defaultChecked && input[0].checked) );
             ngModel.$render();
           }
         }
 
-        Event.bind($input, 'change', function(event) {
+        Event.bind(input, 'change', function(event) {
           var isChecked = this.checked;
           event.stopPropagation(); // 
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -84,10 +84,10 @@ nswitch.directive('nuSwitch', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return parser(isChecked);
+          return {'target': attrs.name, 'value': parser(isChecked)};
         });
 
-        Event.bind($label, 'focus blur');
+        Event.bind(label, 'focus blur');
       }
     };
   }

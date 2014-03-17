@@ -1,1 +1,1 @@
-})(angular);
+})(angular, this.nu = this.nu || {});

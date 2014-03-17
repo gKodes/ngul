@@ -4,6 +4,6 @@
  * @license : MIT
  */
 
-(function(angular) {
+(function(angular, nu) {
 'use strict';
 /*global angular: true*/

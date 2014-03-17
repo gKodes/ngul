@@ -208,7 +208,7 @@ describe('nu press button', function() {
   });
 
 
-  it('should no model', function() {
+  it('should not have ng-model', function() {
     var unit = get_unit(7);
     var derivative = new pressButtonNode(unit.find('.nu.button.press'));
     expect(derivative.labelOff.isDisplayed()).toEqual(true);
@@ -222,6 +222,47 @@ describe('nu press button', function() {
     derivative.labelOn.click().then(function() {
       expect(derivative.labelOff.isDisplayed()).toEqual(true);
       expect(derivative.labelOn.isDisplayed()).toEqual(false);
+    });
+  });
+
+  it('should not have ng-model', function() {
+    var unit = get_unit(7);
+    var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+    expect(derivative.labelOff.isDisplayed()).toEqual(true);
+    expect(derivative.labelOn.isDisplayed()).toEqual(false);
+
+    derivative.labelOff.click().then(function() {
+      expect(derivative.labelOff.isDisplayed()).toEqual(false);
+      expect(derivative.labelOn.isDisplayed()).toEqual(true);
+    });
+
+    derivative.labelOn.click().then(function() {
+      expect(derivative.labelOff.isDisplayed()).toEqual(true);
+      expect(derivative.labelOn.isDisplayed()).toEqual(false);
+    });
+  });
+
+  describe('only with nu-change (no ng-model)', function() {
+    it('should have result as true on click', function() {
+      var unit = get_unit(7);
+      var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+
+      derivative.labelOff.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('true');
+        });
+      });
+    });
+
+    it('should have result as false on click', function() {
+      var unit = get_unit(7);
+      var derivative = new pressButtonNode(unit.find('.nu.button.press'));
+
+      derivative.labelOn.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('false');
+        });
+      });
     });
   });
 });

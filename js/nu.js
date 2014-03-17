@@ -55,7 +55,7 @@ var invoke = function(method) {
 var isDefinedAndNotNull = function(value) {
   return typeof value != 'undefined' && value !== null;
 };
-
+//= nu.pipeLine
 var pipeLine = function(pipe, done) {
   var PipeLine = function(pipe, done) {
     var index = 0;
@@ -91,4 +91,17 @@ var pipeLine = function(pipe, done) {
     };
   };
   return new PipeLine(pipe, done);
+};
+
+var chainIt = function() {
+  'use strict';
+  if(!arguments[0] && arguments.length == 2) {
+    return arguments[1];
+  }
+  var seq = arguments;
+  return function() {
+    for(var i = 0; i < seq.length; i++) {
+      seq[i].apply(null, arguments);
+    }
+  };
 };

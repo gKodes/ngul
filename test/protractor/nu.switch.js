@@ -163,4 +163,45 @@ describe('nu switch', function() {
 
     browser.debugger();
   });
+
+  it('should not have ng-model', function() {
+    var unit = get_unit(9);
+    var derivative = new switchNode(unit.find('.nu.switch'));
+    derivative.click().then(function() {
+      unit.result().then(function(value) {
+        expect(value).toEqual('Working');
+      });
+      expect(derivative.input.isSelected()).toEqual(true);
+    });
+
+    derivative.click().then(function() {
+      unit.result().then(function(value) {
+        expect(value).toEqual('Ohh No');
+      });
+      expect(derivative.input.isSelected()).toEqual(false);
+    });
+  });
+
+  describe('only with nu-change (no ng-model)', function() {
+    var derivative, unit;
+    it('should have results as "Working" on click', function() {
+      unit = get_unit(9);
+      derivative = new switchNode(unit.find('.nu.switch'));
+
+      derivative.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('Working');
+        });
+      });
+    });
+
+    it('should have results as "Ohh No" on click', function() {
+      derivative.click().then(function() {
+        unit.result().then(function(value) {
+          expect(value).toEqual('Ohh No');
+        });
+      });
+    });
+
+  });
 });

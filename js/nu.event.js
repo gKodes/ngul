@@ -18,6 +18,7 @@ Event.service('nuEvent', ['$parse', function($parse) {
       var trigger = this.trigger = function(name, event) {
         if(Event[name]) {
           Event[name](scope, {'$event': event});
+          scope.$digest();
         }
       };
 

@@ -1,13 +1,4 @@
 /*global angular: true*/
-var chainIt = function() {
-  'use strict';
-  var seq = arguments;
-  return function() {
-    for(var i = 0; i < seq.length; i++) {
-      seq[i].apply(null, arguments);
-    }
-  };
-};
 var gallery = angular.module('nu.gallery', []); // gallery
 gallery.directive('nuGallery', [
   function() {
@@ -35,7 +26,7 @@ gallery.directive('nuGallery', [
                 (ngModel.index + 1) : ngModel.baseIndex) );
           },
           function() { // Prev
-            ngModel.index =setActive(ngModel.index,
+            ngModel.index = setActive(ngModel.index,
               ( ngModel.index > ngModel.baseIndex ?
                 (ngModel.index - 1) : (rawElement.children.length - 1) ) );
           }
@@ -64,7 +55,7 @@ gallery.directive('nuPreviewStrip', [ // Gallery
     return {
       restrict: 'EACM',
       replace: true,
-      require: 'ngModel',
+      require: 'nuGallery',
       link: function(scope, element, attrs, ngModel) {
         ngModel.$render = chainIt(ngModel.$render, function() {
           //ngModel.$viewValue

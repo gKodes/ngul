@@ -4,7 +4,7 @@
  * @license : MIT
  */
 
-(function(angular) {
+(function(angular, nu) {
 'use strict';
 /*global angular: true*/
 
@@ -101,6 +101,17 @@ var pipeLine = function(pipe, done) {
   return new PipeLine(pipe, done);
 };
 
+var chainIt = function() {
+    if(!arguments[0] && arguments.length == 2) {
+    return arguments[1];
+  }
+  var seq = arguments;
+  return function() {
+    for(var i = 0; i < seq.length; i++) {
+      seq[i].apply(null, arguments);
+    }
+  };
+};
 
 var list = angular.module('nu.list', []);
 list.directive('nuList', [
@@ -503,13 +514,15 @@ pb.directive('nuPressButton', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return parser(isChecked);
+          return {'target': attrs.name, 'value': parser(isChecked)};
         });
 
         Event.bind($label, 'focus blur');
       }
     };
   }
+
+
 ]);
 
 
@@ -596,7 +609,7 @@ nswitch.directive('nuSwitch', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return parser(isChecked);
+          return {'target': attrs.name, 'value': parser(isChecked)};
         });
 
         Event.bind($label, 'focus blur');
@@ -668,7 +681,8 @@ chooser.directive('nuFileChooser', [
           });
         }
 
-        input.on('change', function(event) {
+
+        Event.bind(input, 'change', function(event) {
           if( event.currentTarget.files.length > 0 ) {
             var file = event.currentTarget.files[0];
             if(ngModel) {
@@ -677,22 +691,18 @@ chooser.directive('nuFileChooser', [
               });
             }
             name.html(nameOnly(file));
+            return {'target': attrs.name, 'value': event.currentTarget.files};
           }
+          return {'target': attrs.name};
         });
+
+        Event.bind(element, 'focus blur');
       }
     };
   }
 ]);
 
 
-var chainIt = function() {
-    var seq = arguments;
-  return function() {
-    for(var i = 0; i < seq.length; i++) {
-      seq[i].apply(null, arguments);
-    }
-  };
-};
 var gallery = angular.module('nu.gallery', []);
 gallery.directive('nuGallery', [
   function() {
@@ -719,7 +729,7 @@ gallery.directive('nuGallery', [
                 (ngModel.index + 1) : ngModel.baseIndex) );
           },
           function() {
-            ngModel.index =setActive(ngModel.index,
+            ngModel.index = setActive(ngModel.index,
               ( ngModel.index > ngModel.baseIndex ?
                 (ngModel.index - 1) : (rawElement.children.length - 1) ) );
           }
@@ -747,7 +757,7 @@ gallery.directive('nuPreviewStrip', [
         return {
       restrict: 'EACM',
       replace: true,
-      require: 'ngModel',
+      require: 'nuGallery',
       link: function(scope, element, attrs, ngModel) {
         ngModel.$render = chainIt(ngModel.$render, function() {
 
@@ -847,6 +857,7 @@ Event.service('nuEvent', ['$parse', function($parse) {
       var trigger = this.trigger = function(name, event) {
         if(Event[name]) {
           Event[name](scope, {'$event': event});
+          scope.$digest();
         }
       };
 
@@ -865,4 +876,4 @@ Event.service('nuEvent', ['$parse', function($parse) {
   };
 
   return nuEventCreator;
-}]);})(angular);
+}]);})(angular, this.nu = this.nu || {});

@@ -164,6 +164,7 @@
   opacity: 1;
   color: #ffffff;
   content: attr(label-off);
+  border-radius: 30px;
   transition: all 0.25s ease-out 0s;
 }
 .nu.switch[disabled] .label {
