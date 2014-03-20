@@ -1,172 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset=utf-8 />
-    <title>nu Angular JS UI derivatives Demo</title>
-    <meta name="description" content=”An collection AngularJS UI derivatives button, press button, tags, list, picture list, file chooser under MIT Licence”>
-    <meta name="viewport" content="width=device-width">
-    <script src="http://code.angularjs.org/1.2.14/angular.min.js"></script>
-    <script src="http://code.angularjs.org/1.2.14/angular-route.min.js"></script>
-    <script src="/js/nu.demo.js"></script>
-    <script type="text/javascript" src="dist/nu.min.js"></script>
-    <link rel="stylesheet" href="dist/nu.min.css" />
-    <link rel="stylesheet" href="dist/mime.fugue.min.css" />
-    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="http://pygments.org/_static/pygments.css">
-
-    <style type="text/css">
-        html {
-            font-family: sans-serif;
-        }
-    </style>
-
-    <script type="text/javascript">
-        var jsonFlickrFeed = function(result) {
-            var element = document.getElementById('tagsCtrl');
-             setTimeout(function(){
-                var $scope = angular.element(element).scope(); // angular.injector(['ng']).get('$rootScope');
-                $scope.$apply(function(scope){
-                    scope.imgs = [];
-                    for(var i = 0; i < result.items.length; i++) {
-                        scope.imgs.push(result.items[i].media.m);
-                    }
-                });
-            }, 300);
-            //console.info($rootScope);
-        };
-        function tagsCtrl($scope) {
-            $scope.tags = ['Test1','Test2','Test3'];
-            $scope.imgs = [];
-            $scope.tagView = 'nu.default.tag';
-            $scope.switchStatus = "Yes";
-            $scope.pbStatus = false;
-            $scope.onAdd = function() { console.info(arguments); }
-            $scope.format = function(tag){ 
-                if(angular.isObject(tag) && tag.tag && tag.value)
-                    return tag.tag.trim() + " " + tag.value + "%";
-                return tag;
-            }
-        }
-    </script>
-    <style type="text/css">
-        body {
-            margin: 0 auto;
-            width: 960px;
-        }
-    </style>
+  <meta charset=utf-8 />
+  <title>nu Angular JS UI derivatives Demo</title>
+  <meta name="description" content=”An collection AngularJS UI derivatives button, press button, tags, list, picture list, file chooser under MIT Licence”>
+  <meta name="viewport" content="width=device-width">
+  <script src="http://code.angularjs.org/1.2.14/angular.min.js"></script>
+  <script src="http://code.angularjs.org/1.2.14/angular-route.min.js"></script>
+  <script src="/js/nu.demo.js"></script>
+  <script type="text/javascript" src="/dist/nu.min.js"></script>
 </head>
-<body id="tagsCtrl" ng-controller="tagsCtrl"> 
-    <a href="https://github.com/gKodes/ngul"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github-camo.global.ssl.fastly.net/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+<body>
+  <div class="container">
+    <ng-include src="'pages/PB.html'"></ng-include>
+    <ng-include src="'pages/Switch.html'"></ng-include>
+  </div>
 
-    <h2>Nu demo</h2>
+  <link rel="stylesheet" href="/dist/nu.min.css" />
+  <link rel="stylesheet" href="/dist/mime.fugue.min.css" />
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="http://pygments.org/_static/pygments.css">
 
-    <article>
-        <header>
-            <h3>Text List/Tags</h3>
-        </header>
-        <nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""></nu-list>
-        <span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']">Add</span>
-        <pre>
-            &lt;nu-list src="tags" nu-list-removable="" nu-list-addable="" nu-list-type=""&gt;&lt;/nu-list&gt;
-            &lt;span ng-click="tags = ['Test1','Test2','Test3','Test4','Test5']"&gt;Add&lt;/span&gt;
-        </pre>
-    </article>
-    
-    <article>
-        <header>
-            <h3>Picture List</h3>
-        </header>
-        <nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"></nu-list>
-        <pre>
-            &lt;nu-list src="imgs" nu-list-removable="" nu-list-addable="" nu-list-type="img"&gt;&lt;/nu-list&gt;
-        </pre>
-    </article>
-
-    <article>
-        <header>
-            <h3>Switch</h3>
-        </header>
-        <nu-switch on="Yes" off="No" value="Yes" value-off="No" ng-model="switchStatus"></nu-switch>
-        Status: {{switchStatus}}
-        <pre class="ng-non-bindable">
-            &lt;nu-switch on="Yes" off="No" value="Yes" value-off="No" ng-model="switchStatus"&gt;&lt;/nu-switch&gt;
-            Status: {{switchStatus}}
-        </pre>
-    </article>
-
-    <article>
-        <header>
-            <h3>Press Button</h3>
-        </header>
-        <nu-press-button icon="fa fa-anchor" ng-model="pbStatus"></nu-press-button>
-        Status: {{pbStatus}}
-        <pre class="ng-non-bindable">
-            &lt;nu-press-button icon="fa fa-anchor" ng-model="pbStatus"&gt;&lt;/nu-press-button&gt;
-            Status: {{pbStatus}}
-        </pre>
-    </article>
-
-
-    <article>
-        <header>
-            <h3>File Chooser</h3>
-        </header>
-
-        <section>
-            <header>File Chooser - Extension</header>
-            <nu-file-chooser ng-model="selectedFile"></nu-file-chooser>
-            File&nbsp;Name&nbsp;<>&nbsp;{{selectedFile.name}}
-            <pre class="ng-non-bindable">
-                &lt;nu-file-chooser ng-model="selectedFile"&gt;&lt;/nu-file-chooser&gt;
-                File&nbsp;Name&nbsp;<>&nbsp;{{selectedFile.name}}
-            </pre>
-        </section>
-
-        <section ng-init="select1 = 'Happy to Play Song.mp3'">
-            <header>File Chooser - File Type Audio,Video,Document</header>
-            <nu-file-chooser class="diplay-type" ng-model="select1"></nu-file-chooser>
-            <pre class="ng-non-bindable">
-                &lt;nu-file-chooser class="diplay-type"&gt;&lt;/nu-file-chooser&gt;
-            </pre>
-        </section>
-        
-        <section ng-init="select2 = 'my doccument.pdf'">
-            <header>File Chooser - Fugue icons</header>
-            <nu-file-chooser class="fugue"  ng-model="select2"></nu-file-chooser>
-            <pre class="ng-non-bindable">
-                &lt;nu-file-chooser class="fugue"&gt;&lt;/nu-file-chooser&gt;
-            </pre>
-        </section>
-        
-        <section ng-init="select3 = 'my sample excel document 0.1v.xls'">
-            <header>File Chooser - Fugue blue</header>
-            <nu-file-chooser class="fugue blue" ng-model="select3"></nu-file-chooser>
-            <pre class="ng-non-bindable">
-                &lt;nu-file-chooser class="fugue blue"&gt;&lt;/nu-file-chooser&gt;
-            </pre>
-        </section>
-
-        Please refer <a href="http://p.yusukekamiyamane.com/index.html.en">Fugue Icons</a> website for more details
-        regarding the icon's license
-    </article>
-
-    <script type="text/javascript">
-        angular.element(document).ready(function() {
-            angular.module('testApp', ['nu.switch', 'nu.pb', 'nu.list', 'nu.file.chooser']);
-            angular.bootstrap(document, ['testApp']);
-        });
-    </script>
-    <script type="text/javascript" src="http://api.flickr.com/services/feeds/photos_public.gne?format=json"></script>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    
-      ga('create', 'UA-48402725-1', 'gkodes.github.io');
-      ga('send', 'pageview');
-    
-    </script>
 </body>
 </html>
