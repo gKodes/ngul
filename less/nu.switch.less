@@ -3,8 +3,7 @@
     &:checked  + .label {
       &:after {
         left: 100%;
-        margin-left: -(@nu-switch-drop-diameter + @nu-switch-drop-bound); //-26px
-        background: @nu-switch-drop-on-bg;
+        //margin-left: -(@nu-switch-drop-diameter + @nu-switch-drop-bound); //-26px
       }
 
       &:before {
@@ -12,52 +11,31 @@
         left: 100%;
       }
 
-      padding: 0 @nu-switch-padding 0 (@nu-switch-padding/2);
-      background: @nu-switch-on-bg;
+      //padding: 0 @nu-switch-padding 0 (@nu-switch-padding/2);
     }
 
     + .label {
-      // Icon, Circle, Square
-      &:after {
-        left: @nu-switch-drop-bound;
-        width: @nu-switch-drop-diameter;
-        height: @nu-switch-drop-diameter;
-        content: '';
-        position: absolute;
-        background: @nu-switch-drop-bg;
-        margin-top: ((@nu-switch-height - @nu-switch-drop-diameter) / 2);
-        border-radius: 50%;
-        transition: @nu-switch-transition;
-      }
-
       &:before { // Off State
         left: 0;
         right: 0;
-        padding-left: @nu-switch-padding;
         position: absolute;
-        background: @nu-switch-off-bg;
         opacity: 1;
-        color: @nu-switch-off-color;
         content: attr(label-off);
-        border-radius: @nu-switch-curve;
-        transition: @nu-switch-transition;
+      }
+
+      &:after {
+        #nu > #mixin > .transition(all 0.25s ease-out 0s);
       }
 
       // On State
-      width: 5em;
-      color: @nu-switch-on-color;
       cursor: pointer;
-      padding: 0 (@nu-switch-padding/2) 0 @nu-switch-padding;
       position: relative;
       overflow: hidden;
-      transition: @nu-switch-transition;
-      line-height: @nu-switch-height;
+      text-align: start;
       display: inline-block;
-      border-radius: @nu-switch-curve;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
-      .unselectable();
+      #nu > #mixin > .transition(all 0.25s ease-out 0s);
+      #nu > #mixin > .box-sizing(border-box);
+      #nu > #mixin > .unselectable();
     }
 
     display: none;

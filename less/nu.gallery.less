@@ -11,7 +11,7 @@
     display: none;
     max-width: 100%;
     max-height: 100%;
-    .unselectable();
+    #nu > #mixin > .unselectable();
   }
 
   .arrow {
@@ -26,7 +26,7 @@
         background: #999;
         border: 5px solid rgba(0, 0, 0, 0.2);
         background-clip: padding-box;
-        .box-sizing(border-box);
+        #nu > #mixin > .box-sizing(border-box);
     }
 
     &.left {
@@ -54,11 +54,11 @@
     cursor: pointer;
     position: absolute;
     overflow: hidden;
-    .box-sizing(border-box);
+    #nu > #mixin > .box-sizing(border-box);
   }
 
   height: 100%;
   overflow: auto;
   position: relative;
-  .unselectable();
+  #nu > #mixin > .unselectable();
 }

@@ -1,0 +1,48 @@
+#nu #theme {
+  /*    .list(@size; @color; @item) {
+    	//
+    }*/
+}
+.nu.button.press {
+  color: #000000;
+  font-size: 30px;
+}
+.nu.button.press label + label {
+  color: #cccccc;
+}
+.nu.switch label {
+  color: #1abc9c;
+  background: #34495e;
+  font-size: 14px;
+  line-height: 28px;
+  border-radius: 14px;
+  padding: 0 14px 0 14px;
+}
+.nu.switch label:before {
+  color: #ffffff;
+  background: #bdc3c7;
+  padding-left: 14px;
+}
+.nu.switch input:checked + label {
+  padding: 0 28px 0 14px;
+}
+.nu.switch input:checked + label:after {
+  margin-left: -24px;
+  background: #1abc9c;
+}
+.nu.switch label {
+  padding: 0 14px 0 28px;
+}
+.nu.switch label:after {
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  content: '';
+  position: absolute;
+  background: #7f8c9a;
+  margin-top: 4px;
+  border-radius: 50%;
+}
+.nu.switch label:before {
+  padding-left: 28px;
+}

@@ -1,89 +1,58 @@
-.overflow() {
-  overflow: hidden;
-  white-space: nowrap;
-}
+#nu {
+  #mixin {
+    .overflow(hidden) {
+      overflow: hidden;
+      white-space: nowrap;
+    }
 
-.overflow(@overflow) when (iskeyword(@overflow)) {
-  .overflow();
-  text-overflow: @overflow;
-}
+    .overflow(text; @overflow) when (iskeyword(@overflow)) {
+      .overflow(hidden);
+      text-overflow: @overflow;
+    }
 
-.anchor() {
-  text-decoration: none;
-}
+    .pad(horizontal; @padding) {
+      padding: @padding 0;
+    }
 
-.anchor(@size) when (isnumber(@size)) {
-  .anchor();
-  font-size: @size;
-}
+    .pad(horizontal; @top; @bottom) {
+      padding: @top 0 @bottom 0;
+    }
 
-.anchor(@size; @height) when (isnumber(@height)) {
-  .anchor(@size);
-  line-height: @height;
-}
+    .pad(vertical; @padding) {
+      padding: 0 @padding;
+    }
 
-.anchor(@size; @color) when (iscolor(@color)) {
-  .anchor(@size);
-  color: @color;
-}
+    .pad(vertical; @right; @left) {
+      padding: 0 @right 0 @left;
+    }
 
-.anchor(@size; @color; @overflow) when (iscolor(@color)) and (iskeyword(@overflow)) {
-  .anchor(@size, @color);
-  .overflow(@overflow);
-}
+    .browser(@prop; @value) {
+      @{prop}: @value; // Default
+      -o-@{prop}: @value; // Opera +
+      -ms-@{prop}: @value; // IE +
+      -moz-@{prop}: @value; // Firefox, other Gecko
+      -webkit-@{prop}: @value; // Safari/Chrome, other WebKit
+    }
 
-.anchor(@size; @height; @color) when (iscolor(@color)) {
-  .anchor(@size; @height);
-  color: @color;
-}
+    .box-shadow(@value) {
+      .browser(box-shadow, @value);
+    }
 
-.anchor(@size; @height; @color; @overflow) when (iskeyword(@overflow)) {
-  .anchor(@size, @height, @color);
-  .overflow(@overflow);
-}
+    .box-sizing(@value:border-box) {
+      .browser(box-sizing, @value);
+    }
 
-.padding(@top; @right; @bottom; @left) {
-  padding: @top, @right, @bottom, @left;
-}
+    .transition(@value) {
+      .browser(transition; @value);
+    }
 
-.padding(horizontal; @padding) {
-  padding: @padding 0;
-}
+    .unselectable() {
+      .browser(user-select, none);
+    }
 
-.padding(horizontal; @top; @bottom) {
-  padding: @top 0 @bottom 0;
-}
-
-.padding(vertical; @padding) {
-  padding: 0 @padding;
-}
-
-.padding(vertical; @right; @left) {
-  padding: 0 @right 0 @left;
-}
-
-.browser(@prop; @value) {
-  @{prop}: @value; // Opera/IE 8+
-  -moz-@{prop}: @value; // Firefox, other Gecko
-  -webkit-@{prop}: @value; // Safari/Chrome, other WebKit
-}
-
-.box-sizing(@value:border-box) {
-  .browser(box-sizing, @value);
-}
-
-.box-shadow(@value:border-box) {
-  .browser(box-shadow, @value);
-}
-
-.unselectable() {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-
-.box-sizing(@sizing) {
-  -webkit-box-sizing: @sizing;
-  -moz-box-sizing:    @sizing;
-  box-sizing:         @sizing;
+    .color(@bg; @fg) {
+      color: @fg;
+      background: @bg;
+    }
+  }
 }

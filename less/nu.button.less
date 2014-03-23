@@ -1,11 +1,9 @@
 // nu.button.less
-
 .nu.button {
   &.press {
     input[type='checkbox'], input[type='radio'] {
       &:checked + label {
         & + label {
-          color: @nu-button-color-on;
           display: inherit;
         }
         display: none;
@@ -13,6 +11,7 @@
     }
 
     label {
+      #nu > #mixin > .unselectable();
       cursor: pointer;
     }
 
@@ -26,8 +25,6 @@
       }
     }
     
-    color: @nu-button-color-off;
     display: inline-block;
-    font-size: @nu-button-size;
   }
 }

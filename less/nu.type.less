@@ -1,0 +1,46 @@
+.nu.type {
+
+  .preview {
+    &.none {
+      opacity: 0;
+    }
+
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: 1;
+    box-shadow: none;
+    border-color: transparent;
+    background: none repeat scroll 0% 0% rgb(255, 255, 255);
+  }
+
+  .type {
+    position: relative;
+    vertical-align: top;
+    background-color: transparent;
+  }
+
+  .suggestion {
+    &-list {
+      &.close-list {
+        display: none;
+      }
+
+      top: 100%;
+      left: 0;
+      z-index: 100;
+      display: block;
+      position: absolute;
+    }
+
+    &-set {
+      width: 100%;
+      padding: 8px 0;
+      display: inline-block;
+    }
+  }
+
+  width:100%;
+  display: inline-block;
+  position: relative;
+}

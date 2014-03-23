@@ -1,0 +1,21 @@
+//nu.default.less
+@import "../nu.theme.less";
+@import "../nu.mixin.less";
+@import "../nu.variables.less";
+
+.nu {
+  &.button.press {
+    #nu > #theme > .pb(@nu-button-color-on, @nu-button-color-off, @nu-button-size);
+  }
+
+  &.switch {
+    #nu > #theme > .switch({
+        #nu > #mixin > .color(@nu-switch-on-bg, @nu-switch-on-color);
+      },
+      {
+        #nu > #mixin > .color(@nu-switch-off-bg, @nu-switch-off-color);
+      }, 
+      @font-size);
+      #nu > #theme > .switch-handle(circle, @nu-switch-drop-on-bg, @nu-switch-drop-bg, @font-size);
+  }
+}

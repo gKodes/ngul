@@ -1,0 +1,101 @@
+//nu.theme
+#nu {
+  #theme {
+    .pb(@color, @size) when (isnumber(@size)) {
+      .pb(@color, @color, @size);
+    }
+
+    .pb(@color-on, @color-off) when (@color-off = @color-on) {
+      color: @color-on;
+    }
+
+    .pb(@color-on, @color-off) when (iscolor(@color-off)) {
+      label + label {
+        color: @color-off;
+      }
+      color: @color-on;
+    }
+
+    .pb(@color-on, @color-off, @size) when (iscolor(@color-on)) and (iscolor(@color-off)) and (isnumber(@size)) {
+      .pb(@color-on, @color-off);
+      font-size: 30px;
+    }
+
+    .switch(@color-on; @color-off) {
+    	label {
+        &:before {
+        	@color-off();
+        }
+      	@color-on();
+    	}
+    }
+
+    .switch(@color-on; @color-off; @size; @radius:@size) {
+      label {
+        &:before {
+        	@color-off();
+        	padding-left: @size;
+        }
+
+        @color-on();
+        font-size: @size;
+        line-height: (@size * 2);
+        border-radius: @radius;
+        padding: 0 @size 0 @size;
+      }
+    }
+
+    .switch-handle(@color-on; @color-off) when (iscolor(@color-on)) and (iscolor(@color-off)) {
+    	input:checked  + label {
+	    	&:after {
+	        background: @color-on;
+	      }
+	    }
+	    label:after {
+	    	background: @color-off;
+	    }
+    }
+
+    .switch-handle(circle; @color-on; @color-off; @size) {
+    	@diameter: (@size * 2);
+    	@bound: mod(@size, 10);
+    	@boxSize: ((@size - @bound) * 2);
+    	input:checked  + label {
+	    	&:after {
+	        margin-left: (@bound - @diameter);
+	        background: @color-on;
+	      }
+
+	     	padding: 0 (@size * 2) 0 @size;
+      }
+
+    	label {
+	      &:after {
+	        left: @bound;
+	        width: @boxSize;
+	        height: @boxSize;
+	        content: '';
+	        position: absolute;
+	        background: @color-off;
+	        margin-top: @bound; //((@nu-switch-height - @nu-switch-drop-diameter) / 2);
+	        border-radius: 50%;
+	      }
+
+	      &:before {
+	      	padding-left: (@size * 2);
+	      }
+
+	      padding: 0 @size 0 (@size * 2);
+    	}
+    }
+
+    .switch-handle(square; @color-on; @color-off; @size) { // @icon
+      //
+    }
+
+/*    .list(@size; @color; @item) {
+    	//
+    }*/
+  }
+}
+
