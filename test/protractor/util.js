@@ -23,6 +23,16 @@ exports.fileChooser = function(node) {
   this.input = node.findElement(by.tagName('input'));
 };
 
+exports.gallery = function(node) {
+  'use strict';
+  this.next = node.findElement(by.css('a:nth-of-type(1)'));
+  this.previous = node.findElement(by.css('a:nth-of-type(2)'));
+  this.isActive = function(index) {
+    return node.findElement(by.css('img:nth-of-type(' + index + ')')).getAttribute('class');
+  };
+  this.findImgs = function() { return node.findElements(by.tagName('img')); };
+};
+
 exports.listNode = function(node) {
   'use strict';
 

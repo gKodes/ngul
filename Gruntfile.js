@@ -60,7 +60,9 @@ module.exports = function(grunt) {
       dev: {
         files: {
           'dist/nu.css': 'less/nu.less',
-          'dist/mime.fugue.css': 'less/mime.fugue.less'
+          'dist/mime.fugue.css': 'less/mime.fugue.less',
+          'dist/theme.default.css': 'less/themes/default.less',
+          'dist/theme.bootstrap.css': 'less/themes/bootstrap.less'
         }
       },
       dist: {
@@ -70,7 +72,9 @@ module.exports = function(grunt) {
         },
         files: {
           'dist/nu.min.css': 'less/nu.less',
-          'dist/mime.fugue.min.css': 'less/mime.fugue.less'
+          'dist/mime.fugue.min.css': 'less/mime.fugue.less',
+          'dist/theme.default.min.css': 'less/themes/default.less',
+          'dist/theme.bootstrap.min.css': 'less/themes/bootstrap.less'
         }
       }
     },
@@ -98,6 +102,13 @@ module.exports = function(grunt) {
           keepalive: true
         }
       }
+    },
+    wget: {
+      bs: {
+        files: {
+          'less/themes/bs.variables.less': 'https://raw.githubusercontent.com/twbs/bootstrap/master/less/variables.less'
+        }
+      }
     }
   });
 
@@ -111,11 +122,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-protractor-runner');
+  grunt.loadNpmTasks('grunt-wget');
 
   // Default task(s).
   grunt.registerTask('default', ['jshint:code', 'jshint:test', 'localweb', 'protractor:dev']);
   grunt.registerTask('localweb', ['connect:ga', 'selenium']);
-  grunt.registerTask('build', ['jshint:code', 'jshint:test', 'less', 'merge:nu', 'jshint:dist', 'uglify:nu']);
+  grunt.registerTask('build', ['jshint:code', 'jshint:test', 'wget:bs', 'less', 'merge:nu', 'jshint:dist', 'uglify:nu']);
   grunt.registerTask('test', ['localweb', 'protractor:ga']);
   grunt.registerTask('ga', ['build', 'test']);
 

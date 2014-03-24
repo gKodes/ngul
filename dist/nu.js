@@ -707,46 +707,62 @@ chooser.directive('nuFileChooser', ['nuEvent',
 var gallery = angular.module('nu.gallery', []);
 gallery.directive('nuGallery', [
   function() {
-        return {
+        var setActive = function() {
+      angular.element(arguments).toggleClass('active');
+      return arguments[arguments.length - 1];
+    };
+
+    return {
       template: '<div class="nu gallery"><a class="arrow right"></a><a class="arrow left"></a></div>',
       restrict: 'EACM',
       replace: true,
-      require: 'ngModel',
-      link: function(scope, element, attrs, ngModel) {
-        var rawElement = element[0];
-        ngModel.baseIndex = ngModel.baseIndex || 2;
-        
-        var setActive = function() {
-          angular.forEach(arguments, function(carret) {
-            angular.element(rawElement.children[carret]).toggleClass('active');
+      require: '?ngModel',
+      transclude: true,
+      link: function(scope, element, attrs, ngModel, transcludeFn) {
+        var imgs, active, transcludes = [], rawElement = element[0], dummy = angular.element('<img/>')[0];
+
+        if(ngModel) {
+          scope.$watchCollection(attrs.ngModel, function(viewValue) {
+            if(angular.isArray(viewValue) && viewValue.length > 0) {
+              angular.forEach(viewValue, function(item, index) {
+                if ( !imgs[index] ) { imgs[index] = angular.element('<img/>')[0]; }
+                if ( imgs[index] && imgs[index].parentNode !== rawElement ) { element.append(imgs[index]); }
+
+                angular.element(imgs[index]).attr('src', item.src || item);
+              });
+              for(var i = viewValue.length; i < imgs.length; i++) {
+                angular.element(imgs[i]).remove();
+              }
+
+              imgs = element.find('img');
+              if(!active || active.parentNode !== rawElement) {
+                active = setActive(imgs[0]);
+              }
+            } else { angular.element(imgs).remove(); }
           });
-          return arguments[arguments.length - 1];
-        };
+        }
+
+        transcludeFn(function(nodes) { 
+          angular.forEach(nodes, function(node) {
+            if(node.tagName && node.tagName.toLowerCase() === 'img') {
+              transcludes.push(node);
+            }
+          });
+        });
+        element.append(transcludes);
+        imgs = element.find('img');
+        if(imgs && imgs.length > 0) {
+          active = setActive(imgs[0]);
+        }
 
         var arrowActions = [
-          function() {
-            ngModel.index = setActive(ngModel.index,
-              ( ngModel.index < (rawElement.children.length - 1) ?
-                (ngModel.index + 1) : ngModel.baseIndex) );
-          },
-          function() {
-            ngModel.index = setActive(ngModel.index,
-              ( ngModel.index > ngModel.baseIndex ?
-                (ngModel.index - 1) : (rawElement.children.length - 1) ) );
-          }
+          function() {  active = setActive(active, active.nextSibling || imgs[0]); },
+          function() {  active = setActive(active, 
+            (active.previousSibling.tagName.toLowerCase() === 'img')? active.previousSibling : imgs[imgs.length - 1]); }
         ];
 
         angular.forEach(element.find('a'), function(arrow, count) {
           angular.element(arrow).on('click', arrowActions[count]);
-        });
-
-        ngModel.$render = chainIt(ngModel.$render, function() {
-          element.find('img').remove();
-          ngModel.index = 2;
-          angular.forEach(ngModel.$viewValue, function(item) {
-            element.append(angular.element('<img/>').attr('src', item.src || item));
-          });
-          angular.element(element.find('img')[0]).addClass('active');
         });
       }
     };

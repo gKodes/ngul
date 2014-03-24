@@ -1,15 +1,10 @@
 NU
 =====================
-NU is a collection of angular derivatives [demo][1]
+NU is a collection of angular derivatives
+## Do check out the [demo][1]'s / [documentation][1]
 
 [![devDependency Status](https://david-dm.org/gkodes/ngul/dev-status.png)](https://david-dm.org/gkodes/ngul#info=devDependencies)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gKodes/ngul/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-### Wiki
-* [Switch](https://github.com/gKodes/ngul/wiki/nuSwitch)
-* [Press Button](https://github.com/gKodes/ngul/wiki/nuPressButton)
-* [List](https://github.com/gKodes/ngul/wiki/nuList)
-* [File Chooser](https://github.com/gKodes/ngul/wiki/nuFileChooser)
 
 ### Build
 We need node.js and grunt for building and `distribution` of _**nu**_

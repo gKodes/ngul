@@ -27,6 +27,7 @@ testApp.controller('listImgTest', function($scope, $log){
 
 testApp.controller('galleryTest', function($scope, $log){
   $scope.$log = $log;
+  $scope.imgToPush = 'http://farm4.staticflickr.com/3724/13348717684_c67fde9929_b.jpg';
   $scope.gallery = ['http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
     {src: 'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg', desc: 'Image 01'},
     {src: 'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg', desc: 'Image 02'},
@@ -36,6 +37,9 @@ testApp.controller('galleryTest', function($scope, $log){
     {src: 'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg', desc: 'Image 06'}
   ];
 });
+
+//http://farm8.staticflickr.com/7072/13349540283_fa28e565da_b.jpg
+//http://farm8.staticflickr.com/7359/13351572553_2fd47e54b0_h.jpg
 
 angular.element(document).ready(function() {
     angular.bootstrap(document, ['nu.test']);
