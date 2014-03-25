@@ -1,0 +1,55 @@
+<h1>nuFileChooser</h1>
+<p>An simple wraper around <code>input type="file"</code> making it a bit more attractive.</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;label</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;nu file chooser&quot;</span> <span style="color: #c4a000">style=</span><span style="color: #4e9a06">&quot;position: relative;&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;file&quot;</span><span style="color: #204a87; font-weight: bold">/&gt;&lt;span&gt;&lt;/span&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;a</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;remove&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/a&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/label&gt;</span>
+</pre></div>
+
+
+<p>The File Chooser is achieved using an <code>input type="file"</code> which is warped around by a <code>label</code>.</p>
+<h4>A Switch <small>An Default Switch</small></h4>
+<p><nu-file-chooser ng-model="fcDemo" ng-init="fcDemo = 'Happy to Play Song.mp3'"></nu-file-chooser><br>
+Selected File Name: <strong>{{fcDemo.name}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-file-chooser</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;fcDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-file-chooser&gt;</span>
+</pre></div>
+
+
+<h4>Display Type <small>Show the type of file selected</small></h4>
+<p><nu-file-chooser class="diplay-type" ng-model="fcDemo2" ng-init="fcDemo2 = 'Product Literature.pdf'"></nu-file-chooser><br>
+Selected File Name: <strong>{{fcDemo2.name}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-file-chooser</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;diplay-type&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;fcDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-file-chooser&gt;</span>
+</pre></div>
+
+
+<p>Displays the type of file instead of extension, example: mp3 as audio, avi as video.</p>
+<h4>Fugue Icons <small>Show file icons</small></h4>
+<p><nu-file-chooser class="fugue blue" ng-model="fcDemo3" ng-init="fcDemo3 = 'Monthly Expense.xsl'"></nu-file-chooser><br>
+Selected File Name: <strong>{{fcDemo3.name}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-file-chooser</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;fugue blue&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;fcDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-file-chooser&gt;</span>
+</pre></div>
+
+
+<p>Displays Fugue icons instead of extension.</p>
+<blockquote>
+<p><strong>Note:</strong> Need to include <code>mime.fugue.min.css</code> style sheet for displaying fugue icons.<br>
+Please refer <a href="http://p.yusukekamiyamane.com/index.html.en">Fugue Icons</a> website for more details regarding the icon&rsquo;s license</p>
+</blockquote>
+<h4>Default / Pre-set Value <small>Show an value by default</small></h4>
+<p><div ng-init="fcDemo4 = 'Happy Times.avi'"><br>
+  <nu-file-chooser class="fugue blue" ng-model="fcDemo4"></nu-file-chooser><br>
+</div><br>
+Selected File Name: <strong>{{fcDemo4.name || fcDemo4}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">ng-init=</span><span style="color: #4e9a06">&quot;fcDemo = &#39;Happy Times.avi&#39;&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;nu-file-chooser</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;fugue blue&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;fcDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-file-chooser&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p>Displays Fugue icons instead of extension.</p>
+<blockquote>
+<p><strong>Note:</strong> Need to include <code>mime.fugue.min.css</code> style sheet for displaying fugue icons.<br>
+Please refer <a href="http://p.yusukekamiyamane.com/index.html.en">Fugue Icons</a> website for more details regarding the icon&rsquo;s license</p>
+</blockquote>
+<h4>Attributes</h4>
+<p><code>ng-model</code> &ndash; model to be bound in the given scope, this can be a <code>string</code> or <code>File Object</code>.</p>

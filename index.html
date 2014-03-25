@@ -11,12 +11,42 @@
   <script type="text/javascript" src="/dist/nu.min.js"></script>
 </head>
 <body>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" ng-href="/">Nu</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a ng-href="/nuPressButton">Press Button</a></li>
+          <li><a ng-href="/nuSwitch">Switch</a></li>
+          <li><a ng-href="/nuList">List</a></li>
+          <li><a ng-href="/nuFileChooser">File Chooser</a></li>
+          <li><a ng-href="/nuShow">Show</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/gKodes/ngul">Foke me on GitHub<i class="fa fa-github"></i></a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
   <div class="container">
-    <ng-include src="'pages/PB.html'"></ng-include>
-    <ng-include src="'pages/Switch.html'"></ng-include>
+    <div ng-view></div>
   </div>
 
   <link rel="stylesheet" href="/dist/nu.min.css" />
+  <link rel="stylesheet" href="/dist/theme.default.min.css" />
+  <link rel="stylesheet" href="/dist/theme.bootstrap.min.css" />
   <link rel="stylesheet" href="/dist/mime.fugue.min.css" />
   <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">

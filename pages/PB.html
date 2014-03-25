@@ -1,0 +1,133 @@
+<h1>nuPressButton</h1>
+<p>An Simple Press button which can change icon (by using different <code>css class</code>) for the two states its has</p>
+<p>The Press Button is achieved using an two <code>label</code> each represents a state and an <code>input</code> tag which are warped around by a <code>div</code>. It can be applied to any element and bound with an optional model using ngModel directive.</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;nu button press&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;src&quot;</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;checkbox&quot;</span> <span style="color: #c4a000">autocomplete=</span><span style="color: #4e9a06">&quot;off&quot;</span> <span style="color: #c4a000">style=</span><span style="color: #4e9a06">&quot;display:none;&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;label</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;Off&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/label&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;label</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;On&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/label&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p><strong>HTML structure of an Press Button</strong></p>
+<h4>One Icon <small>Using same icon for two states</small></h4>
+<p><nu-press-button icon="fa fa-anchor"></nu-press-button></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+</pre></div>
+
+
+<p><code>icon</code> &ndash; attribute represents the icon of the <strong>PB</strong>, here we are using <code>Font Awesome</code> <a href="http://fortawesome.github.io/Font-Awesome/anchor/">anchor</a> icon.<br>
+The Color of the icon changes using CSS where as keeping the icon same. Check the blow Style Section to know More</p>
+<h4>Bind an model <small>Using the $scope</small></h4>
+<p><nu-press-button icon="fa fa-anchor" ng-model="pbDemo"></nu-press-button><br>
+Value of the model in scope : <strong>{{pbDemo}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+</pre></div>
+
+
+<h4>Custom Values <small>Have your own value for each state of the button</small></h4>
+<p>Lets use the attribute <code>nu-press-button</code> on <code>input</code> tag for the following example.</p>
+<p><input nu-press-button="" icon="fa fa-anchor" value="anchord" ng-model="sngValue"></nu-press-button><br>
+The ships <strong>{{sngValue}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;anchord&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<p>As only the <code>value</code> tag which is set to the model in <code>ON</code> state. As there is no value provied for the <code>OFF</code> state the model is <strong>null</strong> (which is not rendred on screen)</p>
+<p><input nu-press-button="" icon="fa fa-anchor" value="anchord" value-off="ahoy" ng-model="twoValue"></nu-press-button><br>
+The ships <strong>{{twoValue}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;anchord&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;ahoy&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<p>The above demo add the <code>value-off</code> tag the value of which is set to the model on <code>OFF</code> state</p>
+<h4>Linked Buttons / Type Radio <small>Have multiple buttons mapped ot same model</small></h4>
+<p>Using the <code>name</code> and <code>type='radio'</code> attribute&rsquo;s we can link the <strong>Press Buttons</strong> similar way as <strong><em>input type=&rsquo;rado&rsquo;</em></strong>.</p>
+<p><input nu-press-button="" type="radio" name="pbRadio" icon="fa fa-anchor" value="anchord" ng-model="pbRadio"></nu-press-button>&nbsp;&nbsp;<input nu-press-button="" type="radio" name="pbRadio" icon="fa fa-flag" value="ahoy" ng-model="pbRadio"></nu-press-button><br>
+The ships <strong>{{pbRadio}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">nu-press-button=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;radio&quot;</span> <span style="color: #c4a000">name=</span><span style="color: #4e9a06">&quot;pbRadio&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span> <span style="color: #c4a000">value=</span><span style="color: #4e9a06">&quot;anchord&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">nu-press-button=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;radio&quot;</span> <span style="color: #c4a000">name=</span><span style="color: #4e9a06">&quot;pbRadio&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-flag&quot;</span> <span style="color: #c4a000">value=</span><span style="color: #4e9a06">&quot;ahoy&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+</pre></div>
+
+
+<blockquote>
+<p><strong>Note:</strong> in this case <strong><em>value-off</em></strong> is never used as either one of the buttons stay in the <strong>ON</strong> state.</p>
+</blockquote>
+<h4>Two Icon&rsquo;s <small>Using different icons for each state</small></h4>
+<p><input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" ng-model="twoIconBasic"><br>
+Value of the model in scope : <strong>{{twoIconBasic}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag-o&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<p><input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" value="Yes" value-off="No" ng-model="twoIconValued"><br>
+The flag is hoisted : <strong>{{twoIconValued}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag-o&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;Yes&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;No&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<h4>Pre Checked / default State<small>Set the button state to ON by Default</small></h4>
+<p>There are two ways to achive this as follows</p>
+<p><input nu-press-button="" icon="fa fa-flag" checked="" ng-model="checkedTag"><br>
+Value of the model in scope : <strong>{{checkedTag}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa fa-flag&quot;</span> <span style="color: #000000">checked</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<p><input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" ng-model="checkedScope" ng-init="checkedScope = true"><br>
+Value of the model in scope : <strong>{{checkedScope}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">ng-init=</span><span style="color: #4e9a06">&quot;pbDemo = true&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">nu-press-button=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-flag&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p><input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" value="Yes" value-off="No" ng-model="checkedScope2" ng-init="checkedScope2 = 'Yes'"><br>
+The flag is hoisted : <strong>{{checkedScope2}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">press</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">button</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag&quot;</span> <span style="color: #000000">icon</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;fa-flag-o&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;Yes&quot;</span> <span style="color: #000000">value</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;No&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">init</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;pbDemo = &#39;Yes&#39;&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<h4>Style <small>How to customize PB using Less/CSS Class</small></h4>
+<h5>Less</h5>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">:::</span><span style="color: #000000">less</span>
+  <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">theme</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">pb</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">color</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">size</span><span style="color: #000000; font-weight: bold">)</span>
+  <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">theme</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">pb</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">size</span><span style="color: #000000; font-weight: bold">)</span>
+</pre></div>
+
+
+<p>Please have a look at following theme files <a href="https://github.com/gKodes/ngul/blob/master/less/themes/bootstrap.less">bootstrap.less</a> / <a href="https://github.com/gKodes/ngul/blob/master/less/themes/default.less">default.less</a></p>
+<p><strong>Bootstrap Theme</strong><br>
+<div class="bs"><br>
+  <nu-press-button icon="fa fa-anchor"></nu-press-button> &ndash; Default<br>
+  <nu-press-button class="primary" icon="fa fa-anchor"></nu-press-button> &ndash; Primary<br>
+  <nu-press-button class="success" icon="fa fa-anchor"></nu-press-button> &ndash; Success<br>
+  <nu-press-button class="info" icon="fa fa-anchor"></nu-press-button> &ndash; Info<br>
+  <nu-press-button class="warning" icon="fa fa-anchor"></nu-press-button> &ndash; Warning<br>
+  <nu-press-button class="danger" icon="fa fa-anchor"></nu-press-button> &ndash; Danger<br>
+</div></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;primary&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;success&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;info&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;warning&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-press-button</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;danger&quot;</span> <span style="color: #c4a000">icon=</span><span style="color: #4e9a06">&quot;fa fa-anchor&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-press-button&gt;</span>
+</pre></div>
+
+
+<h4>Attributes</h4>
+<p><code>id</code> &ndash; id to be used for the input inside the button. NOTE: any change at runtime would brake the expected functionality.<br>
+<code>name</code> &ndash; name of the input inside the button<br>
+<code>type</code> &ndash; type of input to be used, cannot be changed at runtime. NOTE: use checkbox (default) or radio only<br>
+<code>icon</code> &ndash; default css class to be applied to both state labels.<br>
+<code>icon-on</code> &ndash; css class to be added for ON state.<br>
+<code>icon-off</code> &ndash; css class to be added for OFF state.<br>
+<code>value</code> &ndash; value to be set to the model when the button is on. default value true.<br>
+<code>value-off</code> &ndash; value to be set to the model when the button is off, used in case type is checkbox only. default value false.<br>
+<code>checked</code> &ndash; similar to input tag checked, will set the button in on state. Presence of the tag would be treated as checked.<br>
+<code>disabled</code> &ndash; will disable the button in current state, if set to false its not disabled any other value its disabled. INFO: use disable=&rdquo;disable&rdquo; for it to work on all tag types</p>
+<h4>Events</h4>
+<p><code>nu-change</code><br>
+<code>nu-focus</code><br>
+<code>nu-blur</code></p>
+<p><strong><code>$event</code></strong> &ndash; <code>target</code> and <code>value</code></p>

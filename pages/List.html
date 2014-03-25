@@ -1,0 +1,40 @@
+<p>NU List is divided into multiple directives, nuList being the base for all</p>
+<p><strong>Text List</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type=""&gt;&lt;/nu-list&gt;</code></p>
+<p>The one mandatory attribute for the list is <code>src</code> which is mapped to the variable (model) in the current scope. It shares an controller with the following functions<br>
+<em> <code>$indexOf</code> &ndash; returns the index of an list item<br>
+</em> <code>$add</code> &ndash; appends an given item to the list<br>
+<em> <code>$remove</code> &ndash; removes an given item from the list<br>
+</em> <code>$empty</code> &ndash; empty the view-only (DOM), wont impact the list in scope <code>src</code> attribute<br>
+<em> <code>$draw</code> &ndash; draw/update the view<br>
+</em> <code>$render</code> and <code>$link</code> which need to be overridden to draw the list items (see the below directives.</p>
+<h4>ngListType</h4>
+<p>This is an attribute only directives which is the core render of the list (overrides $render function), it can render two types of lists <em><strong>txt</strong></em> (Text) &amp; <em><strong>img</strong></em> (Picture), were <em><strong>txt</strong></em> being the default. <br>
+* <code>$formatters</code> array is exposed over the controller which is similar to <a href="http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$formatters">ngModel.NgModelController#$formatters</a></p>
+<p><strong>Picture List</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="img"&gt;&lt;/nu-list&gt;</code></p>
+<h4>nuListAddable</h4>
+<p>This is an attribute only directives which helps users added items to the list using an buffer. Existence of the buffer can be manipulated at runtime also, with value set to <code>false</code> the buffer is removed any other value the buffer is shown.</p>
+<ul>
+<li><code>$parsers</code> array is exposed over the controller which is similar to <a href="http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$parsers">ngModel.NgModelController#$parsers</a></li>
+</ul>
+<p><strong>List with an buffer</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="" nu-list-addable=""&gt;&lt;/nu-list&gt;</code></p>
+<p><strong>Control the existence of buffer at runtime</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="" nu-list-addable="{{addable}}"&gt;&lt;/nu-list&gt;</code></p>
+<h4>nuListRemovable</h4>
+<p>This is an attribute only directives which helps users to remove an list item when clicked on it. This can be manipulated at runtime also, with value set to <code>false</code> which prevents elements from being removed any other value allow them to be removed.</p>
+<p><strong>List for which items can be removed on click</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="" nu-list-removable=""&gt;&lt;/nu-list&gt;</code></p>
+<p><strong>Control the items to be removed at runtime</strong><br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="" nu-list-removable="{{removable}}"&gt;&lt;/nu-list&gt;</code></p>
+<h3>Other Example</h3>
+<p>An List for which items can be added and removed at runtime.<br>
+<code>html
+&lt;nu-list src="tags" nu-list-type="" nu-list-addable="" nu-list-removable=""&gt;&lt;/nu-list&gt;</code></p>

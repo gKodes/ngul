@@ -69,7 +69,7 @@ The flag is hoisted : **{{twoIconValued}}**
 
     <input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" value="Yes" value-off="No" ng-model="pbDemo">
 
-#### Pre Checked / default ON<small>Set the button state to ON by Default</small>
+#### Pre Checked / default State<small>Set the button state to ON by Default</small>
 There are two ways to achive this as follows
 
 <input nu-press-button="" icon="fa fa-flag" checked="" ng-model="checkedTag">
@@ -84,7 +84,6 @@ Value of the model in scope : **{{checkedScope}}**
       <input nu-press-button="" icon="fa fa-flag" ng-model="pbDemo">
     </div>
 
-
 <input nu-press-button="" icon="fa" icon-on="fa-flag" icon-off="fa-flag-o" value="Yes" value-off="No" ng-model="checkedScope2" ng-init="checkedScope2 = 'Yes'">
 The flag is hoisted : **{{checkedScope2}}**
 
@@ -97,38 +96,24 @@ The flag is hoisted : **{{checkedScope2}}**
     #nu > #theme > .pb(@color, @size)
     #nu > #theme > .pb(@color-on, @color-off, @size)
 
-##### Css
-    :::css
-    .traficColor {
-      color: red;
-      font-size: 30px;
-    }
-        
-    input:checked + .traficColor + .traficColor {
-      color: green;
-    }
-    
-    .traficColor:hover {
-      color: yellow;
-    }
-<style type="text/css">
-  .traficColor {
-    color: red;
-    font-size: 30px;
-  }
+Please have a look at following theme files [bootstrap.less](https://github.com/gKodes/ngul/blob/master/less/themes/bootstrap.less) / [default.less](https://github.com/gKodes/ngul/blob/master/less/themes/default.less)
 
-  .traficColor input:checked + label {
-    color: green;
-  }
+**Bootstrap Theme**
+<div class="bs">
+  <nu-press-button icon="fa fa-anchor"></nu-press-button> -- Default
+  <nu-press-button class="primary" icon="fa fa-anchor"></nu-press-button> -- Primary
+  <nu-press-button class="success" icon="fa fa-anchor"></nu-press-button> -- Success
+  <nu-press-button class="info" icon="fa fa-anchor"></nu-press-button> -- Info
+  <nu-press-button class="warning" icon="fa fa-anchor"></nu-press-button> -- Warning
+  <nu-press-button class="danger" icon="fa fa-anchor"></nu-press-button> -- Danger
+</div>
 
-  .traficColor:hover {
-    color: yellow;
-  }
-</style>
-<input nu-press-button="" icon="traficColor fa" icon-on="fa-flag" icon-off="fa-flag-o">
-
-    <input nu-press-button="" icon="traficColor fa" icon-on="fa-flag" icon-off="fa-flag-o">
-
+    <nu-press-button icon="fa fa-anchor"></nu-press-button>
+    <nu-press-button class="primary" icon="fa fa-anchor"></nu-press-button>
+    <nu-press-button class="success" icon="fa fa-anchor"></nu-press-button>
+    <nu-press-button class="info" icon="fa fa-anchor"></nu-press-button>
+    <nu-press-button class="warning" icon="fa fa-anchor"></nu-press-button>
+    <nu-press-button class="danger" icon="fa fa-anchor"></nu-press-button>
 
 #### Attributes
 `id` -- id to be used for the input inside the button. NOTE: any change at runtime would brake the expected functionality.

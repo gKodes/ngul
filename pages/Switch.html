@@ -1,0 +1,119 @@
+<h1>nuSwitch</h1>
+<p>An toggle switch using CSS3 <code>:before</code> &amp; <code>:after</code> over an <code>input</code> &amp; <code>label</code> wraped around using an <code>div</code></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;nu switch&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;src&quot;</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;checkbox&quot;</span> <span style="color: #c4a000">autocomplete=</span><span style="color: #4e9a06">&quot;off&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;label</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;label&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/label&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p><strong>HTML structure of an Switch</strong><br>
+The Switch is achived by linking the <code>label</code> <strong><em>for</em></strong> to the <code>input</code> <strong><em>id</em></strong>  attribute&rsquo;s</p>
+<h4>A Switch <small>An Default Switch</small></h4>
+<p><nu-switch></nu-switch></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<p>Switch by default does not need any attributs the default label&rsquo;s are <code>On</code> and <code>Off</code> respectively.</p>
+<h4>Bind an model <small>Using the $scope</small></h4>
+<p><nu-switch ng-model="switchDemo"></nu-switch><br>
+Value of the model in scope : <strong>{{switchDemo}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<h4>Customize Labels <small>Have your own lables for each state</small></h4>
+<p><nu-switch on="It On" ng-model="switchDemo2"></nu-switch><br>
+Value of the model in scope : <strong>{{switchDemo2}}</strong><br>
+<nu-switch off="!O" ng-model="switchDemo3"></nu-switch><br>
+Value of the model in scope : <strong>{{switchDemo3}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">on=</span><span style="color: #4e9a06">&quot;It On&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">off=</span><span style="color: #4e9a06">&quot;!O&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<p>Change only an single label for either <code>On</code> or <code>Off</code>, the following shows change of both the label&rsquo;s.</p>
+<p><nu-switch on="It On" off="!O" ng-model="switchDemo4"></nu-switch><br>
+Value of the model in scope : <strong>{{switchDemo4}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">on=</span><span style="color: #4e9a06">&quot;It On&quot;</span> <span style="color: #c4a000">off=</span><span style="color: #4e9a06">&quot;!O&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<h4>Binding Values <small>Have an value for each state</small></h4>
+<p><nu-switch on="It On" off="Opss!" value="Do Some thing" value-off="Cant Help" ng-model="switchDemo5"></nu-switch><br>
+Value of the model in scope : <strong>{{switchDemo5}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">on=</span><span style="color: #4e9a06">&quot;It On&quot;</span> <span style="color: #c4a000">off=</span><span style="color: #4e9a06">&quot;Opss!&quot;</span> <span style="color: #c4a000">value=</span><span style="color: #4e9a06">&quot;Do Some thing&quot;</span> <span style="color: #c4a000">value-off=</span><span style="color: #4e9a06">&quot;Cant Help&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<h4>Pre Checked / default State<small>Set the button state to ON by Default</small></h4>
+<p>There are two ways to achive this as follows</p>
+<p><input nu-switch="" checked="" ng-model="switchDemo6"><br>
+Value of the model in scope : <strong>{{switchDemo6}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">&lt;</span><span style="color: #000000">input</span> <span style="color: #000000">nu</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #204a87; font-weight: bold">switch</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">checked</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #000000">ng</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">model</span><span style="color: #ce5c00; font-weight: bold">=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span>
+</pre></div>
+
+
+<p><input nu-switch="" checked="" ng-model="switchDemo7"><br>
+Value of the model in scope : <strong>{{switchDemo7}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">ng-init=</span><span style="color: #4e9a06">&quot;switchDemo = true&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">nu-switch=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">checked=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p><input nu-switch="" checked="" value="Do Some thing" value-off="Cant Help" ng-model="switchDemo8" ng-init="switchDemo8 = 'Do Some thing'"><br>
+Value of the model in scope : <strong>{{switchDemo8}}</strong></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;div</span> <span style="color: #c4a000">ng-init=</span><span style="color: #4e9a06">&quot;switchDemo = true&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+    <span style="color: #204a87; font-weight: bold">&lt;input</span> <span style="color: #c4a000">nu-switch=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">checked=</span><span style="color: #4e9a06">&quot;&quot;</span> <span style="color: #c4a000">value=</span><span style="color: #4e9a06">&quot;Do Some thing&quot;</span> <span style="color: #c4a000">value-off=</span><span style="color: #4e9a06">&quot;Cant Help&quot;</span> <span style="color: #c4a000">ng-model=</span><span style="color: #4e9a06">&quot;switchDemo&quot;</span> <span style="color: #c4a000">ng-init=</span><span style="color: #4e9a06">&quot;switchDemo = &#39;Do Some thing&#39;&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;/div&gt;</span>
+</pre></div>
+
+
+<h4>Style <small>How to customize Switch using Less/CSS Class</small></h4>
+<h5>Less</h5>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #ce5c00; font-weight: bold">:::</span><span style="color: #000000">less</span>
+  <span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">switch</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">theme</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">switch</span><span style="color: #000000; font-weight: bold">({</span> <span style="color: #8f5902; font-style: italic">// On Colors</span>
+      <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">mixin</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">color</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">background</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #000000; font-weight: bold">);</span>
+    <span style="color: #000000; font-weight: bold">},</span>
+    <span style="color: #000000; font-weight: bold">{</span> <span style="color: #8f5902; font-style: italic">// Off Colors</span>
+      <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">mixin</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">color</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">background</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #000000; font-weight: bold">);</span>
+    <span style="color: #000000; font-weight: bold">});</span>
+    <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">nu</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #a40000; border: 1px solid #ef2929">#</span><span style="color: #000000">theme</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">switch</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">handle</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">handle</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">on</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #a40000; border: 1px solid #ef2929">@</span><span style="color: #000000">handle</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">color</span><span style="color: #ce5c00; font-weight: bold">-</span><span style="color: #000000">off</span><span style="color: #000000; font-weight: bold">);</span>
+  <span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<p><strong><em>switch-handle</em></strong> is for the circle/square[TODO] that slides in the switch</p>
+<p>Please have a look at following theme files <a href="https://github.com/gKodes/ngul/blob/master/less/themes/bootstrap.less">bootstrap.less</a> / <a href="https://github.com/gKodes/ngul/blob/master/less/themes/default.less">default.less</a></p>
+<p><strong>Bootstrap Theme</strong><br>
+<div class="bs"><br>
+  <nu-switch></nu-switch> &ndash; Default<br>
+  <nu-switch class="primary"></nu-switch> &ndash; Primary<br>
+  <nu-switch class="success"></nu-switch> &ndash; Success<br>
+  <nu-switch class="info"></nu-switch> &ndash; Info<br>
+  <nu-switch class="warning"></nu-switch> &ndash; Warning<br>
+  <nu-switch class="danger"></nu-switch> &ndash; Danger<br>
+</div></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-switch&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;primary&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;success&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;info&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;warning&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+  <span style="color: #204a87; font-weight: bold">&lt;nu-switch</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;danger&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-switch&gt;</span>
+</pre></div>
+
+
+<h4>Attributes</h4>
+<p>The following attributes are consumed by the nuSwitch<br>
+<code>id</code> &ndash; id to be used for the input inside the switch. <strong>NOTE</strong>: any change at runtime would brake the expected functionality.<br>
+<code>name</code> &ndash; name of the input inside the switch<br>
+<code>type</code> &ndash; type of input to be used, cannot be changed at runtime. <strong>NOTE</strong>: use <code>checkbox</code> (<strong>default</strong>) or <code>radio</code> only<br>
+<code>on</code> &ndash; Label to be show when the switch is on, default value <code>On</code><br>
+<code>off</code> &ndash; Label to be show when the switch is off, default value <code>Off</code><br>
+<code>value</code> &ndash; value to be set to the model when the switch is on. default value <code>true</code>.<br>
+<code>value-off</code> &ndash; value to be set to the model when the switch is off, used in case type is <code>checkbox</code> only. default value <code>false</code>.<br>
+<code>checked</code> &ndash; similar to <code>input</code> tag checked, will set the button in on state. Presence of the tag would be treated as checked.<br>
+<code>disabled</code> &ndash; will disable the button in current state, if set to <code>false</code> its not disabled any other value its disabled. <strong>INFO</strong>: use <code>disable="disable"</code> for it to work on all tag types</p>
