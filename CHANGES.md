@@ -6,7 +6,7 @@ Revision History
 * Fixed Switch Transition Glitch issue in Chrome
 
 4r83.14
-* Add Theaming Support for [Press Button](http::/gkodes.github.io/ngul/#nuPressButton) & [Switch](http::/gkodes.github.io/ngul/#nuSwitch) refer there respective docs
+* Add Theaming Support for [Press Button](http://gkodes.github.io/ngul/#nuPressButton) & [Switch](http://gkodes.github.io/ngul/#nuSwitch) refer there respective docs
 * Updated Docs for Press Button & Switch
 * Supports Two Themes default & bootstrap
 * Add New Show Component
