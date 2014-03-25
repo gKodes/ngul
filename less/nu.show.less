@@ -1,6 +1,6 @@
-@gallery-arrow: 40px;
+@show-arrow: 40px;
 
-.nu.gallery {
+.nu.show {
 
   img {
     &.active {
@@ -18,8 +18,8 @@
     &:after {
         content: ' ';
         display: block;
-        width: @gallery-arrow;
-        height: @gallery-arrow;
+        width: @show-arrow;
+        height: @show-arrow;
         transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
         position: absolute;
@@ -31,24 +31,24 @@
 
     &.left {
       &:after {
-          top: (@gallery-arrow / 4);
-          left: ((@gallery-arrow / 2) - 1px);
+          top: (@show-arrow / 4);
+          left: ((@show-arrow / 2) - 1px);
       }
-      left: 30px; 
+      left: 1.5%; 
     }
 
 
     &.right {
       &:after {
-        top: (@gallery-arrow / 4);
-        left: -((@gallery-arrow / 2) - 1px);
+        top: (@show-arrow / 4);
+        left: -((@show-arrow / 2) - 1px);
       }
-      right: 30px; 
+      right: 1.5%; 
     }
 
     top: 0;
-    width: @gallery-arrow;
-    height: ((@gallery-arrow * 1.5) + 10px);
+    width: @show-arrow;
+    height: ((@show-arrow * 1.5) + 10px);
     bottom: 0;
     margin: auto;
     cursor: pointer;

@@ -1,17 +1,17 @@
 /*global describe, expect, it, browser, console, require: true*/ // element
-var gallery = require('./util.js').gallery;
+var show = require('./util.js').show;
 var get_unit = require('./util.js').get_unit;
 
-describe('nu gallery', function() {
+describe('nu show', function() {
   'use strict';
 
   describe('with an ngModel', function() {
     var unit, derivative;
     it('shold have 5 images', function() {
-      browser.get('#/nu.gallery');
+      browser.get('#/nu.show');
 
       unit = get_unit(1);
-      derivative = new gallery(unit.find('.nu.gallery'));
+      derivative = new show(unit.find('.nu.show'));
       derivative.findImgs().then(function(images) {
         expect(images.length).toEqual(7);
       });

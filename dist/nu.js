@@ -704,8 +704,8 @@ chooser.directive('nuFileChooser', ['nuEvent',
 ]);
 
 
-var gallery = angular.module('nu.gallery', []);
-gallery.directive('nuGallery', [
+var show = angular.module('nu.show', []);
+show.directive('nuShow', [
   function() {
         var setActive = function() {
       angular.element(arguments).toggleClass('active');
@@ -713,7 +713,7 @@ gallery.directive('nuGallery', [
     };
 
     return {
-      template: '<div class="nu gallery"><a class="arrow right"></a><a class="arrow left"></a></div>',
+      template: '<div class="nu show"><a class="arrow right"></a><a class="arrow left"></a></div>',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
@@ -768,24 +768,6 @@ gallery.directive('nuGallery', [
     };
   }
 ]);
-
-gallery.directive('nuPreviewStrip', [
-  function() {
-        return {
-      restrict: 'EACM',
-      replace: true,
-      require: 'nuGallery',
-      link: function(scope, element, attrs, ngModel) {
-        ngModel.$render = chainIt(ngModel.$render, function() {
-
-        });
-      }
-    };
-  }
-]);
-
-
-
 
 var slider = angular.module('nu.slider', []);
 slider.service('_ScrollSize', ['$window', function($window) {

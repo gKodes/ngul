@@ -23,7 +23,7 @@ exports.fileChooser = function(node) {
   this.input = node.findElement(by.tagName('input'));
 };
 
-exports.gallery = function(node) {
+exports.show = function(node) {
   'use strict';
   this.next = node.findElement(by.css('a:nth-of-type(1)'));
   this.previous = node.findElement(by.css('a:nth-of-type(2)'));

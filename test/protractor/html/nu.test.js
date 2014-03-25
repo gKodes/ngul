@@ -4,7 +4,7 @@ var testApp = angular.module('nu.test', [
   'nu.list',
   'nu.switch',
   'nu.file.chooser',
-  'nu.gallery',
+  'nu.show',
   'nu.slider'
 ]).
 config(['$routeProvider', function($routeProvider) {

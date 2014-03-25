@@ -618,7 +618,7 @@
 .nu.file.chooser.diplay-type[state="selected"] xwd:before {
   content: 'Picture';
 }
-.nu.gallery {
+.nu.show {
   height: 100%;
   overflow: auto;
   position: relative;
@@ -628,7 +628,7 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-.nu.gallery img {
+.nu.show img {
   margin: auto;
   display: none;
   max-width: 100%;
@@ -639,10 +639,10 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-.nu.gallery img.active {
+.nu.show img.active {
   display: block;
 }
-.nu.gallery .arrow {
+.nu.show .arrow {
   top: 0;
   width: 40px;
   height: 70px;
@@ -657,7 +657,7 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-.nu.gallery .arrow:after {
+.nu.show .arrow:after {
   content: ' ';
   display: block;
   width: 40px;
@@ -674,17 +674,17 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-.nu.gallery .arrow.left {
-  left: 30px;
+.nu.show .arrow.left {
+  left: 1.5%;
 }
-.nu.gallery .arrow.left:after {
+.nu.show .arrow.left:after {
   top: 10px;
   left: 19px;
 }
-.nu.gallery .arrow.right {
-  right: 30px;
+.nu.show .arrow.right {
+  right: 1.5%;
 }
-.nu.gallery .arrow.right:after {
+.nu.show .arrow.right:after {
   top: 10px;
   left: -19px;
 }

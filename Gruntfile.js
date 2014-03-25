@@ -16,7 +16,7 @@ module.exports = function(grunt) {
           'js/nu.pb.js',
           'js/nu.switch.js',
           'js/nu.file.chooser.js',
-          'js/nu.gallery.js',
+          'js/nu.show.js',
           'js/nu.slider.js',
           'js/nu.event.js'
         ],
