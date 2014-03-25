@@ -5,27 +5,27 @@
 
 	demo.config(function($routeProvider, $locationProvider) {
 	  $routeProvider
-    .when('/nuSwitch', {
+    .when('/ngul/nuSwitch', {
 	    templateUrl: 'pages/Switch.html',
 	    controller: angular.noop
     })
-	  .when('/nuPressButton', {
+	  .when('/ngul/nuPressButton', {
 	    templateUrl: 'pages/PB.html',
 	    controller: angular.noop
 	  })
-    .when('/nuList', {
+    .when('/ngul/nuList', {
       templateUrl: 'pages/List.html',
       controller: angular.noop
     })
-    .when('/nuFileChooser', {
+    .when('/ngul/nuFileChooser', {
       templateUrl: 'pages/FC.html',
       controller: angular.noop
     })
-    .when('/nuShow', {
+    .when('/ngul/nuShow', {
       templateUrl: 'pages/Show.html',
       controller: angular.noop
     })
-    .when('/', {
+    .when('/ngul', {
       templateUrl: 'pages/Main.html',
       controller: angular.noop
     });
