@@ -1,8 +1,6 @@
-/*global angular, random, attribute*/
+/*global angular, random, attribute, nu*/
 
-var pb = angular.module('nu.pb', ['nu.event']);
-
-pb.directive('nuPressButton', ['nuEvent',
+nu.directive('nuPressButton', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =
@@ -78,18 +76,19 @@ pb.directive('nuPressButton', ['nuEvent',
           }
         }
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function pbChange(event) {
           var isChecked = this.checked;
-          event.stopPropagation(); // 
+          event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
             scope.$apply(function() {
               ngModel.$setViewValue(isChecked);
             });
           }
-          return {'target': attrs.name, 'value': parser(isChecked)};
+
+          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
         });
 
-        Event.bind(label, 'focus blur');
+        // Event.bind(label, 'focus blur');
       }
     };
   }

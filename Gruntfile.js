@@ -142,6 +142,9 @@ module.exports = function(grunt) {
     server.stdout.on('data', function(output) {
       if(output.toString().trim().indexOf('HttpContext[/wd,/wd]') > -1) {
         grunt.log.writeln('Selenium is up at http://127.0.0.1:4444/wd/hub');
+        process.on('exit', function () {
+          server.kill();
+        });
         done();
       }
       if(seleniumIsUp) {

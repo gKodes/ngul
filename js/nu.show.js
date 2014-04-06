@@ -1,6 +1,5 @@
-/*global angular: true*/
-var show = angular.module('nu.show', []);
-show.directive('nuShow', [
+/*global angular, nu: true*/
+nu.directive('nuShow', [
   function() {
     'use strict';
     var setActive = function() {

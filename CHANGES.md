@@ -10,3 +10,9 @@ Revision History
 * Updated Docs for Press Button & Switch
 * Supports Two Themes default & bootstrap
 * Add New Show Component
+
+4r
+* Reworked [List](http://gkodes.github.io/ngul/#nuList) much easier to customize templates of Items & Buffer
+* Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
+* Improved Show functionality, hide arrows, half segement click (TODO: Animation)
+* In Line : TypeAhead

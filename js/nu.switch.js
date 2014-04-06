@@ -1,8 +1,6 @@
-/*global angular, random, attribute*/
+/*global angular, random, attribute, nu*/
 
-var nswitch = angular.module('nu.switch', ['nu.event']);
-
-nswitch.directive('nuSwitch', ['nuEvent',
+nu.directive('nuSwitch', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =
@@ -76,7 +74,7 @@ nswitch.directive('nuSwitch', ['nuEvent',
           }
         }
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function(event) {
           var isChecked = this.checked;
           event.stopPropagation(); // 
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -84,10 +82,10 @@ nswitch.directive('nuSwitch', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return {'target': attrs.name, 'value': parser(isChecked)};
+          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
         });
 
-        Event.bind(label, 'focus blur');
+        // Event.bind(label, 'focus blur')
       }
     };
   }

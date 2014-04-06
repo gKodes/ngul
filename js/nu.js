@@ -1,5 +1,7 @@
 /*global angular: true*/
 
+var nu = angular.module('nu', []);
+
 var RE_EXT = /\.([\w\d]+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
@@ -51,57 +53,108 @@ var invoke = function(method) {
   return args.length == 1? args[0] : args;
 };
 
-
 var isDefinedAndNotNull = function(value) {
   return typeof value != 'undefined' && value !== null;
 };
-//= nu.pipeLine
-var pipeLine = function(pipe, done) {
-  var PipeLine = function(pipe, done) {
-    var index = 0;
-    var isAsync = false;
-    var onAsync = angular.noop;
-    var scope = {
-      'async' : function() {
-        isAsync = true;
-        onAsync();
-        return next;
-      }
+
+var noop = angular.noop,
+    copy = angular.copy,
+    equals = angular.equals,
+    forEach = angular.forEach,
+    isString = angular.isString,
+    isElement = angular.isElement,
+    extend = angular.extend,
+    trim = function(str) {
+      return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
+    },
+    partial = function(fn, args, scope) {
+      return function() {
+        return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
+      };
     };
 
-    var next = this.next = function(item){
-      while(index < pipe.length) {
-        item = pipe[index++].call(scope, item);
-        if( isAsync ) {
-          isAsync = false;
-          return this;
-        }
-      }
-      done(item);
-      return this;
-    };
-
-    this.isAsync = function() {
-      return isAsync;
-    };
-
-    this.onAsync = function(value) {
-      onAsync = value;
-      return this;
-    };
-  };
-  return new PipeLine(pipe, done);
+var startsWith = function(str, subStr) {
+  return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
 };
 
-var chainIt = function() {
-  'use strict';
-  if(!arguments[0] && arguments.length == 2) {
-    return arguments[1];
-  }
-  var seq = arguments;
-  return function() {
-    for(var i = 0; i < seq.length; i++) {
-      seq[i].apply(null, arguments);
+var NuEventManager = (function() {
+  var _export = function() {
+    this.events = {};
+  };
+
+  _export.prototype.on = function(eventType, handler) {
+    if( !this.events[eventType] ) { this.events[eventType] = []; }
+    this.events[eventType].push(handler);
+  };
+  _export.prototype.off = function(eventType, handler) {
+    if( this.events[eventType] ) { 
+      var index = this.events[eventType].indexOf;
+      if ( index !== -1 ) {
+        return this.events[eventType].split(index, 1)[0];
+      }
     }
   };
-};
+  _export.prototype.trigger = function(eventType, extraParameters) {
+    if(this.events[eventType]) {
+      forEach(this.events[eventType], function(fn) {
+        fn(extraParameters);
+      });
+    }
+    return extraParameters;
+  };
+
+  return _export;
+})(forEach);
+
+/**
+ *
+ * @Events
+ * * push
+ * * pop - Invoked when `.pop` is call with the element that is about to be poped Out of the pool
+ * * flush - Triggered with target as the `Item` which is not being 
+ *     add to the Pool as it excedes the Pool size
+ */
+var EventPool = (function(extend, NuEventManager) {
+  var _export = function(size) {
+    NuEventManager.call(this);
+    this.size = size || 10;
+  };
+
+  _export.prototype = [];
+  extend(_export.prototype, NuEventManager.prototype);
+
+  _export.prototype.push = function() {
+    var items = Array.prototype.slice.call(arguments, 0),
+        capacity = this.size - this.length,
+        flush = items.splice(capacity);
+    
+    if(items) {
+      var event = this.trigger('push', {target: items});
+      if(event.target) { Array.prototype.push.apply(this, items); }
+    }
+    if(flush) { this.trigger('flush', {target: flush}); }
+  };
+
+  _export.prototype.pop = function() {
+    var item = Array.prototype.pop.call(this);
+    if(item) { this.trigger('pop', {target: item}); }
+    return item;
+  };
+
+  _export.prototype.remove = function(item) {
+    if(item) {
+      var index = this.indexOf(indexOf);
+      if(index !== -1) {
+        item = Array.prototype.splice.call(this, index, 1)[0];
+        this.trigger('pop', {target: item});
+      }
+    }
+  };
+  _export.prototype.shift = function() {
+    var item = Array.prototype.shift.call(this);
+    if(item) { this.trigger('pop', {target: item}); }
+    return item;
+  };
+
+  return _export;
+})(angular.extend, NuEventManager);

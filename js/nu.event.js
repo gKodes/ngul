@@ -1,39 +1,28 @@
-/*global angular*/
-var Event = angular.module('nu.event', []);
-
-Event.service('nuEvent', ['$parse', function($parse) {
+/*global angular, nu, forEach, isString, startsWith */
+nu.service('nuEvent', ['$parse', function($parse) {
   'use strict';
+  var nuPartialEvent = function(fn, $scope) {
+    return function nuPartialEvent(event) {
+      fn($scope, {'$event': event});
+      $scope.$digest();
+    };
+  };
+
   var nuEventCreator = function(scope, attrs) {
-    var NUEvent = function(scope, attrs) {
-      var Event = {};
-      angular.forEach(attrs, function(value, name) {
-        if(angular.isString(name)) {
-          var indexOfnu = name.indexOf('nu');
-          if( indexOfnu === 0 ) {
-            Event[name.substr(2).toLowerCase()] = $parse(value);
+    var NuEventController = function($scope, $attrs) {
+      NuEventManager.call(this);
+      forEach($attrs, function(value, name) {
+        if( isString(name) ) {
+          if( startsWith(name, 'nu') ) {
+            this.on(name.substr(2).toLowerCase(), nuPartialEvent($parse(value), $scope));
           }
         }
-      });
-
-      var trigger = this.trigger = function(name, event) {
-        if(Event[name]) {
-          Event[name](scope, {'$event': event});
-          scope.$digest();
-        }
-      };
-
-      this.bind = function(element, name, transformationFn) {
-        angular.forEach(name.split(' '), function(ename) {
-          if(Event[ename] || transformationFn) {
-            element.on(ename, function(event) {
-              trigger(ename, (transformationFn || angular.identity).call(this, event));
-            });
-          }
-        });
-      };
+      }, this);
     };
 
-    return new NUEvent(scope, attrs);
+    extend(NuEventController.prototype, NuEventManager.prototype);
+
+    return new NuEventController(scope, attrs);
   };
 
   return nuEventCreator;

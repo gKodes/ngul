@@ -1,11 +1,17 @@
 <div unit="" ng-controller="listTest">
-  <nu-list src="list" nu-list-type=""></nu-list>
+  <nu-list src="list" >
+    {{item}}
+    <buffer>
+      <input ng-model="item"/>
+    </buffer>
+  </nu-list>
+
   <button ng-click="list.push('Bump')">Bump</button>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="listTest" ng-init="addable = false">
-  <nu-list src="list" nu-list-addable="{{addable}}" nu-list-type=""></nu-list>
+  <nu-list src="list" nu-list-addable="{{addable}}" ></nu-list>
   <div>
     <button ng-click="addable = false">Set addable to 'false'</button>
     <button ng-click="addable = true">Set addable to 'true'</button>
@@ -14,14 +20,14 @@
 </div>
 
 <div unit="" ng-controller="listTest">
-  <nu-list src="list" nu-list-removable="" nu-list-type=""></nu-list>
+  <nu-list src="list" nu-list-removable="" ></nu-list>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="listTest" ng-init="removable = false">
-  <nu-list src="list" nu-list-addable="" nu-list-removable="{{removable}}" nu-list-type=""></nu-list>
+  <nu-list src="list" nu-list-addable="" nu-list-removable="{{removable}}"></nu-list>
   <div>
-    <button ng-click="list.push('Bump')">Bump</button>
+    <button ng-click="bump()">Bump</button>
     <button ng-click="$log.info(list)">Echo</button>
     <button ng-click="removable = false">Set removable to 'false'</button>
     <button ng-click="removable = true">Set removable to 'true'</button>
@@ -45,6 +51,8 @@
 </div -->
 
 <div unit="" ng-controller="listImgTest">
-  <nu-list src="list" nu-list-addable="" nu-list-removable="" nu-list-type="img"></nu-list>
+  <nu-list src="list" nu-list-addable="" nu-list-removable="">
+    <img ng-src="{{item.src || item}}" ng-click="$erase()">
+  </nu-list>
   <div result="">{{unitCase}}</div>
 </div>
