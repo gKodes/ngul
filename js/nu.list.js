@@ -67,7 +67,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
       nuList.$viewValue = copy(modelValue);
       itemNodes = nuList.$getItems(children);
       nuList.$render();
-      angular.element(itemNodes.splice(capacity)).remove();
+      angular.element(itemNodes.splice(capacity - 1)).remove();
       angular.element(itemNodes).css('display', 'none');
     }
   });
@@ -177,12 +177,12 @@ nu.service('listBuffers', function() {
  </doc:example>
  *
  */
-nu.directive('nuList', ['$compile', 'listBuffers',
-  function($compile, listBuffers) {
+nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
+  function($compile, $parse, listBuffers) {
     'use strict';
     return {
       terminal: true,
-      priority: 500,
+      priority: 99, // 500 If Priority crosses 500 {{template}} system is now working
       template: '<div class="nu list"></div>',
       replace: true,
       transclude: 'element',
@@ -202,7 +202,7 @@ nu.directive('nuList', ['$compile', 'listBuffers',
         }
 
         //INFO: Append Buffers, if Any
-        if(buffers.length > 0){
+        if(buffers.length > 0) {
           if( buffers.find('buffer').length > 0 ) {
             throw nuError('list', 'Nested buffers are not allowed');
           }
@@ -225,7 +225,8 @@ nu.directive('nuList', ['$compile', 'listBuffers',
         var eraseNode = function() { nuList.$removeItem(this.item); };
 
         attrs.$observe('readonly', function(value){
-          nuList.$defaults.$erase = (value === 'false')? noop : eraseNode;
+          nuList.$defaults.$erase = 
+            (value === 'readonly' || value === 'true')? noop : eraseNode;
         });
 
         attrs.$observe('buffer', function(value){

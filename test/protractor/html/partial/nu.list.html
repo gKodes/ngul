@@ -15,17 +15,17 @@
 </div>
 
 <div unit="" ng-controller="listTest">
-  <nu-list src="list" readonly="true" ></nu-list>
+  <nu-list src="list" readonly="true"></nu-list>
   <div result="">{{unitCase}}</div>
 </div>
 
-<div unit="" ng-controller="listTest" ng-init="removable = false">
-  <nu-list src="list" readonly="{{removable}}" buffer="{{removable}}"><buffer type="txt"/></nu-list>
+<div unit="" ng-controller="listTest" ng-init="readOnly = true">
+  <nu-list src="list" readonly="{{readOnly}}" buffer="{{!readOnly}}" capacity="2"><buffer type="txt"/></nu-list>
   <div>
     <button ng-click="bump()">Bump</button>
     <button ng-click="$log.info(list)">Echo</button>
-    <button ng-click="removable = false">Set removable to 'false'</button>
-    <button ng-click="removable = true">Set removable to 'true'</button>
+    <button ng-click="readOnly = false">Set readOnly to 'false'</button>
+    <button ng-click="readOnly = true">Set readOnly to 'true'</button>
   </div>
   <div result="">{{unitCase}}</div>
 </div>

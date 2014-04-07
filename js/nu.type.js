@@ -7,7 +7,7 @@
   </datasets>
 </nu-type>
 */
-var NuTypeController = ['$scope', '$element', '$exceptionHandler', '$attrs', 
+var NuTypeController = ['$scope', '$element', '$exceptionHandler', '$attrs',
     function($scope, $element, $exceptionHandler, $attrs) {
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
