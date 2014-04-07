@@ -5,10 +5,6 @@
 
 .nu.list {
   .item {
-    &.async, &.pool {
-      display: none;
-    }
-
     // Style of the X button
     &.remove {
       &:before {
@@ -96,6 +92,10 @@
     padding: 0 5px;
     margin: 0 0 3px 3px;
     background: none;
+  }
+
+  .hidden-buffer {
+    display: none;
   }
 
   display: inline-block;

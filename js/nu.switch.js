@@ -1,4 +1,4 @@
-/*global angular, random, attribute, nu*/
+/*global angular, random, move, nu*/
 
 nu.directive('nuSwitch', ['nuEvent',
   function(nuEvent) {
@@ -25,7 +25,7 @@ nu.directive('nuSwitch', ['nuEvent',
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
         attrs.$observe('on', function (value) {

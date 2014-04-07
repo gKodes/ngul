@@ -1,16 +1,20 @@
-/*global angular, nu, noop, equals, copy, trim, EventPool, startsWith, forEach, extend: true*/
+/*global angular, nu, noop, equals, copy, trim, startsWith, forEach, extend, nuError: true*/
 /**
  * @ngdoc object
  * @name ng.directive:nuList.NuListController
  *
- * @property {Object|Array} $viewValue Actual string value in the view.
+ * @property {Object|Array} $viewValue Actual value in the view.
  * @property {Object|Array} $modelValue The value in the model, that the control is bound to.
- * @property {Function} $itemCompiler `$compile`
- * @property {Function} $itemFactory fn, creator
- * @property {Function} $appendItem
- * @property {Function} $removeItem
- * @property {Function} $render
- * @property {number} $buffers - ??
+ * @property {Function} $itemCompiler and compiled Item Node using `$compile` service.
+ *    This would be called with a `Scope` and an cloneAttachFn.
+ * @property {Function} $itemNodeFactory fn that takes one argument
+ * @property {Function} $removeItem invoked to remove an item
+ * @property {Function} $render invoked when there external changes made to the list's model
+ *
+ * @property {Array} $buffers an list of `Buffer` Nodes
+ * @property {Scope} $defaults the parent scope for all Item Nodes
+ * @property {Scope} $bufferDefaults the parent scope for all Buffer Nodes
+ * @property {Array} $getItems should return an array of Only Item Nodes (exclude's buffer nodes)
  *
  * @description
  *
@@ -54,14 +58,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     }
   });
 
-  var sliceItemNodes = partial(Array.prototype.slice, [0], children);
+  this.$getItems = function(nodes) { return Array.prototype.slice.call(nodes, 0); };
   
   $scope.$watchCollection(model, function(modelValue) {
     nuList.$modelValue = modelValue;
     if( !equals(modelValue, nuList.$viewValue) ) {
       // TODO: need to find an alternative for this
       nuList.$viewValue = copy(modelValue);
-      itemNodes = sliceItemNodes(nuList.$buffers? (-nuList.$buffers.length) : undefined);
+      itemNodes = nuList.$getItems(children);
       nuList.$render();
       angular.element(itemNodes.splice(capacity)).remove();
       angular.element(itemNodes).css('display', 'none');
@@ -94,6 +98,56 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
 }];
 
 /**
+ * @ngdoc service
+ * @name nu.listBuffers
+ * @object
+ *
+ * @property {function(type, linkFn)} type create or retrive an `Buffer` link function
+ * @property {function(templateStr, scope)} compile compile an `Buffer` 
+ *    template using `$compile` and return it
+ *
+ * @description
+ * This service is used to help compile an `nuList > Buffer` template into an node based on
+ * `type` attribute
+ */
+nu.service('listBuffers', function() {
+  'use strict';
+  var NuListBufferTypes = {};
+
+  NuListBufferTypes.txt = function TextListBufferType(bufferNode, $scope) {
+    bufferNode.attr('contenteditable', 'true');
+    bufferNode.on('keydown', function(event) {
+      var keyCode = (event.which || event.keyCode);
+      if (keyCode === 13) {
+        var item = trim(this.innerHTML).replace(/<br\/?>/gi, '');
+        this.innerHTML = '';
+        event.preventDefault();
+        if (item) {
+          $scope.$apply(function(scope) {
+            scope.$append(item);
+          });
+        }
+      }
+    }).addClass('buffer').html('');
+  };
+
+  NuListBufferTypes.default = noop;
+
+  this.compile = function NuListBufferCompiler(templateStr, $scope) {
+    //INFO: Replace the tag name buffer with span
+    var bufferNode = angular.element(templateStr.replace(/(<\/?)buffer/gi, '$1span')),
+        bufferType = bufferNode.attr('type') || 'default';
+    NuListBufferTypes[bufferType](bufferNode, $scope);
+    return bufferNode;
+  };
+
+  this.type = function(type, fn) {
+    if(fn) { NuListBufferTypes[type] = fn; }
+    return NuListBufferTypes[type];
+  };
+});
+
+/**
  * @ngdoc directive
  * @name nu:nuList
  *
@@ -103,8 +157,8 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
  * @param {string} nuList Assignable angular expression to data-bind to.
  * @param {string} src Assignable angular expression to data-bind to this is used in case `nuList` is not present.
  * @param {number} capacity Optional the number of `itemNode`'s to be Pooled for re-use. Default value is 10
- * @param {number} min
- * @param {number} max
+ * @param {number} min - Not yet implemented
+ * @param {number} max - Not yet implemented
  *
  * @description
  *
@@ -114,16 +168,18 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
  * item from the collection and update the view respectively.
  *
  <doc:example>
-   <doc:source>
-    I can add: 1 + 2 =  {{ 1+2 }}
+   <doc:source src="css" type="less">
+   </doc:source>
+   <doc:source src="html" type="html">
+   </doc:source>
+   <doc:source src="js" type="js">
    </doc:source>
  </doc:example>
  *
  */
-nu.directive('nuList', ['$compile',
-  function($compile) {
+nu.directive('nuList', ['$compile', 'listBuffers',
+  function($compile, listBuffers) {
     'use strict';
-    var template = '<div class="nu list"></div>';
     return {
       terminal: true,
       priority: 500,
@@ -147,30 +203,43 @@ nu.directive('nuList', ['$compile',
 
         //INFO: Append Buffers, if Any
         if(buffers.length > 0){
+          if( buffers.find('buffer').length > 0 ) {
+            throw nuError('list', 'Nested buffers are not allowed');
+          }
+
           angular.forEach(buffers, function(bufferTemplate) {
-            nuList.$buffers.push(
-              $compile(bufferTemplate)(nuList.$bufferDefaults.$new())[0] );
+            var bufferScope = nuList.$bufferDefaults.$new(),
+                bufferNode = $compile( listBuffers.compile(
+                  trim(bufferTemplate.outerHTML), bufferScope ) )(bufferScope);
+            
+            nuList.$buffers.push(bufferNode[0]);
           });
+
           element.append(nuList.$buffers);
+
+          nuList.$getItems = function(nodes) {
+            return Array.prototype.slice.call(nodes, 0, -buffers.length);
+          };
         }
 
-        nuList.$render = function() {
-          /*{
-            'item' : nuList.$viewValue[index],
-            '$index': index,
-            '$first':
-            '$middle':
-            '$last':
-            '$even':
-            '$odd':
-          }*/
+        var eraseNode = function() { nuList.$removeItem(this.item); };
 
+        attrs.$observe('readonly', function(value){
+          nuList.$defaults.$erase = (value === 'false')? noop : eraseNode;
+        });
+
+        attrs.$observe('buffer', function(value){
+          var bufferNodes = angular.element(nuList.$buffers);
+          if( value === 'false' ) {
+            bufferNodes.addClass('hidden-buffer');
+          } else { bufferNodes.removeClass('hidden-buffer'); }
+        });
+
+        nuList.$render = function() {
           forEach(nuList.$viewValue, function(item, index) {
             nuList.$itemNodeFactory({'item' : item, '$index': index});
           });
         };
-
-        if(attrs.by){}
       }
     };
   }
