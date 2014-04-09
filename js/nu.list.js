@@ -61,6 +61,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
   this.$getItems = function(nodes) { return Array.prototype.slice.call(nodes, 0); };
   
   $scope.$watchCollection(model, function(modelValue) {
+    if( !modelValue ) { modelValue = $scope[model] = []; }
     nuList.$modelValue = modelValue;
     if( !equals(modelValue, nuList.$viewValue) ) {
       // TODO: need to find an alternative for this
@@ -114,7 +115,7 @@ nu.service('listBuffers', function() {
   'use strict';
   var NuListBufferTypes = {};
 
-  NuListBufferTypes.txt = function TextListBufferType(bufferNode, $scope) {
+  NuListBufferTypes.txt = function TextListBuffer(bufferNode, $scope) {
     bufferNode.attr('contenteditable', 'true');
     bufferNode.on('keydown', function(event) {
       var keyCode = (event.which || event.keyCode);
@@ -128,7 +129,23 @@ nu.service('listBuffers', function() {
           });
         }
       }
-    }).addClass('buffer').html('');
+    }).html('');
+  };
+
+  NuListBufferTypes.img = function ImageListBuffer(bufferNode, $scope) {
+    var input = bufferNode.find('input');
+    input.on('change', function(event) {
+      var files = event.target.files;
+      if(files.length > 0) {
+        event.preventDefault();
+        $scope.$apply(function(scope) {
+          for(var i = 0; i < files.length; i++) {
+            scope.$append(files[i]);
+          }
+        });
+        this.value = '';
+      }
+    });
   };
 
   NuListBufferTypes.default = noop;
@@ -210,7 +227,8 @@ nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
           angular.forEach(buffers, function(bufferTemplate) {
             var bufferScope = nuList.$bufferDefaults.$new(),
                 bufferNode = $compile( listBuffers.compile(
-                  trim(bufferTemplate.outerHTML), bufferScope ) )(bufferScope);
+                  trim(bufferTemplate.outerHTML), bufferScope ) )(bufferScope)
+                  .addClass('buffer');
             
             nuList.$buffers.push(bufferNode[0]);
           });
@@ -225,7 +243,7 @@ nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
         var eraseNode = function() { nuList.$removeItem(this.item); };
 
         attrs.$observe('readonly', function(value){
-          nuList.$defaults.$erase = 
+          nuList.$defaults.$erase =
             (value === 'readonly' || value === 'true')? noop : eraseNode;
         });
 

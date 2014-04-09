@@ -11,8 +11,19 @@ Revision History
 * Supports Two Themes default & bootstrap
 * Add New Show Component
 
-4r
+4r99.14
 * Reworked [List](http://gkodes.github.io/ngul/#nuList) much easier to customize templates of Items & Buffer
-* Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
+
+TODO'S
+4r
+* List Images Style's, Input Validators & Formaters
+
+4r
 * Improved Show functionality, hide arrows, half segement click (TODO: Animation)
-* In Line : TypeAhead
+* Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
+
+5r
+* TypeAhead with easy customization like the List
+    - Including Multiple Data Sets
+    - Data Set Headers
+    - Data Set Result Template
