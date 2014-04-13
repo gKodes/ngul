@@ -1,58 +1,65 @@
-NU List is divided into multiple directives, nuList being the base for all
+# nuList
 
-**Text List**
+The `nuList` directive instantiates a template once per item from a collection. Each template instance gets its own scope, where the given loop variable is set to the current collection item, `$index` is set to the item index or key, and `$erase` is a function on invocation would remove the item from the collection and update the view respectively.
+
+#### A Simple List <small>Text Tag's</small>
+
+<nu-list src="tags" ng-init="tags=['This', 'is', 'a', 'Tag', 'List']"></nu-list>
+
 ```html
-<nu-list src="tags" nu-list-type=""></nu-list>
+<nu-list src="tags"></nu-list>
 ```
 
-The one mandatory attribute for the list is `src` which is mapped to the variable (model) in the current scope. It shares an controller with the following functions
-* `$indexOf` -- returns the index of an list item
-* `$add` -- appends an given item to the list
-* `$remove` -- removes an given item from the list
-* `$empty` -- empty the view-only (DOM), wont impact the list in scope `src` attribute
-* `$draw` -- draw/update the view
-* `$render` and `$link` which need to be overridden to draw the list items (see the below directives.
+The one mandatory attribute for the list is `src` which is mapped to the variable (model) in the current scope.
 
-#### ngListType
-This is an attribute only directives which is the core render of the list (overrides $render function), it can render two types of lists _**txt**_ (Text) & _**img**_ (Picture), were _**txt**_ being the default. 
-* `$formatters` array is exposed over the controller which is similar to [ngModel.NgModelController#$formatters](http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$formatters)
+It shares an controller with the following functions
+* `$viewValue` {Object|Array} -- Actual value in the view.
+* `$modelValue` {Object|Array} -- The value in the model, that the control is bound to.
+* `$itemCompiler` {Function} -- compiled Item Node using `$compile` service. This would be called with a `Scope` and an cloneAttachFn.
+* `$itemNodeFactory` {Function} -- fn that takes one argument
+* `$removeItem` {Function} -- invoked to remove an item
+* `$render` {Function} -- Invoked when there external changes made to the list's model
+* `$buffers` {Array} -- An list of `Buffer` Nodes
+* `$defaults` {Scope} -- The parent scope for all Item Nodes
+* `$bufferDefaults` {Scope} -- The parent scope for all Buffer Nodes
+* `$getItems` {Array} --
 
-**Picture List**
+
+#### Buffered List <small>Push new tags</small>
+
+<nu-list src="tags2" ng-init="tags2=['This', 'is', 'a', 'Tag', 'List']"><buffer type="txt"/></nu-list>
+
 ```html
-<nu-list src="tags" nu-list-type="img"></nu-list>
+<nu-list src="tags"><buffer type="txt"/></nu-list>
 ```
 
-#### nuListAddable
-This is an attribute only directives which helps users added items to the list using an buffer. Existence of the buffer can be manipulated at runtime also, with value set to `false` the buffer is removed any other value the buffer is shown.
 
-* `$parsers` array is exposed over the controller which is similar to [ngModel.NgModelController#$parsers](http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$parsers)
+#### Customize Item View <small>Present your it in your own way</small>
 
-**List with an buffer**
+<nu-list src="tags3" ng-init="tags3 = [
+    {fname: 'Marquetta',lname: 'Bartell'},
+    {fname: 'Alethia', lname: 'Marvin'},
+    {fname: 'Roxanna',lname: 'Runolfsson'}
+  ]
+"><buffer type="txt"/></nu-list>
+
 ```html
-<nu-list src="tags" nu-list-type="" nu-list-addable=""></nu-list>
+<nu-list src="tags">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
 ```
 
-**Control the existence of buffer at runtime**
-```html
-<nu-list src="tags" nu-list-type="" nu-list-addable="{{addable}}"></nu-list>
-```
-
-#### nuListRemovable
-This is an attribute only directives which helps users to remove an list item when clicked on it. This can be manipulated at runtime also, with value set to `false` which prevents elements from being removed any other value allow them to be removed.
-
-**List for which items can be removed on click**
-```html
-<nu-list src="tags" nu-list-type="" nu-list-removable=""></nu-list>
-```
-
-**Control the items to be removed at runtime**
-```html
-<nu-list src="tags" nu-list-type="" nu-list-removable="{{removable}}"></nu-list>
-```
-
-### Other Example
-
-An List for which items can be added and removed at runtime.
-```html
-<nu-list src="tags" nu-list-type="" nu-list-addable="" nu-list-removable=""></nu-list>
+```json
+  [
+    {
+        fname: 'Marquetta',
+        lname: 'Bartell'
+    },
+    {
+        fname: 'Alethia',
+        lname: 'Marvin'
+    },
+    {
+        fname: 'Roxanna',
+        lname: 'Runolfsson'
+    },
+  ]
 ```
