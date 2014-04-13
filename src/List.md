@@ -22,7 +22,7 @@ It shares an controller with the following functions
 * `$buffers` {Array} -- An list of `Buffer` Nodes
 * `$defaults` {Scope} -- The parent scope for all Item Nodes
 * `$bufferDefaults` {Scope} -- The parent scope for all Buffer Nodes
-* `$getItems` {Array} --
+* `$getItems` {Function} -- Return's the list of item nodes only (Excludes buffers)
 
 
 #### Buffered List <small>Push new tags</small>
