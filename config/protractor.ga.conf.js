@@ -6,7 +6,7 @@ exports.config = {
 
   capabilities: {
     'phantomjs.binary.path': 'node_modules/phantomjs/lib/phantom/bin/phantomjs',
-    'browserName': 'chrome'
+    'browserName': 'firefox'
   },
 
   baseUrl: 'http://localhost:8981/test/protractor/html/nu.ga.html',
