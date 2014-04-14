@@ -8,7 +8,7 @@ exports.config = {
 
   capabilities: {
     'phantomjs.binary.path': 'node_modules/phantomjs/lib/phantom/bin/phantomjs',
-    'browserName': 'firefox'
+    'browserName': 'chrome'
   },
 
   baseUrl: 'http://localhost:8981/test/protractor/html/nu.ga.html',
@@ -28,9 +28,6 @@ if(process.env.TRAVIS) {
     build: process.env.TRAVIS_BUILD_NUMBER,
     name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
   };
-  // exports.config.baseUrl = 'http://localhost:8000/test/protractor/html/nu.ga.html';
 } else {
   exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }
-
-// jasmine.getEnv().addReporter new jasmine.JUnitXmlReporter dir, true, true
