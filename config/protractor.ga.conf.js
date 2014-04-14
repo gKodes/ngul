@@ -26,7 +26,7 @@ if(process.env.TRAVIS) {
   exports.config.capabilities = {
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     build: process.env.TRAVIS_BUILD_NUMBER,
-    name: 'Radian build #{process.env.TRAVIS_BUILD_NUMBER}'
+    name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
   };
   // exports.config.baseUrl = 'http://localhost:8000/test/protractor/html/nu.ga.html';
 } else {
