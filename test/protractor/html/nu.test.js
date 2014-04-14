@@ -1,6 +1,7 @@
 var testApp = angular.module('nu.test', [
   'ngRoute',
-  'nu',
+  'nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/:path', {templateUrl: function(parameters){

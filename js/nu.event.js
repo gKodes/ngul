@@ -1,5 +1,8 @@
-/*global angular, nu, forEach, isString, startsWith */
-nu.service('nuEvent', ['$parse', function($parse) {
+/*global angular, forEach, isString, startsWith */
+
+var nuEvent = angular.module('nu.Event', []);
+
+nuEvent.service('nuEvent', ['$parse', function($parse) {
   'use strict';
   var nuPartialEvent = function(fn, $scope) {
     return function nuPartialEvent(event) {

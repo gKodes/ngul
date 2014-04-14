@@ -1,5 +1,7 @@
 /*global angular: true*/
-nu.service('_ScrollSize', ['$window', function($window) {
+var nuSlider = angular.module('nu.Slider', []);
+
+nuSlider.service('_ScrollSize', ['$window', function($window) {
   'use strict';
   var height, width, sliders = [],
   scrollNode = angular.element(
@@ -44,7 +46,7 @@ nu.service('_ScrollSize', ['$window', function($window) {
   this.estimate();
 }]);
 
-nu.directive('nuSlider', ['_ScrollSize', // Gallery
+nuSlider.directive('nuSlider', ['_ScrollSize', // Gallery
   function(scrollSize) {
     'use strict';
     var template =

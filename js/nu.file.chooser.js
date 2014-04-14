@@ -1,6 +1,8 @@
-/*global angular, splitext, basename, nu: true*/
+/*global angular, splitext, basename: true*/
 
-nu.directive('nuFileChooser', ['nuEvent',
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.Event']);
+
+nuFileChooser.directive('nuFileChooser', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =

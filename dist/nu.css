@@ -34,6 +34,10 @@
   position: relative;
   font-size: 14px;
   transition: all 0.25s linear 0s;
+  -o-transition: all 0.25s linear 0s;
+  -ms-transition: all 0.25s linear 0s;
+  -moz-transition: all 0.25s linear 0s;
+  -webkit-transition: all 0.25s linear 0s;
   background: #ccc;
   user-select: none;
   -o-user-select: none;
@@ -41,15 +45,16 @@
   -moz-user-select: none;
   -webkit-user-select: none;
 }
-.nu.list .item.async,
-.nu.list .item.pool {
-  display: none;
+.nu.list img.item {
+  width: 64px;
+  height: 64px;
+  padding: 0;
 }
-.nu.list .item.remove {
+.nu.list .erase {
   cursor: pointer;
   position: relative;
 }
-.nu.list .item.remove:before {
+.nu.list .erase:before {
   top: 0;
   right: 0;
   bottom: 0;
@@ -58,25 +63,12 @@
   position: absolute;
   padding: 6px 6px 0;
 }
-.nu.list .item.remove:hover {
+.nu.list .erase:hover {
   padding-left: 9px;
   padding-right: 21px;
 }
-.nu.list .item.remove:hover:before {
+.nu.list .erase:hover:before {
   opacity: 1;
-}
-.nu.list .item.thumb {
-  padding: 0;
-}
-.nu.list .item.thumb img {
-  width: 64px;
-  height: 64px;
-  padding: 0;
-  display: block;
-}
-.nu.list .item.thumb:hover {
-  color: #fff;
-  padding: 0;
 }
 .nu.list .buffer {
   padding: 0 5px;
@@ -110,6 +102,9 @@
   font-weight: bold;
   line-height: 64px;
   position: absolute;
+}
+.nu.list .hidden-buffer {
+  display: none;
 }
 .nu.switch {
   display: inline-block;
@@ -642,15 +637,38 @@
 .nu.show img.active {
   display: block;
 }
-.nu.show .arrow {
+.nu.show .navigation {
+  width: 45%;
+  height: 100%;
   top: 0;
-  width: 40px;
-  height: 70px;
   bottom: 0;
   margin: auto;
   cursor: pointer;
   position: absolute;
+}
+.nu.show .navigation.right {
+  right: 0;
+}
+.nu.show .navigation.left {
+  left: 0;
+}
+.nu.show .navigation:hover .arrow {
+  opacity: 1;
+}
+.nu.show .arrow {
+  width: 40px;
+  height: 60px;
+  display: inline-block;
   overflow: hidden;
+  position: absolute;
+  top: 50%;
+  opacity: 0;
+  transition: opacity 0.25s linear 0s;
+  -o-transition: opacity 0.25s linear 0s;
+  -ms-transition: opacity 0.25s linear 0s;
+  -moz-transition: opacity 0.25s linear 0s;
+  -webkit-transition: opacity 0.25s linear 0s;
+  margin-top: -40px;
   box-sizing: border-box;
   -o-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -664,7 +682,7 @@
   height: 40px;
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
-  position: absolute;
+  position: relative;
   background: #999;
   border: 5px solid rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
@@ -675,14 +693,14 @@
   -webkit-box-sizing: border-box;
 }
 .nu.show .arrow.left {
-  left: 1.5%;
+  left: 0;
 }
 .nu.show .arrow.left:after {
   top: 10px;
   left: 19px;
 }
 .nu.show .arrow.right {
-  right: 1.5%;
+  right: 0;
 }
 .nu.show .arrow.right:after {
   top: 10px;

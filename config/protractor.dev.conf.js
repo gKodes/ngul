@@ -2,7 +2,7 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    '../test/protractor/nu.list.js'
+    '../test/protractor/*.js'
   ],
 
   capabilities: {

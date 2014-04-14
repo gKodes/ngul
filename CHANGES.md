@@ -14,12 +14,11 @@ Revision History
 4r99.14
 * Reworked [List](http://gkodes.github.io/ngul/#nuList) much easier to customize templates of Items & Buffer
 
-TODO'S
-4r
-* List Images Style's, Input Validators & Formaters
+4r104.14
+* List Images Style's, Supports Dirty/Pristine
+* Improved Show functionality > hide arrows, half segement click (TODO: Animation)
 
 4r
-* Improved Show functionality, hide arrows, half segement click (TODO: Animation)
 * Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
 
 5r

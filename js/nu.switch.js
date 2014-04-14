@@ -1,6 +1,8 @@
 /*global angular, random, move, nu*/
 
-nu.directive('nuSwitch', ['nuEvent',
+var nuSwitch = angular.module('nu.Switch', ['nu.Event']);
+
+nuSwitch.directive('nuSwitch', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =

@@ -30,7 +30,7 @@ describe('nu list', function() {
 
     unit = get_unit(5);
     unit.findAll(by.css('img')).then(function(nodes) {
-      expect(nodes.length).toEqual(4);
+      expect(nodes.length).toEqual(0);
     });
   });
 
@@ -94,6 +94,18 @@ describe('nu list', function() {
         nodes[4].getText().then(function(value) {
           expect(value).toEqual('Test1');
         });
+      });
+    });
+  });
+
+  it('should have 4 items after remove one off the list from between', function() {
+    var unit = get_unit(2);
+    unit.find('span.item', 3).click().then(function() {
+      unit.findAll(by.css('span.item')).then(function(nodes) {
+        var attrExpected = function(value){ expect(value).not.toEqual('none'); };
+        for(var i = 0; i < 4; i++) {
+          nodes[i].getCssValue('display').then(attrExpected);
+        }
       });
     });
   });

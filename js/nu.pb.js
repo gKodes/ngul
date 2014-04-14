@@ -1,6 +1,7 @@
 /*global angular, random, move, nu*/
+var nuPressButton = angular.module('nu.PressButton', ['nu.Event']);
 
-nu.directive('nuPressButton', ['nuEvent',
+nuPressButton.directive('nuPressButton', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =

@@ -1,0 +1,14 @@
+before_install: 
+- npm install -g grunt-cli
+addons: 
+  sauce_connect: true
+language: node_js
+node_js: 
+- "0.10"
+install: 
+- time npm install -d
+- webdriver-manager update
+env: 
+  global: 
+  - secure: kbKSXEcnWHBSECk9F+LDcn5ZimjfTGZ4clg+sd1wn6WEJWwGycw0tRAp4FeYJf76/fanstHLNjQlKFqODuon3Gsg7zK7bYDPmsk2gVwaCHvQKX3egstTHOXhFEK8EopVD8tUptDx85UfU3Cjq9B5/XXhcntPFEd2YxSumPXeGBg=
+  - secure: UdcH+mbwlerDCH42kI3po2Zak+lOc5Dq5ixSNUL/w8YA1odDWiB66M1vXpda/07YrBcnOCODOtHx0MS/pD1hC5zJk/+JJPY4SBo+/KrVjJg2eZWgqXg1127a8YY1B1aNXJL5T1rltcIL0P33BwgZwK7DF9ELr07hkVV0s9t3VUU=

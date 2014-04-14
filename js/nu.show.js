@@ -1,5 +1,7 @@
-/*global angular, nu: true*/
-nu.directive('nuShow', [
+/*global angular: true*/
+var nuShow = angular.module('nu.Show', []);
+
+nuShow.directive('nuShow', [
   function() {
     'use strict';
     var setActive = function() {
@@ -8,13 +10,15 @@ nu.directive('nuShow', [
     };
 
     return {
-      template: '<div class="nu show"><a class="arrow right"></a><a class="arrow left"></a></div>',
+      template: '<div class="nu show">' +
+        '<a class="navigation right"><div class="arrow right"></div></a>' +
+        '<a class="navigation left"><div class="arrow left"></div></a></div>',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
       transclude: true,
       link: function(scope, element, attrs, ngModel, transcludeFn) {
-        var imgs, active, transcludes = [], rawElement = element[0], dummy = angular.element('<img/>')[0];
+        var imgs, active, transcludes = [], rawElement = element[0];
 
         if(ngModel) {
           scope.$watchCollection(attrs.ngModel, function(viewValue) {
@@ -37,7 +41,7 @@ nu.directive('nuShow', [
           });
         }
 
-        transcludeFn(function(nodes) { 
+        transcludeFn(function(nodes) {
           angular.forEach(nodes, function(node) {
             if(node.tagName && node.tagName.toLowerCase() === 'img') {
               transcludes.push(node);
@@ -52,7 +56,7 @@ nu.directive('nuShow', [
 
         var arrowActions = [
           function() { /*Next*/ active = setActive(active, active.nextSibling || imgs[0]); },
-          function() { /*Prev*/ active = setActive(active, 
+          function() { /*Prev*/ active = setActive(active,
             (active.previousSibling.tagName.toLowerCase() === 'img')? active.previousSibling : imgs[imgs.length - 1]); }
         ];
 

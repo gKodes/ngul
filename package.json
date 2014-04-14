@@ -2,6 +2,9 @@
   "name": "nu",
   "version": "0.0.4",
   "description": "An collection of AngularJS directives without any 3rd party JS dependencies",
+  "scripts": {
+    "test": "grunt ga"
+  }
   "repository": {
     "type": "git",
     "url": "https://github.com/gKodes/ngul.git"

@@ -1,6 +1,9 @@
 /*global angular: true*/
 
-var nu = angular.module('nu', []);
+var VALID_CLASS = 'ng-valid',
+    INVALID_CLASS = 'ng-invalid',
+    PRISTINE_CLASS = 'ng-pristine',
+    DIRTY_CLASS = 'ng-dirty';
 
 var RE_EXT = /\.([\w\d]+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;

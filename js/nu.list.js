@@ -1,4 +1,6 @@
-/*global angular, nu, noop, equals, copy, trim, startsWith, forEach, extend, nuError: true*/
+/*global angular, noop, trim, startsWith, forEach, extend, nuError, PRISTINE_CLASS, DIRTY_CLASS: true*/
+var nuList = angular.module('nu.List', []);
+
 /**
  * @ngdoc object
  * @name ng.directive:nuList.NuListController
@@ -14,7 +16,7 @@
  * @property {Array} $buffers an list of `Buffer` Nodes
  * @property {Scope} $defaults the parent scope for all Item Nodes
  * @property {Scope} $bufferDefaults the parent scope for all Buffer Nodes
- * @property {Array} $getItems should return an array of Only Item Nodes (exclude's buffer nodes)
+ * @property {Function} $getItems Return's the list of item nodes only (Excludes buffers)
  *
  * @description
  *
@@ -22,8 +24,8 @@
  * services for data-binding, DOM rendering of Items using the `$itemCompiler` resulted Node.
  *
  */
-var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$compile',
-    function($scope, $element, $exceptionHandler, $attrs, $compile) {
+var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$compile', '$parse',
+    function($scope, $element, $exceptionHandler, $attrs, $compile, $parse) {
   'use strict';
   var nuList = this,
       itemNodes = [],
@@ -31,12 +33,17 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
       children = rawElement.children,
       capacity = parseInt($attrs.capacity) || 10, // Pool Capacity
       model = $attrs.nuList || $attrs.src,
+      modelGet = $parse(model),
+      modelSet = modelGet.assign,
+      internalChange = false,
       min = parseInt($attrs.min),
       max = parseInt($attrs.max),
       appendItem = function(node) {
         return rawElement.insertBefore(node, nuList.$buffers[0]);
       };
 
+  this.$dirty = false;
+  this.$pristine = true;
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
   this.$render = noop;
@@ -51,29 +58,35 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     '$append': function(item) {
       nuList.$itemNodeFactory(
           {'item' : item, '$index': nuList.$viewValue.length});
-      nuList.$viewValue.push(item);
+      nuList.$updateViewValue(nuList.$viewValue.push(item));
     },
     '$update': function(index, item) {
       angular.element(children[index]).scope().item = item;
     }
   });
 
-  this.$getItems = function(nodes) { return Array.prototype.slice.call(nodes, 0); };
+  this.$getItems = function() { return Array.prototype.slice.call(children, 0); };
   
   $scope.$watchCollection(model, function(modelValue) {
-    if( !modelValue ) { modelValue = $scope[model] = []; }
-    nuList.$modelValue = modelValue;
-    if( !equals(modelValue, nuList.$viewValue) ) {
+    if(!modelValue) {
+      if(modelSet) { modelSet($scope, []); return; }
+      nuList.$viewValue = [];
+      return;
+    }
+
+    if( !internalChange ) {
       // TODO: need to find an alternative for this
-      nuList.$viewValue = copy(modelValue);
-      itemNodes = nuList.$getItems(children);
+      nuList.$viewValue = nuList.$modelValue = modelValue;
+      itemNodes = nuList.$getItems();
       nuList.$render();
       angular.element(itemNodes.splice(capacity - 1)).remove();
       angular.element(itemNodes).css('display', 'none');
     }
+
+    internalChange = false;
   });
 
-  this.$itemCompiler = $compile('<span ng-click="$erase(item)">{{item}}</span>');
+  this.$itemCompiler = $compile('<span class="erase" ng-click="$erase(item)">{{item}}</span>');
 
   this.$itemNodeFactory = function(scopeExtend) {
     // There is an memory leek here because of $compile clone function
@@ -90,11 +103,31 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
   this.$removeItem = function(item) {
     var index = this.$viewValue.indexOf(item);
     if(children.length > index) {
-      this.$viewValue.splice(index, 1);
+      nuList.$viewValue.splice(index, 1);
       angular.element(children[index]).css('display', 'none');
       appendItem(children[index]);
     }
-    $scope[model].splice(index, 1);
+    nuList.$updateViewValue();
+  };
+
+  this.$setDirty = function() {
+    nuList.$pristine = false;
+    nuList.$dirty = true;
+    $element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
+  };
+
+  this.$setPristine = function() {
+    nuList.$pristine = true;
+    nuList.$dirty = false;
+    $element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+  };
+
+  this.$updateViewValue = function() {
+    if (nuList.$pristine) { nuList.$setDirty(); }
+    if(modelSet) {
+      internalChange = true;
+      modelSet($scope, nuList.$viewValue);
+    }
   };
 }];
 
@@ -111,7 +144,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
  * This service is used to help compile an `nuList > Buffer` template into an node based on
  * `type` attribute
  */
-nu.service('listBuffers', function() {
+nuList.service('listBuffers', function() {
   'use strict';
   var NuListBufferTypes = {};
 
@@ -194,7 +227,7 @@ nu.service('listBuffers', function() {
  </doc:example>
  *
  */
-nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
+nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
   function($compile, $parse, listBuffers) {
     'use strict';
     return {
@@ -209,7 +242,8 @@ nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
         var template = transcludeFn();
         template.scope().$destroy();
         var buffers = template.find('buffer').remove(),
-            itemTemplate = trim(template.html());
+            itemTemplate = trim(template.html()),
+            children = element[0].children;
         if(itemTemplate) {
             if( !startsWith(itemTemplate, '<') ) {
               itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
@@ -217,7 +251,7 @@ nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
 
             nuList.$itemCompiler = $compile(itemTemplate);
         }
-
+//element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
         //INFO: Append Buffers, if Any
         if(buffers.length > 0) {
           if( buffers.find('buffer').length > 0 ) {
@@ -235,8 +269,8 @@ nu.directive('nuList', ['$compile', '$parse', 'listBuffers',
 
           element.append(nuList.$buffers);
 
-          nuList.$getItems = function(nodes) {
-            return Array.prototype.slice.call(nodes, 0, -buffers.length);
+          nuList.$getItems = function() {
+            return Array.prototype.slice.call(children, 0, -buffers.length);
           };
         }
 

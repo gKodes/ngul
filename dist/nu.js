@@ -1,12 +1,17 @@
 /**
  * ngul 0.4
- * Copyright 2013 Kamalakar Gadireddy. and other contributors; https://github.com/gkodes/ngul
+ * Copyright 2013-2014 Kamalakar Gadireddy. and other contributors; https://github.com/gkodes/ngul
  * @license : MIT
  */
 
-(function(angular, nu) {
+(function(angular) {
 'use strict';
 /*global angular: true*/
+
+var VALID_CLASS = 'ng-valid',
+    INVALID_CLASS = 'ng-invalid',
+    PRISTINE_CLASS = 'ng-pristine',
+    DIRTY_CLASS = 'ng-dirty';
 
 var RE_EXT = /\.([\w\d]+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
@@ -25,413 +30,379 @@ var split_re = function(re) {
 var splitext = split_re(RE_EXT);
 var split = split_re(RE_BASENAME);
 var basename = function(path) { return split(path)[1]; };
+var move = {},
+    random = {},
+    noop = angular.noop,
+    copy = angular.copy,
+    equals = angular.equals,
+    forEach = angular.forEach,
+    isString = angular.isString,
+    isElement = angular.isElement,
+    extend = angular.extend,
+    nuError = angular.$$minErr('nu'),
+    isDefinedAndNotNull = function(value) {
+      return typeof value != 'undefined' && value !== null;
+    },
+    trim = function(str) {
+      return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
+    },
+    partial = function(fn, args, scope) {
+      return function() {
+        return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
+      };
+    },
+    startsWith = function(str, subStr) {
+      return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
+    };
 
-var random  = {
-  id : function(options)  {
-    options = angular.extend({pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8}, options);
+random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
+random.id = function(options) {
+    options = extend(random.defaults, options);
 
     var randStr = '';
     for (var i = 0; i < options.size; i++) {
       randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
     }
     return randStr;
+};
+
+move.attribute = function(dst, src, names) {
+  for (var count = 0; count < names.length; count++) {
+    dst.attr(names[count], src.attr(names[count]));
+    src.removeAttr(names[count]);
   }
+  return dst;
 };
 
-var attribute = {
-  move : function(dst, src, names) {
-    for (var count = 0; count < names.length; count++) {
-      dst.attr(names[count], src.attr(names[count]));
-      src.removeAttr(names[count]);
-    }
-    return dst;
-  }
-};
+var NuEventManager = (function() {
+  var _export = function() {
+    this.events = {};
+  };
 
-var invoke = function(method) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  if(angular.isFunction(method)){
-    var result = method.apply(this, args);
-    if( isDefinedAndNotNull(result) ) {
-      return result;
-    }
-  }
-  return args.length == 1? args[0] : args;
-};
-
-
-var isDefinedAndNotNull = function(value) {
-  return typeof value != 'undefined' && value !== null;
-};
-
-var pipeLine = function(pipe, done) {
-  var PipeLine = function(pipe, done) {
-    var index = 0;
-    var isAsync = false;
-    var onAsync = angular.noop;
-    var scope = {
-      'async' : function() {
-        isAsync = true;
-        onAsync();
-        return next;
+  _export.prototype.on = function(eventType, handler) {
+    if( !this.events[eventType] ) { this.events[eventType] = []; }
+    this.events[eventType].push(handler);
+  };
+  _export.prototype.off = function(eventType, handler) {
+    if( this.events[eventType] ) { 
+      var index = this.events[eventType].indexOf;
+      if ( index !== -1 ) {
+        return this.events[eventType].split(index, 1)[0];
       }
-    };
+    }
+  };
+  _export.prototype.trigger = function(eventType, extraParameters) {
+    if(this.events[eventType]) {
+      forEach(this.events[eventType], function(fn) {
+        fn(extraParameters);
+      });
+    }
+    return extraParameters;
+  };
 
-    var next = this.next = function(item){
-      while(index < pipe.length) {
-        item = pipe[index++].call(scope, item);
-        if( isAsync ) {
-          isAsync = false;
-          return this;
+  return _export;
+})(forEach);
+
+var nuList = angular.module('nu.List', []);
+
+/**
+ * @ngdoc object
+ * @name ng.directive:nuList.NuListController
+ *
+ * @property {Object|Array} $viewValue Actual value in the view.
+ * @property {Object|Array} $modelValue The value in the model, that the control is bound to.
+ * @property {Function} $itemCompiler and compiled Item Node using `$compile` service.
+ *    This would be called with a `Scope` and an cloneAttachFn.
+ * @property {Function} $itemNodeFactory fn that takes one argument
+ * @property {Function} $removeItem invoked to remove an item
+ * @property {Function} $render invoked when there external changes made to the list's model
+ *
+ * @property {Array} $buffers an list of `Buffer` Nodes
+ * @property {Scope} $defaults the parent scope for all Item Nodes
+ * @property {Scope} $bufferDefaults the parent scope for all Buffer Nodes
+ * @property {Function} $getItems Return's the list of item nodes only (Excludes buffers)
+ *
+ * @description
+ *
+ * `NuListController` provides API for the `nu-list` directive. The controller contains
+ * services for data-binding, DOM rendering of Items using the `$itemCompiler` resulted Node.
+ *
+ */
+var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$compile', '$parse',
+    function($scope, $element, $exceptionHandler, $attrs, $compile, $parse) {
+    var nuList = this,
+      itemNodes = [],
+      rawElement = $element[0],
+      children = rawElement.children,
+      capacity = parseInt($attrs.capacity) || 10,
+      model = $attrs.nuList || $attrs.src,
+      modelGet = $parse(model),
+      modelSet = modelGet.assign,
+      internalChange = false,
+      min = parseInt($attrs.min),
+      max = parseInt($attrs.max),
+      appendItem = function(node) {
+        return rawElement.insertBefore(node, nuList.$buffers[0]);
+      };
+
+  this.$dirty = false;
+  this.$pristine = true;
+  this.$viewValue = Number.NaN;
+  this.$modelValue = Number.NaN;
+  this.$render = noop;
+  this.$name = $attrs.name;
+  this.$buffers = [];
+  this.$defaults = extend($scope.$new(), {
+    '$erase': function() {
+      nuList.$removeItem(this.item);
+    }
+  });
+  this.$bufferDefaults = extend($scope.$new(), {
+    '$append': function(item) {
+      nuList.$itemNodeFactory(
+          {'item' : item, '$index': nuList.$viewValue.length});
+      nuList.$updateViewValue(nuList.$viewValue.push(item));
+    },
+    '$update': function(index, item) {
+      angular.element(children[index]).scope().item = item;
+    }
+  });
+
+  this.$getItems = function() { return Array.prototype.slice.call(children, 0); };
+  
+  $scope.$watchCollection(model, function(modelValue) {
+    if(!modelValue) {
+      if(modelSet) { modelSet($scope, []); return; }
+      nuList.$viewValue = [];
+      return;
+    }
+
+    if( !internalChange ) {
+
+      nuList.$viewValue = nuList.$modelValue = modelValue;
+      itemNodes = nuList.$getItems();
+      nuList.$render();
+      angular.element(itemNodes.splice(capacity - 1)).remove();
+      angular.element(itemNodes).css('display', 'none');
+    }
+
+    internalChange = false;
+  });
+
+  this.$itemCompiler = $compile('<span class="erase" ng-click="$erase(item)">{{item}}</span>');
+
+  this.$itemNodeFactory = function(scopeExtend) {
+
+    var itemNode = angular.element(itemNodes.shift() || nuList.$itemCompiler(
+      nuList.$defaults.$new(),
+      function(itemNode) {
+        appendItem(itemNode.addClass('list item')[0]);
+      })
+    );
+    extend(itemNode.scope(), scopeExtend);
+    return itemNode.css('display', '');
+  };
+
+  this.$removeItem = function(item) {
+    var index = this.$viewValue.indexOf(item);
+    if(children.length > index) {
+      nuList.$viewValue.splice(index, 1);
+      angular.element(children[index]).css('display', 'none');
+      appendItem(children[index]);
+    }
+    nuList.$updateViewValue();
+  };
+
+  this.$setDirty = function() {
+    nuList.$pristine = false;
+    nuList.$dirty = true;
+    $element.removeClass(PRISTINE_CLASS).addClass(DIRTY_CLASS);
+  };
+
+  this.$setPristine = function() {
+    nuList.$pristine = true;
+    nuList.$dirty = false;
+    $element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+  };
+
+  this.$updateViewValue = function() {
+    if (nuList.$pristine) { nuList.$setDirty(); }
+    if(modelSet) {
+      internalChange = true;
+      modelSet($scope, nuList.$viewValue);
+    }
+  };
+}];
+
+/**
+ * @ngdoc service
+ * @name nu.listBuffers
+ * @object
+ *
+ * @property {function(type, linkFn)} type create or retrive an `Buffer` link function
+ * @property {function(templateStr, scope)} compile compile an `Buffer` 
+ *    template using `$compile` and return it
+ *
+ * @description
+ * This service is used to help compile an `nuList > Buffer` template into an node based on
+ * `type` attribute
+ */
+nuList.service('listBuffers', function() {
+    var NuListBufferTypes = {};
+
+  NuListBufferTypes.txt = function TextListBuffer(bufferNode, $scope) {
+    bufferNode.attr('contenteditable', 'true');
+    bufferNode.on('keydown', function(event) {
+      var keyCode = (event.which || event.keyCode);
+      if (keyCode === 13) {
+        var item = trim(this.innerHTML).replace(/<br\/?>/gi, '');
+        this.innerHTML = '';
+        event.preventDefault();
+        if (item) {
+          $scope.$apply(function(scope) {
+            scope.$append(item);
+          });
         }
       }
-      done(item);
-      return this;
-    };
-
-    this.isAsync = function() {
-      return isAsync;
-    };
-
-    this.onAsync = function(value) {
-      onAsync = value;
-      return this;
-    };
+    }).html('');
   };
-  return new PipeLine(pipe, done);
-};
 
-var chainIt = function() {
-    if(!arguments[0] && arguments.length == 2) {
-    return arguments[1];
-  }
-  var seq = arguments;
-  return function() {
-    for(var i = 0; i < seq.length; i++) {
-      seq[i].apply(null, arguments);
-    }
+  NuListBufferTypes.img = function ImageListBuffer(bufferNode, $scope) {
+    var input = bufferNode.find('input');
+    input.on('change', function(event) {
+      var files = event.target.files;
+      if(files.length > 0) {
+        event.preventDefault();
+        $scope.$apply(function(scope) {
+          for(var i = 0; i < files.length; i++) {
+            scope.$append(files[i]);
+          }
+        });
+        this.value = '';
+      }
+    });
   };
-};
 
-var list = angular.module('nu.list', []);
-list.directive('nuList', [
-  function() {
-    return {
+  NuListBufferTypes.default = noop;
+
+  this.compile = function NuListBufferCompiler(templateStr, $scope) {
+
+    var bufferNode = angular.element(templateStr.replace(/(<\/?)buffer/gi, '$1span')),
+        bufferType = bufferNode.attr('type') || 'default';
+    NuListBufferTypes[bufferType](bufferNode, $scope);
+    return bufferNode;
+  };
+
+  this.type = function(type, fn) {
+    if(fn) { NuListBufferTypes[type] = fn; }
+    return NuListBufferTypes[type];
+  };
+});
+
+/**
+ * @ngdoc directive
+ * @name nu:nuList
+ *
+ * @restrict EACM
+ * @element ANY
+ * @priority 500
+ * @param {string} nuList Assignable angular expression to data-bind to.
+ * @param {string} src Assignable angular expression to data-bind to this is used in case `nuList` is not present.
+ * @param {number} capacity Optional the number of `itemNode`'s to be Pooled for re-use. Default value is 10
+ * @param {number} min - Not yet implemented
+ * @param {number} max - Not yet implemented
+ *
+ * @description
+ *
+ * The `nuList` directive instantiates a template once per item from a collection. Each template
+ * instance gets its own scope, where the given loop variable is set to the current collection item,
+ * `$index` is set to the item index or key, and `$erase` is a function on invocation would remove the
+ * item from the collection and update the view respectively.
+ *
+ <doc:example>
+   <doc:source src="css" type="less">
+   </doc:source>
+   <doc:source src="html" type="html">
+   </doc:source>
+   <doc:source src="js" type="js">
+   </doc:source>
+ </doc:example>
+ *
+ */
+nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
+  function($compile, $parse, listBuffers) {
+        return {
+      terminal: true,
+      priority: 99,
       template: '<div class="nu list"></div>',
-      restrict: 'EACM',
       replace: true,
-      controller: ['$scope', '$element', '$attrs', function($scope, $element) {
-        this.$render = angular.noop;
-        this.$filter = angular.noop;
-        this.$link = angular.noop;
-
-        this.$indexOf = angular.noop;
-        this.$formatters = [];
-        this.$parsers = [];
-        var nuList = this;
-
-        var render = function(item) {
-          var node = nuList.$render(item);
-          node.data('src', item);
-          nuList.$link(node);
-        };
-
-        this.$indexOf = function(node) {
-          for(var i = 0; i < nuList.$src.length; i++) {
-            if( angular.equals(node, nuList.$src[i]) ) {
-              return i;
+      transclude: 'element',
+      restrict: 'EACM',
+      controller: NuListController,
+      link: function(scope, element, attrs, nuList, transcludeFn) {
+        var template = transcludeFn();
+        template.scope().$destroy();
+        var buffers = template.find('buffer').remove(),
+            itemTemplate = trim(template.html()),
+            children = element[0].children;
+        if(itemTemplate) {
+            if( !startsWith(itemTemplate, '<') ) {
+              itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
             }
+
+            nuList.$itemCompiler = $compile(itemTemplate);
+        }
+
+
+        if(buffers.length > 0) {
+          if( buffers.find('buffer').length > 0 ) {
+            throw nuError('list', 'Nested buffers are not allowed');
           }
-          return -1;
-        };
 
-        this.$add = function(item) {
-          if(item) {
-            nuList.$src.push(item);
-          }
-        };
+          angular.forEach(buffers, function(bufferTemplate) {
+            var bufferScope = nuList.$bufferDefaults.$new(),
+                bufferNode = $compile( listBuffers.compile(
+                  trim(bufferTemplate.outerHTML), bufferScope ) )(bufferScope)
+                  .addClass('buffer');
+            
+            nuList.$buffers.push(bufferNode[0]);
+          });
 
-        this.$remove = function(node) {
-          nuList.$src.splice(nuList.$indexOf(node), 1);
-        };
+          element.append(nuList.$buffers);
 
-        this.$empty = function() {
-          $element.empty();
-        };
+          nuList.$getItems = function() {
+            return Array.prototype.slice.call(children, 0, -buffers.length);
+          };
+        }
 
-        this.$draw = function() {
-          nuList.$empty();
-          angular.forEach(nuList.$src, function(item) {
-            if( isDefinedAndNotNull(item) ) {
-              render(item);
-            }
+        var eraseNode = function() { nuList.$removeItem(this.item); };
+
+        attrs.$observe('readonly', function(value){
+          nuList.$defaults.$erase =
+            (value === 'readonly' || value === 'true')? noop : eraseNode;
+        });
+
+        attrs.$observe('buffer', function(value){
+          var bufferNodes = angular.element(nuList.$buffers);
+          if( value === 'false' ) {
+            bufferNodes.addClass('hidden-buffer');
+          } else { bufferNodes.removeClass('hidden-buffer'); }
+        });
+
+        nuList.$render = function() {
+          forEach(nuList.$viewValue, function(item, index) {
+            nuList.$itemNodeFactory({'item' : item, '$index': index});
           });
         };
-      }],
-      link: function(scope, element, attrs, nuList) {
-        var src = attrs[attrs.nuList? 'nuList' : 'src'];
-        scope.$watchCollection(src, function(value) {
-          nuList.$src = value? value : [];
-          nuList.$draw();
-        });
-      }
-    };
-  }
-]);
-
-list.directive('nuListType', [
-  function() {
-    var nodes = {
-      'img': angular.element('<span class="item thumb"><img></img></span>'),
-      'txt': angular.element('<span class="item"></span>')
-    };
-
-    var engines = {
-      'img': function(node) {
-        return function(value) {
-          node.removeClass('async').find('img')
-            .attr('src', value);
-        };
-      },
-      'txt': function(node) {
-        return function(value) {
-          node.removeClass('async').text(value);
-        };
-      }
-    };
-
-    return {
-      restrict: 'A',
-      require: 'nuList',
-      link: function(scope, element, attr, nuList) {
-        var engine, baseNode;
-
-        attr.$observe('nuListType', function(value) {
-          var isIMG = value == 'img';
-          engine = engines[(isIMG)? 'img' : 'txt'];
-          baseNode = nodes[(isIMG)? 'img' : 'txt'];
-        });
-
-        nuList.$render = function(item) {
-
-          var node = baseNode.clone();
-          pipeLine(nuList.$formatters, engine(node))
-            .onAsync(function(){
-              node.addClass('async');
-            }).next(item);
-          nuList.$render.append(node);
-          return node;
-        };
-        nuList.$render.append = function(node) {
-          element.append(node);
-        };
-      }
-    };
-  }
-]);
-
-list.directive('nuListRemovable', [
-  function() {
-    return {
-      restrict: 'A',
-      require: 'nuList',
-      link: function(scope, element, attr, nuList) {
-        var canRemove, remove_event = function(event) {
-          var target = angular.element(event.currentTarget);
-          nuList.$remove(target.data('src'));
-          scope.$digest();
-        };
-        
-        nuList.$link = function(node) {
-          if(canRemove === false) { return; }
-          node.addClass('remove').on('click', remove_event);
-        };
-        
-        var updateView = function() {
-          var nodes = element.find('span');
-          if(canRemove) {
-            nodes.addClass('remove').on('click', remove_event);
-            return;
-          }
-          nodes.removeClass('remove').off('click');
-        };
-
-        attr.$observe('nuListRemovable', function(value) {
-          canRemove = value === 'false'? false: true;
-          updateView();
-        });
-      }
-    };
-  }
-]);
-
-list.directive('nuListAddable', [
-  function() {
-    var linkers = {
-      'img' : function(scope, element, attr, nuList) {
-        var buffer = angular.element('<label class="buffer img">' +
-          '<input type="file"></label>');
-        var input = buffer.find('input');
-        input.on('change', function(event) {
-          for(var i = 0; i < event.currentTarget.files.length; i++) {
-            nuList.$add(event.currentTarget.files[i]);
-            scope.$digest();
-          }
-        });
-        attr.$observe('multiple', function(value) {
-          if(angular.isDefined(value) && value) { input.attr('multiple',''); }
-            else { input.removeAttr('multiple'); }
-        });
-
-
-        buffer.doFocus = function(event) {
-          if(event.srcElement === element[0]) {
-            buffer[0].click();
-          }
-        };
-
-        return buffer;
-      },
-      'txt' : function(scope, element, attr, nuList) {
-        var buffer = angular.element('<span contenteditable="true" class="buffer">&nbsp;</span>');
-
-        buffer.on('keydown', function(event) {
-          var keyCode = (event.which || event.keyCode);
-          if (keyCode === 13) {
-            var input = this.innerHTML.replace('&nbsp;','').trim();
-            this.innerHTML = '';
-
-            event.preventDefault();
-            if (input !== '') {
-              if (input) {
-                nuList.$add(input);
-                scope.$digest();
-              }
-            }
-          }
-        }).on('focus', function() {
-          this.innerHTML = this.innerHTML.replace('&nbsp;', '');
-        }).on('blur', function() {
-          if(this.innerHTML === '') { this.innerHTML = '&nbsp;'; }
-        });
-
-        buffer.doFocus = function(event) {
-          event.stopPropagation();
-          buffer[0].focus();
-        };
-
-        return buffer;
-      }
-    };
-
-    return {
-      restrict: 'A',
-      require: 'nuList',
-      link: function(scope, element, attr, nuList) {
-        var buffer, elementRaw = element[0], hasBuffer, base$add = nuList.$add;
-
-        nuList.$add = function(item) {
-          pipeLine(nuList.$parsers, base$add).next(item);
-        };
-        
-        var nuList$empty = nuList.$empty;
-        var empty = function() {
-          while(elementRaw.firstChild != elementRaw.lastChild) {
-            angular.element(elementRaw.firstChild).remove();
-          }
-        };
-
-        var nuList$render_append = nuList.$render.append;
-        var append = function(node) {
-          elementRaw.insertBefore(node[0], buffer[0]);
-        };
-
-        var picture_push = function() {
-          this.done(this.result);
-        };
-
-        var picture_formatter = function(value) {
-          if(value.name && value.type && value.type.match(/image.*/)) {
-            var reader = new FileReader();
-            reader.done = this.async();
-            reader.onload = picture_push;
-            reader.readAsDataURL(value);
-          }
-          return value;
-        };
-
-        var updateBuffer = function() {
-          element.off('mouseup');
-          if(buffer) {
-            if( !hasBuffer && buffer[0].parentNode === element[0]) {
-              element[0].removeChild(buffer[0]);
-              nuList.$empty = nuList$empty;
-              nuList.$render.append = nuList$render_append;
-              return;
-            }
-
-            element.append(buffer);
-            nuList.$empty = empty;
-            nuList.$render.append = append;
-            element.on('mouseup', buffer.doFocus);
-          }
-        };
-
-        attr.$observe('nuListAddable', function(value) {
-          hasBuffer = value !== 'false'? true: false;
-          updateBuffer();
-        });
-
-        attr.$observe('nuListType', function(value) {
-          var isIMG = value == 'img';
-          var get_buffer = linkers[isIMG? 'img' : 'txt'];
-          if(buffer) {
-            if(buffer[0].parentNode === element[0]) {
-              buffer.remove();
-            }
-            buffer.unbind();
-          }
-
-          buffer = get_buffer(scope, element, attr, nuList);
-          updateBuffer();
-
-          if(isIMG) {
-            nuList.$formatters.unshift(picture_formatter);
-          }
-        });
-      }
-    };
-  }
-]);
-
-list.directive('nuListTypeFilter', [
-  function() {
-    return {
-      restrict: 'A',
-      require: 'nuList',
-      link: function(scope, element, attr, nuList) {
-        var type;
-        nuList.$parsers.unshift(function(file){
-          if( !isDefinedAndNotNull(type) ||
-                  file.type.match(type) ) {
-            return file;
-          }
-        });
-
-        attr.$observe('nuListTypeFilter', function(value) {
-          type = new RegExp(value);
-        });
       }
     };
   }
 ]);
 
 
+var nuPressButton = angular.module('nu.PressButton', ['nu.Event']);
 
-
-var pb = angular.module('nu.pb', ['nu.event']);
-
-pb.directive('nuPressButton', ['nuEvent',
+nuPressButton.directive('nuPressButton', ['nuEvent',
   function(nuEvent) {
         var _template =
     '<div class="nu button press">' +
@@ -455,7 +426,7 @@ pb.directive('nuPressButton', ['nuEvent',
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
         attrs.$observe('iconOn', function(value) {
@@ -506,7 +477,7 @@ pb.directive('nuPressButton', ['nuEvent',
           }
         }
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function pbChange(event) {
           var isChecked = this.checked;
           event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -514,10 +485,11 @@ pb.directive('nuPressButton', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return {'target': attrs.name, 'value': parser(isChecked)};
+
+          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
         });
 
-        Event.bind(label, 'focus blur');
+
       }
     };
   }
@@ -526,9 +498,9 @@ pb.directive('nuPressButton', ['nuEvent',
 ]);
 
 
-var nswitch = angular.module('nu.switch', ['nu.event']);
+var nuSwitch = angular.module('nu.Switch', ['nu.Event']);
 
-nswitch.directive('nuSwitch', ['nuEvent',
+nuSwitch.directive('nuSwitch', ['nuEvent',
   function(nuEvent) {
         var _template =
     '<div class="nu switch">' +
@@ -552,7 +524,7 @@ nswitch.directive('nuSwitch', ['nuEvent',
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
         attrs.$observe('on', function (value) {
@@ -601,7 +573,7 @@ nswitch.directive('nuSwitch', ['nuEvent',
           }
         }
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function(event) {
           var isChecked = this.checked;
           event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
@@ -609,19 +581,19 @@ nswitch.directive('nuSwitch', ['nuEvent',
               ngModel.$setViewValue(isChecked);
             });
           }
-          return {'target': attrs.name, 'value': parser(isChecked)};
+          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
         });
 
-        Event.bind(label, 'focus blur');
+
       }
     };
   }
 ]);
 
 
-var chooser = angular.module('nu.file.chooser', ['nu.event']);
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.Event']);
 
-chooser.directive('nuFileChooser', ['nuEvent',
+nuFileChooser.directive('nuFileChooser', ['nuEvent',
   function(nuEvent) {
         var _template =
     '<label class="nu file chooser" style="position: relative;">' +
@@ -683,7 +655,8 @@ chooser.directive('nuFileChooser', ['nuEvent',
         }
 
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function(event) {
+          var eventBase = {'target': attrs.name};
           if( event.currentTarget.files.length > 0 ) {
             var file = event.currentTarget.files[0];
             if(ngModel) {
@@ -692,20 +665,21 @@ chooser.directive('nuFileChooser', ['nuEvent',
               });
             }
             name.html(nameOnly(file));
-            return {'target': attrs.name, 'value': event.currentTarget.files};
+            eventBase.value = event.currentTarget.files;
           }
-          return {'target': attrs.name};
+          Event.trigger('change', eventBase);
         });
 
-        Event.bind(element, 'focus blur');
+
       }
     };
   }
 ]);
 
 
-var show = angular.module('nu.show', []);
-show.directive('nuShow', [
+var nuShow = angular.module('nu.Show', []);
+
+nuShow.directive('nuShow', [
   function() {
         var setActive = function() {
       angular.element(arguments).toggleClass('active');
@@ -713,13 +687,15 @@ show.directive('nuShow', [
     };
 
     return {
-      template: '<div class="nu show"><a class="arrow right"></a><a class="arrow left"></a></div>',
+      template: '<div class="nu show">' +
+        '<a class="navigation right"><div class="arrow right"></div></a>' +
+        '<a class="navigation left"><div class="arrow left"></div></a></div>',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
       transclude: true,
       link: function(scope, element, attrs, ngModel, transcludeFn) {
-        var imgs, active, transcludes = [], rawElement = element[0], dummy = angular.element('<img/>')[0];
+        var imgs, active, transcludes = [], rawElement = element[0];
 
         if(ngModel) {
           scope.$watchCollection(attrs.ngModel, function(viewValue) {
@@ -742,7 +718,7 @@ show.directive('nuShow', [
           });
         }
 
-        transcludeFn(function(nodes) { 
+        transcludeFn(function(nodes) {
           angular.forEach(nodes, function(node) {
             if(node.tagName && node.tagName.toLowerCase() === 'img') {
               transcludes.push(node);
@@ -757,7 +733,7 @@ show.directive('nuShow', [
 
         var arrowActions = [
           function() {  active = setActive(active, active.nextSibling || imgs[0]); },
-          function() {  active = setActive(active, 
+          function() {  active = setActive(active,
             (active.previousSibling.tagName.toLowerCase() === 'img')? active.previousSibling : imgs[imgs.length - 1]); }
         ];
 
@@ -769,8 +745,9 @@ show.directive('nuShow', [
   }
 ]);
 
-var slider = angular.module('nu.slider', []);
-slider.service('_ScrollSize', ['$window', function($window) {
+var nuSlider = angular.module('nu.Slider', []);
+
+nuSlider.service('_ScrollSize', ['$window', function($window) {
     var height, width, sliders = [],
   scrollNode = angular.element(
     '<div style="width:100px;height:100px;overflow:scroll;">' +
@@ -814,7 +791,7 @@ slider.service('_ScrollSize', ['$window', function($window) {
   this.estimate();
 }]);
 
-slider.directive('nuSlider', ['_ScrollSize',
+nuSlider.directive('nuSlider', ['_ScrollSize',
   function(scrollSize) {
         var template =
       '<div class="nu slider">' +
@@ -838,41 +815,63 @@ slider.directive('nuSlider', ['_ScrollSize',
   }
 ]);
 
-var Event = angular.module('nu.event', []);
 
-Event.service('nuEvent', ['$parse', function($parse) {
-    var nuEventCreator = function(scope, attrs) {
-    var NUEvent = function(scope, attrs) {
-      var Event = {};
-      angular.forEach(attrs, function(value, name) {
-        if(angular.isString(name)) {
-          var indexOfnu = name.indexOf('nu');
-          if( indexOfnu === 0 ) {
-            Event[name.substr(2).toLowerCase()] = $parse(value);
+
+var nuEvent = angular.module('nu.Event', []);
+
+nuEvent.service('nuEvent', ['$parse', function($parse) {
+    var nuPartialEvent = function(fn, $scope) {
+    return function nuPartialEvent(event) {
+      fn($scope, {'$event': event});
+      $scope.$digest();
+    };
+  };
+
+  var nuEventCreator = function(scope, attrs) {
+    var NuEventController = function($scope, $attrs) {
+      NuEventManager.call(this);
+      forEach($attrs, function(value, name) {
+        if( isString(name) ) {
+          if( startsWith(name, 'nu') ) {
+            this.on(name.substr(2).toLowerCase(), nuPartialEvent($parse(value), $scope));
           }
         }
-      });
-
-      var trigger = this.trigger = function(name, event) {
-        if(Event[name]) {
-          Event[name](scope, {'$event': event});
-          scope.$digest();
-        }
-      };
-
-      this.bind = function(element, name, transformationFn) {
-        angular.forEach(name.split(' '), function(ename) {
-          if(Event[ename] || transformationFn) {
-            element.on(ename, function(event) {
-              trigger(ename, (transformationFn || angular.identity).call(this, event));
-            });
-          }
-        });
-      };
+      }, this);
     };
 
-    return new NUEvent(scope, attrs);
+    extend(NuEventController.prototype, NuEventManager.prototype);
+
+    return new NuEventController(scope, attrs);
   };
 
   return nuEventCreator;
-}]);})(angular, this.nu = this.nu || {});
+}]);
+
+var nuSrc = angular.module('nu.Src', []);
+
+nuSrc.directive('nuSrc', [
+  function() {
+        return {
+      restrict: 'AC',
+      link: function(scope, element, attrs) {
+        scope.$watch(attrs.nuSrc, function(value) {
+          if( isString(value) ) {
+            attrs.$set('src', value);
+          } else if (window.File && window.FileReader &&
+                value.name && value.lastModifiedDate) {
+            var reader = new FileReader();
+            reader.readAsDataURL(value);
+            reader.onload = function(evt) {
+              attrs.$set('src', evt.target.result);
+            };
+          }
+        });
+      }
+    };
+  }
+]);
+
+var nu = angular.module('nu', 
+  ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event']);
+})(angular);
