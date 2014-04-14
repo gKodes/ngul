@@ -1,10 +1,9 @@
 /*global exports, process: true*/
 exports.config = {
   allScriptsTimeout: 11000,
-  dir: '../test/protractor/',
 
   specs: [
-    '*.js'
+    '../test/protractor/*.js'
   ],
 
   capabilities: {
