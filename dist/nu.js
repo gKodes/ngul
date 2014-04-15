@@ -267,7 +267,7 @@ nuList.service('listBuffers', function() {
     }).html('');
   };
 
-  NuListBufferTypes.img = function ImageListBuffer(bufferNode, $scope) {
+  NuListBufferTypes.file = function ImageListBuffer(bufferNode, $scope) {
     var input = bufferNode.find('input');
     input.on('change', function(event) {
       var files = event.target.files;
@@ -289,6 +289,7 @@ nuList.service('listBuffers', function() {
 
     var bufferNode = angular.element(templateStr.replace(/(<\/?)buffer/gi, '$1span')),
         bufferType = bufferNode.attr('type') || 'default';
+    if( !NuListBufferTypes[bufferType] ) { bufferType = 'default'; }
     NuListBufferTypes[bufferType](bufferNode, $scope);
     return bufferNode;
   };
