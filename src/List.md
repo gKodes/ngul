@@ -4,9 +4,7 @@ The `nuList` directive instantiates a template once per item from a collection. 
 
 #### A Simple List <small>Text Tag's</small>
 
-<nu-list src="tags" ng-init="tags=['This', 'is', 'a', 'Tag', 'List']"></nu-list>
-
-    <nu-list src="tags"></nu-list>
+<iframe style="width: 100%; height: 100px" src="http://jsfiddle.net/gKodes/ENz5L/embedded/result,html,js,css,resources" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 The one mandatory attribute for the list is `src` which is mapped to the variable (model) in the current scope.
 
@@ -25,64 +23,25 @@ It shares an controller with the following functions
 
 #### Buffered List <small>Push new tags</small>
 
-<nu-list src="tags2" ng-init="tags2=['This', 'is', 'a', 'Tag', 'List']"><buffer type="txt"/></nu-list>
+<iframe style="width: 100%; height: 100px" src="http://jsfiddle.net/gKodes/JUtP6/embedded/result,html,js,css,resources" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+The above list sample has an customsed template based of bootstrap css lable. Let's see an little more flex in the below one.
 
-    <nu-list src="tags"><buffer type="txt"/></nu-list>
+##### Customize Item View <small>Present your it in your own way</small>
 
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/gKodes/9Py5p/embedded/result,html,js,css,resources" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
+The above list sample has an customsed template based of bootstrap css lable. Let's see an little more flex in the below one
 
-#### Customize Item View <small>Present your it in your own way</small>
+##### **Erasable and Buffer**
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/gKodes/xnTrZ/embedded/result,html,js,css,resources" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<nu-list src="tags3" ng-init="tags3 = [
-    {fname: 'Marquetta',lname: 'Bartell'},
-    {fname: 'Alethia', lname: 'Marvin'},
-    {fname: 'Roxanna',lname: 'Runolfsson'}
-  ]
-"><span class="label label-info" ng-click="$erase()">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
+After adding `ng-click="$erase()"`, on click off an element it gets erased from the list
 
-    <nu-list src="tags"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
+There are two inbult buffer types
 
-Model
+ * `txt` -- Helps add string item's to the list
+ * `file` -- Helps `File` Objects using an `input type="file"`
 
-    [
-      {
-          fname: 'Marquetta',
-          lname: 'Bartell'
-      },
-      {
-          fname: 'Alethia',
-          lname: 'Marvin'
-      },
-      {
-          fname: 'Roxanna',
-          lname: 'Runolfsson'
-      },
-    ]
+##### **Have your own tags**
 
-#### Customize View <small>Have your own tags</small>
-
-<nu-list src="tags4" ng-init="tags4 = [
-    'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
-    'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
-    'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
-    'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
-    'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
-    'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
-    'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
-  ]"><img class="list item" nu-src="item"/></nu-list>
-
-    <nu-list nu-src="tags"><img class="list item" src="item"/></nu-list>
-
-Model
-
-    function demoCtrl($scope) {
-      $scope.tags = [
-        'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
-        'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
-        'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
-        'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
-        'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
-        'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
-        'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
-      ];
-    }
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/gKodes/CVr8t/embedded/result,html,js,css,resources" allowfullscreen="allowfullscreen" frameborder="0"></iframe>

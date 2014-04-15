@@ -34,6 +34,17 @@
 	  // $locationProvider.html5Mode(true);
 	});
 
+  //demo.directive('nuGist', function() {
+    //
+    // http://htmlpreview.github.io/?https://raw.github.com/twbs/bootstrap/gh-pages/2.3.2/index.html
+    // http://jsfiddle.net/img/embeddable/logo.png
+    // http://embed.plnkr.co/img/plunker.png
+    // http://static.jsbin.com/images/jsbin_16.png
+    // border: solid 1px #C6CACD;
+    // color: #525252;
+    // <script src="https://gist.github.com/gKodes/10728265.js"></script>
+  //});
+
   angular.element(document).ready(function() {
     angular.bootstrap(document, ['nu.Deno']);
   });
