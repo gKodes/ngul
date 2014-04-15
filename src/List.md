@@ -38,7 +38,7 @@ It shares an controller with the following functions
     {fname: 'Alethia', lname: 'Marvin'},
     {fname: 'Roxanna',lname: 'Runolfsson'}
   ]
-"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
+"><span class="label label-info" ng-click="$erase()">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
 
     <nu-list src="tags"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
 
@@ -69,9 +69,9 @@ Model
     'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
     'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
     'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
-  ]"><img nu-src="item"/></nu-list>
+  ]"><img class="list item" nu-src="item"/></nu-list>
 
-    <nu-list nu-src="tags"><img src="item"/></nu-list>
+    <nu-list nu-src="tags"><img class="list item" src="item"/></nu-list>
 
 Model
 
