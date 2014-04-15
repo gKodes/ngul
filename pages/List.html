@@ -30,8 +30,8 @@
     {fname: 'Alethia', lname: 'Marvin'},
     {fname: 'Roxanna',lname: 'Runolfsson'}
   ]
-">{{item.fname}}&nbsp;{{item.lname}}</nu-list></p>
-<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>{{item.fname}}<span style="color: #ce5c00">&amp;nbsp;</span>{{item.lname}}<span style="color: #204a87; font-weight: bold">&lt;/nu-list&gt;</span>
+"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;span</span> <span style="color: #c4a000">class=</span><span style="color: #4e9a06">&quot;label label-info&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>{{item.fname}}<span style="color: #ce5c00">&amp;nbsp;</span>{{item.lname}}<span style="color: #204a87; font-weight: bold">&lt;/span&gt;&lt;/nu-list&gt;</span>
 </pre></div>
 
 
@@ -54,7 +54,7 @@
 
 
 <h4>Customize View <small>Have your own tags</small></h4>
-<p><nu-list src="tags3" init="tags3 = [
+<p><nu-list src="tags4" ng-init="tags4 = [
     'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
     'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
     'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',

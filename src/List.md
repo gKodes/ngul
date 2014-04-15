@@ -38,9 +38,9 @@ It shares an controller with the following functions
     {fname: 'Alethia', lname: 'Marvin'},
     {fname: 'Roxanna',lname: 'Runolfsson'}
   ]
-">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
+"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
 
-    <nu-list src="tags">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
+    <nu-list src="tags"><span class="label label-info">{{item.fname}}&nbsp;{{item.lname}}</span></nu-list>
 
 Model
 
@@ -61,7 +61,7 @@ Model
 
 #### Customize View <small>Have your own tags</small>
 
-<nu-list src="tags3" init="tags3 = [
+<nu-list src="tags4" ng-init="tags4 = [
     'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
     'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
     'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
