@@ -189,14 +189,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     internalChange = false;
   });
 
-  this.$itemCompiler = $compile('<span class="erase" ng-click="$erase(item)">{{item}}</span>');
+  this.$itemCompiler = $compile('<span class="list item erase" ng-click="$erase(item)">{{item}}</span>');
 
   this.$itemNodeFactory = function(scopeExtend) {
 
     var itemNode = angular.element(itemNodes.shift() || nuList.$itemCompiler(
       nuList.$defaults.$new(),
       function(itemNode) {
-        appendItem(itemNode.addClass('list item')[0]);
+        appendItem(itemNode[0]);
       })
     );
     extend(itemNode.scope(), scopeExtend);
@@ -380,6 +380,7 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
         attrs.$observe('readonly', function(value){
           nuList.$defaults.$erase =
             (value === 'readonly' || value === 'true')? noop : eraseNode;
+          if(nuList.$defaults.$erase !== noop) { element.attr('readonly', ''); }
         });
 
         attrs.$observe('buffer', function(value){

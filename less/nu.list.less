@@ -89,5 +89,18 @@
     display: none;
   }
 
+  &[readonly='readonly'], &[readonly='true'] {
+    .erase {
+      &:hover {
+        &:before {
+          opacity: 0;
+        }
+
+        cursor: default;
+        padding: @nu-list-padding;
+      }
+    }
+  }
+
   display: inline-block;
 }

@@ -106,6 +106,15 @@
 .nu.list .hidden-buffer {
   display: none;
 }
+.nu.list[readonly='readonly'] .erase:hover,
+.nu.list[readonly='true'] .erase:hover {
+  cursor: default;
+  padding: 6px 15px;
+}
+.nu.list[readonly='readonly'] .erase:hover:before,
+.nu.list[readonly='true'] .erase:hover:before {
+  opacity: 0;
+}
 .nu.switch {
   display: inline-block;
 }
