@@ -1,1 +1,5 @@
-})(angular, this.nu = this.nu || {});
+
+var nu = angular.module('nu', 
+  ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event']);
+})(angular);

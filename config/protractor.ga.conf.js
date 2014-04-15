@@ -1,6 +1,5 @@
+/*global exports, process: true*/
 exports.config = {
-  allScriptsTimeout: 11000,
-
   specs: [
     '../test/protractor/*.js'
   ],
@@ -10,12 +9,23 @@ exports.config = {
     'browserName': 'firefox'
   },
 
-  seleniumAddress: 'http://localhost:4444/wd/hub',
   baseUrl: 'http://localhost:8981/test/protractor/html/nu.ga.html',
   
   framework: 'jasmine',
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 3000
   }
 };
+
+if(process.env.TRAVIS) {
+  exports.config.sauceUser = process.env.SAUCE_USERNAME;
+  exports.config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+  exports.config.capabilities = {
+    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    build: process.env.TRAVIS_BUILD_NUMBER,
+    name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
+  };
+} else {
+  exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
+}

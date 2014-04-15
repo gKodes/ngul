@@ -1,11 +1,7 @@
 var testApp = angular.module('nu.test', [
   'ngRoute',
-  'nu.pb',
-  'nu.list',
-  'nu.switch',
-  'nu.file.chooser',
-  'nu.show',
-  'nu.slider'
+  'nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/:path', {templateUrl: function(parameters){
@@ -18,6 +14,7 @@ testApp.controller('listTest', function($scope, $log){
   //array_element
   //$scope.list = Faker.Lorem.words(Faker.random.number(15));
   $scope.list = ['Elm 1', 'Elm 2', 'Elm 3', 'Elm 4'];
+  $scope.bump = function(){ $scope.list.push(Faker.Name.findName()); }
 });
 
 testApp.controller('listImgTest', function($scope, $log){

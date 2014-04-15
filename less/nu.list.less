@@ -5,59 +5,46 @@
 
 .nu.list {
   .item {
-    &.async, &.pool {
-      display: none;
-    }
-
-    // Style of the X button
-    &.remove {
-      &:before {
-        top: 0;
-        right: 0;
-        bottom: 0;
-        opacity: 0;
-        content: '\d7';
-        position: absolute;
-        padding: @nu-list-remvoe-padding;
-      }
-
-      &:hover {
-        &:before {
-          opacity: 1;
-        }
-        // Padding to make the animation effect
-        padding-left: (@nu-list-margin-sides * 0.3);
-        padding-right: (@nu-list-margin-sides * 0.7);
-      }
-      
-      cursor: pointer;
-      position: relative;
-    }
-
-    &.thumb {
-      img {
-        width: @nu-list-img-width;
-        height: @nu-list-img-height;
-        padding: 0;
-        display: block;
-      }
-
-      &:hover { 
-        color: #fff;
-        padding: 0;
-      }
-      padding: 0;
-    }
-
     cursor: default;
     margin: 0 0 3px 3px;
     display: inline-block;
     padding: @nu-list-padding;
     position: relative;
     font-size: @nu-list-font-size;
-    transition: all 0.25s linear 0s;
+    #nu > #mixin > .transition(all 0.25s linear 0s);
     background: #ccc;
     #nu > #mixin > .unselectable();
+  }
+
+  img.item {
+    width: @nu-list-img-width;
+    height: @nu-list-img-height;
+    padding: 0;
+  }
+
+  // Style of the X button
+  .erase {
+    &:before {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      content: '\d7';
+      position: absolute;
+      padding: @nu-list-remvoe-padding;
+    }
+
+    &:hover {
+      &:before {
+        opacity: 1;
+      }
+      // Padding to make the animation effect
+      padding-left: (@nu-list-margin-sides * 0.3);
+      padding-right: (@nu-list-margin-sides * 0.7);
+    }
+    
+    cursor: pointer;
+    position: relative;
   }
 
   .buffer {
@@ -96,6 +83,23 @@
     padding: 0 5px;
     margin: 0 0 3px 3px;
     background: none;
+  }
+
+  .hidden-buffer {
+    display: none;
+  }
+
+  &[readonly='readonly'], &[readonly='true'] {
+    .erase {
+      &:hover {
+        &:before {
+          opacity: 0;
+        }
+
+        cursor: default;
+        padding: @nu-list-padding;
+      }
+    }
   }
 
   display: inline-block;

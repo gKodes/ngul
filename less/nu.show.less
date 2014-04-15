@@ -14,6 +14,30 @@
     #nu > #mixin > .unselectable();
   }
 
+  .navigation {
+    &.right {
+      right: 0;
+    }
+
+    &.left {
+      left: 0;
+    }
+
+    &:hover {
+      .arrow {
+        opacity: 1;
+      }
+    }
+
+    width: 45%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    cursor: pointer;
+    position: absolute;
+  }
+
   .arrow {
     &:after {
         content: ' ';
@@ -22,7 +46,7 @@
         height: @show-arrow;
         transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
-        position: absolute;
+        position: relative;
         background: #999;
         border: 5px solid rgba(0, 0, 0, 0.2);
         background-clip: padding-box;
@@ -34,7 +58,7 @@
           top: (@show-arrow / 4);
           left: ((@show-arrow / 2) - 1px);
       }
-      left: 1.5%; 
+      left: 0;
     }
 
 
@@ -43,17 +67,18 @@
         top: (@show-arrow / 4);
         left: -((@show-arrow / 2) - 1px);
       }
-      right: 1.5%; 
+      right: 0;
     }
 
-    top: 0;
     width: @show-arrow;
-    height: ((@show-arrow * 1.5) + 10px);
-    bottom: 0;
-    margin: auto;
-    cursor: pointer;
-    position: absolute;
+    height: (@show-arrow * 1.5);
+    display: inline-block;
     overflow: hidden;
+    position: absolute;
+    top: 50%;
+    opacity: 0;
+    #nu > #mixin > .transition(opacity 0.25s linear 0s);
+    margin-top: -@show-arrow;
     #nu > #mixin > .box-sizing(border-box);
   }
 

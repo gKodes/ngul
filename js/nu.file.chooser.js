@@ -1,8 +1,8 @@
 /*global angular, splitext, basename: true*/
 
-var chooser = angular.module('nu.file.chooser', ['nu.event']);
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.Event']);
 
-chooser.directive('nuFileChooser', ['nuEvent',
+nuFileChooser.directive('nuFileChooser', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =
@@ -65,7 +65,8 @@ chooser.directive('nuFileChooser', ['nuEvent',
         }
 
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function(event) {
+          var eventBase = {'target': attrs.name};
           if( event.currentTarget.files.length > 0 ) {
             var file = event.currentTarget.files[0];
             if(ngModel) {
@@ -74,12 +75,12 @@ chooser.directive('nuFileChooser', ['nuEvent',
               });
             }
             name.html(nameOnly(file));
-            return {'target': attrs.name, 'value': event.currentTarget.files};
+            eventBase.value = event.currentTarget.files;
           }
-          return {'target': attrs.name};
+          Event.trigger('change', eventBase);
         });
 
-        Event.bind(element, 'focus blur');
+        //Event.bind(element, 'focus blur');
       }
     };
   }

@@ -1,8 +1,7 @@
-/*global angular, random, attribute*/
+/*global angular, random, move, nu*/
+var nuPressButton = angular.module('nu.PressButton', ['nu.Event']);
 
-var pb = angular.module('nu.pb', ['nu.event']);
-
-pb.directive('nuPressButton', ['nuEvent',
+nuPressButton.directive('nuPressButton', ['nuEvent',
   function(nuEvent) {
     'use strict';
     var _template =
@@ -27,7 +26,7 @@ pb.directive('nuPressButton', ['nuEvent',
           element.removeAttr('id');
         } else { id = random.id(); }
 
-        attribute.move(input, element, ['type', 'name', 'checked']).attr('id', id);
+        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
         attrs.$observe('iconOn', function(value) {
@@ -78,18 +77,19 @@ pb.directive('nuPressButton', ['nuEvent',
           }
         }
 
-        Event.bind(input, 'change', function(event) {
+        input.on('change', function pbChange(event) {
           var isChecked = this.checked;
-          event.stopPropagation(); // 
+          event.stopPropagation();
           if( ngModel && (this.type !== 'radio' || isChecked) ) {
             scope.$apply(function() {
               ngModel.$setViewValue(isChecked);
             });
           }
-          return {'target': attrs.name, 'value': parser(isChecked)};
+
+          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
         });
 
-        Event.bind(label, 'focus blur');
+        // Event.bind(label, 'focus blur');
       }
     };
   }

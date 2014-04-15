@@ -1,11 +1,12 @@
 <div unit="" ng-controller="listTest">
-  <nu-list src="list" nu-list-type=""></nu-list>
+  <nu-list src="list"></nu-list>
+
   <button ng-click="list.push('Bump')">Bump</button>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="listTest" ng-init="addable = false">
-  <nu-list src="list" nu-list-addable="{{addable}}" nu-list-type=""></nu-list>
+  <nu-list src="list" buffer="{{addable}}"><buffer type="txt"/></nu-list>
   <div>
     <button ng-click="addable = false">Set addable to 'false'</button>
     <button ng-click="addable = true">Set addable to 'true'</button>
@@ -14,37 +15,25 @@
 </div>
 
 <div unit="" ng-controller="listTest">
-  <nu-list src="list" nu-list-removable="" nu-list-type=""></nu-list>
+  <nu-list src="list" readonly="true"></nu-list>
   <div result="">{{unitCase}}</div>
 </div>
 
-<div unit="" ng-controller="listTest" ng-init="removable = false">
-  <nu-list src="list" nu-list-addable="" nu-list-removable="{{removable}}" nu-list-type=""></nu-list>
+<div unit="" ng-controller="listTest" ng-init="readOnly = true">
+  <nu-list src="list" readonly="{{readOnly}}" buffer="{{!readOnly}}" capacity="2"><buffer type="txt"/></nu-list>
   <div>
-    <button ng-click="list.push('Bump')">Bump</button>
+    <button ng-click="bump()">Bump</button>
     <button ng-click="$log.info(list)">Echo</button>
-    <button ng-click="removable = false">Set removable to 'false'</button>
-    <button ng-click="removable = true">Set removable to 'true'</button>
+    <button ng-click="readOnly = false">Set readOnly to 'false'</button>
+    <button ng-click="readOnly = true">Set readOnly to 'true'</button>
   </div>
   <div result="">{{unitCase}}</div>
 </div>
 
-<!-- div unit="" ng-controller="listImgTest">
-  <nu-list src="list" nu-list-type="img"></nu-list>
-  <div result="">{{unitCase}}</div>
-</div>
-
-<div unit="" ng-controller="listImgTest">
-  <nu-list src="list" nu-list-addable="" nu-list-type="img"></nu-list>
-  <div result="">{{unitCase}}</div>
-</div>
-
-<div unit="" ng-controller="listImgTest">
-  <nu-list src="list" nu-list-removable="" nu-list-type="img"></nu-list>
-  <div result="">{{unitCase}}</div>
-</div -->
-
-<div unit="" ng-controller="listImgTest">
-  <nu-list src="list" nu-list-addable="" nu-list-removable="" nu-list-type="img"></nu-list>
+<div unit="" ng-controller="angular.noop">
+  <nu-list src="list">
+    <img nu-src="item" class="list item" ng-click="$erase()">
+    <buffer type="file"><input type="file" multiple=""></buffer>
+  </nu-list>
   <div result="">{{unitCase}}</div>
 </div>
