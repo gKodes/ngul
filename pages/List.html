@@ -1,40 +1,82 @@
-<p>NU List is divided into multiple directives, nuList being the base for all</p>
-<p><strong>Text List</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type=""&gt;&lt;/nu-list&gt;</code></p>
-<p>The one mandatory attribute for the list is <code>src</code> which is mapped to the variable (model) in the current scope. It shares an controller with the following functions<br>
-<em> <code>$indexOf</code> &ndash; returns the index of an list item<br>
-</em> <code>$add</code> &ndash; appends an given item to the list<br>
-<em> <code>$remove</code> &ndash; removes an given item from the list<br>
-</em> <code>$empty</code> &ndash; empty the view-only (DOM), wont impact the list in scope <code>src</code> attribute<br>
-<em> <code>$draw</code> &ndash; draw/update the view<br>
-</em> <code>$render</code> and <code>$link</code> which need to be overridden to draw the list items (see the below directives.</p>
-<h4>ngListType</h4>
-<p>This is an attribute only directives which is the core render of the list (overrides $render function), it can render two types of lists <em><strong>txt</strong></em> (Text) &amp; <em><strong>img</strong></em> (Picture), were <em><strong>txt</strong></em> being the default. <br>
-* <code>$formatters</code> array is exposed over the controller which is similar to <a href="http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$formatters">ngModel.NgModelController#$formatters</a></p>
-<p><strong>Picture List</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="img"&gt;&lt;/nu-list&gt;</code></p>
-<h4>nuListAddable</h4>
-<p>This is an attribute only directives which helps users added items to the list using an buffer. Existence of the buffer can be manipulated at runtime also, with value set to <code>false</code> the buffer is removed any other value the buffer is shown.</p>
-<ul>
-<li><code>$parsers</code> array is exposed over the controller which is similar to <a href="http://docs.angularjs.org/api/ng/type/ngModel.NgModelController#$parsers">ngModel.NgModelController#$parsers</a></li>
-</ul>
-<p><strong>List with an buffer</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="" nu-list-addable=""&gt;&lt;/nu-list&gt;</code></p>
-<p><strong>Control the existence of buffer at runtime</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="" nu-list-addable="{{addable}}"&gt;&lt;/nu-list&gt;</code></p>
-<h4>nuListRemovable</h4>
-<p>This is an attribute only directives which helps users to remove an list item when clicked on it. This can be manipulated at runtime also, with value set to <code>false</code> which prevents elements from being removed any other value allow them to be removed.</p>
-<p><strong>List for which items can be removed on click</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="" nu-list-removable=""&gt;&lt;/nu-list&gt;</code></p>
-<p><strong>Control the items to be removed at runtime</strong><br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="" nu-list-removable="{{removable}}"&gt;&lt;/nu-list&gt;</code></p>
-<h3>Other Example</h3>
-<p>An List for which items can be added and removed at runtime.<br>
-<code>html
-&lt;nu-list src="tags" nu-list-type="" nu-list-addable="" nu-list-removable=""&gt;&lt;/nu-list&gt;</code></p>
+<h1>nuList</h1>
+<p>The <code>nuList</code> directive instantiates a template once per item from a collection. Each template instance gets its own scope, where the given loop variable is set to the current collection item, <code>$index</code> is set to the item index or key, and <code>$erase</code> is a function on invocation would remove the item from the collection and update the view respectively.</p>
+<h4>A Simple List <small>Text Tag&rsquo;s</small></h4>
+<p><nu-list src="tags" ng-init="tags=['This', 'is', 'a', 'Tag', 'List']"></nu-list></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;/nu-list&gt;</span>
+</pre></div>
+
+
+<p>The one mandatory attribute for the list is <code>src</code> which is mapped to the variable (model) in the current scope.</p>
+<p>It shares an controller with the following functions<br>
+<em> <code>$viewValue</code> {Object|Array} &ndash; Actual value in the view.<br>
+</em> <code>$modelValue</code> {Object|Array} &ndash; The value in the model, that the control is bound to.<br>
+<em> <code>$itemCompiler</code> {Function} &ndash; compiled Item Node using <code>$compile</code> service. This would be called with a <code>Scope</code> and an cloneAttachFn.<br>
+</em> <code>$itemNodeFactory</code> {Function} &ndash; fn that takes one argument<br>
+<em> <code>$removeItem</code> {Function} &ndash; invoked to remove an item<br>
+</em> <code>$render</code> {Function} &ndash; Invoked when there external changes made to the list&rsquo;s model<br>
+<em> <code>$buffers</code> {Array} &ndash; An list of <code>Buffer</code> Nodes<br>
+</em> <code>$defaults</code> {Scope} &ndash; The parent scope for all Item Nodes<br>
+<em> <code>$bufferDefaults</code> {Scope} &ndash; The parent scope for all Buffer Nodes<br>
+</em> <code>$getItems</code> {Function} &ndash; Return&rsquo;s the list of item nodes only (Excludes buffers)</p>
+<h4>Buffered List <small>Push new tags</small></h4>
+<p><nu-list src="tags2" ng-init="tags2=['This', 'is', 'a', 'Tag', 'List']"><buffer type="txt"/></nu-list></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;buffer</span> <span style="color: #c4a000">type=</span><span style="color: #4e9a06">&quot;txt&quot;</span><span style="color: #204a87; font-weight: bold">/&gt;&lt;/nu-list&gt;</span>
+</pre></div>
+
+
+<h4>Customize Item View <small>Present your it in your own way</small></h4>
+<p><nu-list src="tags3" ng-init="tags3 = [
+    {fname: 'Marquetta',lname: 'Bartell'},
+    {fname: 'Alethia', lname: 'Marvin'},
+    {fname: 'Roxanna',lname: 'Runolfsson'}
+  ]
+">{{item.fname}}&nbsp;{{item.lname}}</nu-list></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;</span>{{item.fname}}<span style="color: #ce5c00">&amp;nbsp;</span>{{item.lname}}<span style="color: #204a87; font-weight: bold">&lt;/nu-list&gt;</span>
+</pre></div>
+
+
+<p>Model</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #8f5902; font-style: italic">[</span>
+    <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">fname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Marquetta&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+        <span style="color: #000000">lname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Bartell&#39;</span>
+    <span style="color: #000000; font-weight: bold">},</span>
+    <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">fname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Alethia&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+        <span style="color: #000000">lname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Marvin&#39;</span>
+    <span style="color: #000000; font-weight: bold">},</span>
+    <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">fname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Roxanna&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+        <span style="color: #000000">lname</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&#39;Runolfsson&#39;</span>
+    <span style="color: #000000; font-weight: bold">},</span>
+  <span style="color: #8f5902; font-style: italic">]</span>
+</pre></div>
+
+
+<h4>Customize View <small>Have your own tags</small></h4>
+<p><nu-list src="tags3" init="tags3 = [
+    'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
+    'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
+    'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
+    'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
+    'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
+    'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
+    'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
+  ]"><img nu-src="item"/></nu-list></p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">&lt;nu-list</span> <span style="color: #c4a000">nu-src=</span><span style="color: #4e9a06">&quot;tags&quot;</span><span style="color: #204a87; font-weight: bold">&gt;&lt;img</span> <span style="color: #c4a000">src=</span><span style="color: #4e9a06">&quot;item&quot;</span><span style="color: #204a87; font-weight: bold">/&gt;&lt;/nu-list&gt;</span>
+</pre></div>
+
+
+<p>Model</p>
+<div class="codehilite" style="background: #f8f8f8"><pre style="line-height: 125%">  <span style="color: #204a87; font-weight: bold">function</span> <span style="color: #000000">demoCtrl</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">$scope</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #000000">$scope</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">tags</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #8f5902; font-style: italic">[</span>
+      <span style="color: #4e9a06">&#39;http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg&#39;</span><span style="color: #000000; font-weight: bold">,</span>
+      <span style="color: #4e9a06">&#39;http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg&#39;</span>
+    <span style="color: #8f5902; font-style: italic">]</span><span style="color: #000000; font-weight: bold">;</span>
+  <span style="color: #000000; font-weight: bold">}</span>
+</pre></div>

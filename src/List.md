@@ -6,9 +6,7 @@ The `nuList` directive instantiates a template once per item from a collection. 
 
 <nu-list src="tags" ng-init="tags=['This', 'is', 'a', 'Tag', 'List']"></nu-list>
 
-```html
-<nu-list src="tags"></nu-list>
-```
+    <nu-list src="tags"></nu-list>
 
 The one mandatory attribute for the list is `src` which is mapped to the variable (model) in the current scope.
 
@@ -29,9 +27,8 @@ It shares an controller with the following functions
 
 <nu-list src="tags2" ng-init="tags2=['This', 'is', 'a', 'Tag', 'List']"><buffer type="txt"/></nu-list>
 
-```html
-<nu-list src="tags"><buffer type="txt"/></nu-list>
-```
+    <nu-list src="tags"><buffer type="txt"/></nu-list>
+
 
 
 #### Customize Item View <small>Present your it in your own way</small>
@@ -41,25 +38,51 @@ It shares an controller with the following functions
     {fname: 'Alethia', lname: 'Marvin'},
     {fname: 'Roxanna',lname: 'Runolfsson'}
   ]
-"><buffer type="txt"/></nu-list>
+">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
 
-```html
-<nu-list src="tags">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
-```
+    <nu-list src="tags">{{item.fname}}&nbsp;{{item.lname}}</nu-list>
 
-```json
-  [
-    {
-        fname: 'Marquetta',
-        lname: 'Bartell'
-    },
-    {
-        fname: 'Alethia',
-        lname: 'Marvin'
-    },
-    {
-        fname: 'Roxanna',
-        lname: 'Runolfsson'
-    },
-  ]
-```
+Model
+
+    [
+      {
+          fname: 'Marquetta',
+          lname: 'Bartell'
+      },
+      {
+          fname: 'Alethia',
+          lname: 'Marvin'
+      },
+      {
+          fname: 'Roxanna',
+          lname: 'Runolfsson'
+      },
+    ]
+
+#### Customize View <small>Have your own tags</small>
+
+<nu-list src="tags3" init="tags3 = [
+    'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
+    'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
+    'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
+    'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
+    'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
+    'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
+    'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
+  ]"><img nu-src="item"/></nu-list>
+
+    <nu-list nu-src="tags"><img src="item"/></nu-list>
+
+Model
+
+    function demoCtrl($scope) {
+      $scope.tags = [
+        'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
+        'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
+        'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
+        'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
+        'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
+        'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
+        'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
+      ];
+    }

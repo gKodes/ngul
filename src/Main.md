@@ -1,18 +1,18 @@
 # Nu <small>Angular JS UI Directive Collection</small>
 
-## [Press Button](/nuPressButton) <small>An Button with two states</small>
+## [Press Button](#/nuPressButton) <small>An Button with two states</small>
 <nu-press-button icon="fa fa-anchor"></nu-press-button>
 
-## [Switch](/nuSwitch) <small>An Toggle Switch</small>
+## [Switch](#/nuSwitch) <small>An Toggle Switch</small>
 <nu-switch></nu-switch>
 
-## [List](/nuList) <small>An Manipulative dynimic List</small>
-<nu-list ng-init="listSample = ['This', 'Is', 'An', 'List']" src="listSample" nu-list-removable="" nu-list-addable="" nu-list-type=""></nu-list>
+## [List](#/nuList) <small>An Manipulative dynimic List</small>
+<nu-list ng-init="listSample = ['This', 'Is', 'An', 'List']" src="listSample"><buffer type="txt"/></nu-list>
 
-## [File Chooser](/nuFileChooser) <small>An Bettor Looking File Chooser</small>
+## [File Chooser](#/nuFileChooser) <small>An Bettor Looking File Chooser</small>
 <nu-file-chooser ng-model="noopFC"></file-chooser>
 
-## [Show](/nuShow)
+## [Show](#/nuShow)
 <div style="
 margin: auto;
 width: 500px;

@@ -17,6 +17,19 @@ height: 300px;
   </nu-show>
 </div>
 
+    <script>
+    function demoCtrl($scope) {
+      $scope.demoShow = [
+        'http://farm4.staticflickr.com/3690/12852625125_849b3164cc_h.jpg',
+        'http://farm9.staticflickr.com/8042/7918423710_e6dd168d7c_b.jpg',
+        'http://farm9.staticflickr.com/8449/7918424278_4835c85e7a_b.jpg',
+        'http://farm9.staticflickr.com/8457/7918424412_bb641455c7_b.jpg',
+        'http://farm9.staticflickr.com/8179/7918424842_c79f7e345c_b.jpg',
+        'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg',
+        'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg'
+      ];
+    }
+    </script>
     <nu-show ng-model="demoShow"></nu-show>
 
 #### Attributes
