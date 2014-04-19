@@ -4,7 +4,7 @@ NU is a collection of angular derivatives
 ## Do check out the [demo][1]'s / [documentation][1]
 
 [![devDependency Status](https://david-dm.org/gkodes/ngul/dev-status.png)](https://david-dm.org/gkodes/ngul#info=devDependencies)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gKodes/ngul/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Build Status](https://travis-ci.org/gKodes/ngul.svg?branch=master)](https://travis-ci.org/gKodes/ngul)
 
 ### Build
 We need node.js and grunt for building and `distribution` of _**nu**_

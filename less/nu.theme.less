@@ -11,9 +11,9 @@
 
     .pb(@color-on, @color-off) when (iscolor(@color-off)) {
       label + label {
-        color: @color-off;
+        color: @color-on;
       }
-      color: @color-on;
+      color: @color-off;
     }
 
     .pb(@color-on, @color-off, @size) when (iscolor(@color-on)) and (iscolor(@color-off)) and (isnumber(@size)) {

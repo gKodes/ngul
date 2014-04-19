@@ -56,3 +56,19 @@
     }
   }
 }
+
+
+.selector-stack(@list; @body; @selector; @result: ""; @counter: 1) when (@counter = 1) {
+  @item: extract(@list, @counter);
+  .selector-stack(@types, @body, @selector, %("@{selector}", @item), (@counter + 1));
+}
+
+.selector-stack(@list; @body; @selector; @result: ""; @counter: 1) when (@counter > 1) and (@counter <= length(@list)) {
+  @item: extract(@list, @counter);
+  .selector-stack(@types, @body, @selector, %("@{result}, @{selector}", @item), (@counter + 1));
+}
+
+.selector-stack(@list; @body; @selector; @result; @counter) when (@counter > length(@list)) {
+  @list: ~"@{result}";
+  @{list} { @body(); }
+}
