@@ -9,7 +9,7 @@ nuWrap.run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('nu.wrap.default',
     '<span class="nu wrap">' +
-      '<wrap-view></wrap-view>' +
+      '<wrap-view>{{$model$}}</wrap-view>' +
       '<wrap-in></wrap-in>' +
     '</span>');
 }]);
@@ -34,6 +34,7 @@ var nullWrapSetCtrl = {
 nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
   function ($templateCache, $parse, $compile) {
     'use strict';
+
     return {
       restrict: 'AC',
       require: ['?ngModel', '^?wrapset'],
@@ -41,15 +42,19 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
       link: function(scope, element, attrs, ctrls) {
         var rawElement = element[0],
             wrapset = ctrls[1] || nullWrapSetCtrl,
-            wrapView = angular.element('<a class="w-view show-view">{{' + attrs.ngModel + '}}</a>'),
+            wrapView = angular.element('<a class="w-view show-view"></a>'),
             ngModelGet = $parse(attrs.ngModel),
             ngModelSet = ngModelGet.assign,
             actionScope = scope.$new(true),
-            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView);
+            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView),
+            placeHolderNode = document.createTextNode('');
 
-        var wrap = $compile(
+        var wrap = angular.element(
           $templateCache.get(attrs.tmpl || wrapset.$template) )
-          (actionScope).addClass('ws-view');
+          .addClass('ws-view'),
+          viewFormater = wrap.find('wrap-view').html() || '{{$model$}}';
+        
+        $compile(wrap)(actionScope);
 
         actionScope.resetValue = ngModelGet(scope);
 
@@ -60,10 +65,18 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         rawElement.parentNode.replaceChild(wrap[0], rawElement);
         wrap.find('wrap-in').replaceWith(element);
         wrap.find('wrap-view').replaceWith(wrapView);
-        
+
+        var validatePlaceHolder = function(canShow) {
+          placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
+        }
+
         if( isFunction(modelCtrl.$setViewValue) ) {
           // Bind the model so any change to it would reflect in the wrapView
+          wrapView.html(viewFormater.replace('$model$', attrs.ngModel));
           $compile(wrapView)(scope);
+          wrapView.append(placeHolderNode);
+          validatePlaceHolder(!modelCtrl.$viewValue);
+          actionScope.valid = modelCtrl.$valid;
           actionScope.error = modelCtrl.$error;
           actionScope.value = actionScope.validValue = ngModelGet(scope);
           var ngSetViewValue = modelCtrl.$setViewValue,
@@ -72,6 +85,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
           modelCtrl.$render = function() {
             actionScope.show(false);
             ngRender.call(modelCtrl);
+            validatePlaceHolder(!modelCtrl.$viewValue);
           };
 
           modelCtrl.$setViewValue = function(value) {
@@ -79,6 +93,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
             ngSetViewValue.call(modelCtrl, value);
             actionScope.valid = modelCtrl.$valid;
             actionScope.validValue = modelCtrl.$modelValue;
+            validatePlaceHolder(!modelCtrl.$viewValue);
           };
 
           modelCtrl.$reset = function() {
@@ -96,6 +111,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         var keyDownHandler = function(event) {
           var keyCode = (event.which || event.keyCode);
           if( keyCode === 13 || keyCode === 27 ) {
+            event.preventDefault();
             if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
               modelCtrl.$reset();
             }
@@ -107,6 +123,20 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
 
         attrs.$observe('defaultNav', function(value) {
           element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keydown', keyDownHandler);
+        });
+
+        element.on('focus', function() {
+          actionScope.resetValue = ngModelGet(scope) || actionScope.resetValue;
+          if( wrap.hasClass('ws-view') ) {
+            actionScope.show(true);
+          }
+        });
+
+        element.on('blur', function() {
+          if( actionScope.resetValue === modelCtrl.$viewValue ) {
+            actionScope.show(false);
+          }
+          // Hide the edit if out of focus and value is not chaged
         });
 
         wrapView.on('mousedown', function() {

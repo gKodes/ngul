@@ -75,3 +75,13 @@ var unit = function(node) {
 exports.get_unit = function(index) {
   return new unit(element(by.css('[unit]:nth-of-type(' + index + ')')));
 };
+
+exports.find = {
+  nuWrap: function(unit) {
+    'use strict';
+    var node = unit.find('.nu.wrap');
+    node.anchor = node.findElement(by.tagName('a'));
+    node.input = node.findElement(by.tagName('input'));
+    return node;
+  }
+};

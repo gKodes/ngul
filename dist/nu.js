@@ -892,7 +892,7 @@ var WRAP_EDITOR_CLASS = 'ws-view',
 nuWrap.run(['$templateCache', function($templateCache) {
     $templateCache.put('nu.wrap.default',
     '<span class="nu wrap">' +
-      '<wrap-view></wrap-view>' +
+      '<wrap-view>{{$model$}}</wrap-view>' +
       '<wrap-in></wrap-in>' +
     '</span>');
 }]);
@@ -922,15 +922,18 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
       link: function(scope, element, attrs, ctrls) {
         var rawElement = element[0],
             wrapset = ctrls[1] || nullWrapSetCtrl,
-            wrapView = angular.element('<a class="w-view show-view">{{' + attrs.ngModel + '}}</a>'),
+            wrapView = angular.element('<a class="w-view show-view"></a>'),
             ngModelGet = $parse(attrs.ngModel),
             ngModelSet = ngModelGet.assign,
             actionScope = scope.$new(true),
             modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView);
 
-        var wrap = $compile(
+        var wrap = angular.element(
           $templateCache.get(attrs.tmpl || wrapset.$template) )
-          (actionScope).addClass('ws-view');
+          .addClass('ws-view'),
+          viewFormater = wrap.find('wrap-view').html() || '{{$model$}}';
+        
+        $compile(wrap)(actionScope);
 
         actionScope.resetValue = ngModelGet(scope);
 
@@ -944,7 +947,9 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         
         if( isFunction(modelCtrl.$setViewValue) ) {
 
+          wrapView.html(viewFormater.replace('$model$', attrs.ngModel));
           $compile(wrapView)(scope);
+          actionScope.valid = modelCtrl.$valid;
           actionScope.error = modelCtrl.$error;
           actionScope.value = actionScope.validValue = ngModelGet(scope);
           var ngSetViewValue = modelCtrl.$setViewValue,
@@ -987,7 +992,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         };
 
         attrs.$observe('defaultNav', function(value) {
-          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keydown', keyDownHandler);
+          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keyup', keyDownHandler);
         });
 
         wrapView.on('mousedown', function() {

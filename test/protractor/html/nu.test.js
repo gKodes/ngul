@@ -22,8 +22,24 @@ testApp.controller('listImgTest', function($scope, $log){
   $scope.list = ['imgs/sample1.gif', 'imgs/sample2.gif', 'imgs/sample3.gif', 'imgs/sample4.gif'];
 });
 
-testApp.controller('wrapCtrl', function($scope, $log){
-  $scope.meone = function() { alert(''); }
+testApp.controller('wrapSelectCtrl', function($scope){
+  $scope.colors = [{
+    name: 'black',
+    shade: 'dark'
+  }, {
+    name: 'white',
+    shade: 'light'
+  }, {
+    name: 'red',
+    shade: 'dark'
+  }, {
+    name: 'blue',
+    shade: 'dark'
+  }, {
+    name: 'yellow',
+    shade: 'light'
+  }];
+  $scope.color = $scope.colors[2];
 });
 
 testApp.controller('galleryTest', function($scope, $log){
