@@ -30,6 +30,8 @@ var move = {},
     forEach = angular.forEach,
     isString = angular.isString,
     isElement = angular.isElement,
+    isFunction = angular.isFunction,
+    isUndefined = angular.isUndefined,
     extend = angular.extend,
     nuError = angular.$$minErr('nu'),
     isDefinedAndNotNull = function(value) {
@@ -45,6 +47,13 @@ var move = {},
     },
     startsWith = function(str, subStr) {
       return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
+    },
+    toBoolean = function(rawValue) {
+      if( rawValue && isString(rawValue) ) {
+        var value = rawValue.toLowerCase();
+        return !(value === 'false' || value === 'f' || value === 'off');
+      }
+      return false;
     };
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };

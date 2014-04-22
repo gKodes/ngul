@@ -19,7 +19,8 @@ module.exports = function(grunt) {
           'js/nu.show.js',
           'js/nu.slider.js',
           'js/nu.event.js',
-          'js/nu.src.js'
+          'js/nu.src.js',
+          'js/nu.wrap.js'
         ],
         dest : 'dist/<%= pkg.name %>.js'
       }

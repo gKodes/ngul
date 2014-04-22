@@ -18,4 +18,19 @@
       @font-size);
       #nu > #theme > .switch-handle(circle, @nu-switch-drop-on-bg, @nu-switch-drop-bg, @font-size);
   }
+
+  &.nu.wrap {
+    .w-view, .w-edit {
+      font-size: @font-size;
+      margin: 2px;
+      padding: 2px 1px;
+    }
+
+    .w-view {
+      border: 1px solid transparent;
+      padding: 3px 2px;
+      min-width: 30px;
+      min-height: 13px;
+    }
+  }
 }

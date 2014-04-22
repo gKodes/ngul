@@ -1,0 +1,26 @@
+// nu.wrap.less
+
+.nu.wrap {
+
+  &.ws-view {
+    .show-view { .opacity-show(); }
+    .show-editor { .opacity-hide(); }
+  }
+  &.ws-edit {
+    .show-view { .opacity-hide(); }
+    .show-editor { .opacity-show(); }
+  }
+
+  .show-view, .show-editor {
+    #nu > #mixin > .transition(all 0.25s); // linear 0s
+  }
+
+  .w-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  display: inline-block;
+  position: relative;
+}

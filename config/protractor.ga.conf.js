@@ -28,6 +28,13 @@ if(process.env.TRAVIS) {
 /*    'capture-html': true,
     'max-duration': 350*/
   };
+  exports.config.specs = [
+    '../test/protractor/util.js',
+    '../test/protractor/nu.switch.js',
+    '../test/protractor/nu.pb.js',
+    '../test/protractor/nu.show.js',
+    '../test/protractor/nu.list.js'
+  ];
 } else {
   exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }

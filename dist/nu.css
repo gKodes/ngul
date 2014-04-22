@@ -715,3 +715,36 @@
   top: 10px;
   left: -19px;
 }
+.nu.wrap {
+  display: inline-block;
+  position: relative;
+}
+.nu.wrap.ws-view .show-view {
+  opacity: 1;
+  z-index: 1;
+}
+.nu.wrap.ws-view .show-editor {
+  opacity: 0;
+  z-index: -1;
+}
+.nu.wrap.ws-edit .show-view {
+  opacity: 0;
+  z-index: -1;
+}
+.nu.wrap.ws-edit .show-editor {
+  opacity: 1;
+  z-index: 1;
+}
+.nu.wrap .show-view,
+.nu.wrap .show-editor {
+  transition: all 0.25s;
+  -o-transition: all 0.25s;
+  -ms-transition: all 0.25s;
+  -moz-transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+}
+.nu.wrap .w-view {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
