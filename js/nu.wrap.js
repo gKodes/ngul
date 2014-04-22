@@ -1,18 +1,18 @@
-/*global angular, noop, isFunction, forEach, toBoolean, isUndefined, PRISTINE_CLASS, DIRTY_CLASS */
+/*global angular, isFunction, toBoolean, isUndefined */
 
 var nuWrap = angular.module('nu.Wrap', []);
 
 var WRAP_EDITOR_CLASS = 'ws-view', //wrap state view
     WRAP_VIEW_CLASS = 'ws-edit'; //wrap state edit
 
-nuWrap.run(function($templateCache) {
+nuWrap.run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('nu.wrap.default',
     '<span class="nu wrap">' +
       '<wrap-view></wrap-view>' +
       '<wrap-in></wrap-in>' +
     '</span>');
-});
+}]);
 
 var SimpleModelCtrl = function(input, wrapView) {
   'use strict';
@@ -31,8 +31,8 @@ var nullWrapSetCtrl = {
   $template: 'nu.wrap.default'
 };
 
-nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler',
-  function ($templateCache, $parse, $compile, $exceptionHandler) {
+nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
+  function ($templateCache, $parse, $compile) {
     'use strict';
     return {
       restrict: 'AC',
@@ -72,9 +72,8 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           modelCtrl.$render = function() {
             actionScope.show(false);
             ngRender.call(modelCtrl);
-          }
+          };
 
-          var ngSetViewValue = modelCtrl.$setViewValue;
           modelCtrl.$setViewValue = function(value) {
             actionScope.value = value;
             ngSetViewValue.call(modelCtrl, value);
@@ -120,14 +119,15 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
   }
 ]);
 
-nuWrap.directive('wrapset', ['$templateCache',
-  function($templateCache) {
+nuWrap.directive('wrapset', [
+  function() {
+    'use strict';
     return {
       restrict: 'EAC',
       controller: ['$scope', '$element', '$attrs',
         function($scope, $element, $attrs) {
           this.$template = $attrs.wrapset || $attrs.tmpl;
       }]
-    }
+    };
   }
 ]);
