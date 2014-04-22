@@ -1,0 +1,68 @@
+#nu {
+  #mixin {
+    .overflow(hidden) {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .overflow(text; @overflow) when (iskeyword(@overflow)) {
+      .overflow(hidden);
+      text-overflow: @overflow;
+    }
+
+    .pad(horizontal; @padding) {
+      padding: @padding 0;
+    }
+
+    .pad(horizontal; @top; @bottom) {
+      padding: @top 0 @bottom 0;
+    }
+
+    .pad(vertical; @padding) {
+      padding: 0 @padding;
+    }
+
+    .pad(vertical; @right; @left) {
+      padding: 0 @right 0 @left;
+    }
+
+    .browser(@prop; @value) {
+      @{prop}: @value; // Default
+      -o-@{prop}: @value; // Opera +
+      -ms-@{prop}: @value; // IE +
+      -moz-@{prop}: @value; // Firefox, other Gecko
+      -webkit-@{prop}: @value; // Safari/Chrome, other WebKit
+    }
+
+    .box-shadow(@value) {
+      .browser(box-shadow, @value);
+    }
+
+    .box-sizing(@value:border-box) {
+      .browser(box-sizing, @value);
+    }
+
+    .transition(@value) {
+      .browser(transition; @value);
+    }
+
+    .unselectable() {
+      .browser(user-select, none);
+    }
+
+    .color(@bg; @fg) {
+      color: @fg;
+      background: @bg;
+    }
+  }
+}
+
+.opacity-show() {
+  opacity: 1;
+  z-index: 1;
+}
+
+.opacity-hide() {
+  opacity: 0;
+  z-index: -1;
+}
