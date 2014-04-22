@@ -1,0 +1,38 @@
+// nu.wrap.less
+
+.nu.wrap {
+
+  &.ws-view {
+    .show-view { .opacity-show(); }
+    .show-editor { .opacity-hide(); }
+  }
+  &.ws-edit {
+    .show-view { .opacity-hide(); }
+    .show-editor { .opacity-show(); }
+  }
+
+  .show-view, .show-editor {
+    #nu > #mixin > .transition(all 0.25s); // linear 0s
+  }
+
+  .w-view, .w-edit {
+    font-size: 13px;
+    margin: 2px;
+    padding: 2px 1px;
+  }
+
+  .w-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+/*    right: 0;
+    bottom: 0;*/
+    border: 1px solid transparent;
+    padding: 3px 2px;
+    min-width: 30px;
+    min-height: 13px;
+  }
+
+  display: inline-block;
+  position: relative;
+}

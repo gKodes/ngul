@@ -1,7 +1,7 @@
 var testApp = angular.module('nu.test', [
   'ngRoute',
   'nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
-    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event'
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event', 'nu.Wrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/:path', {templateUrl: function(parameters){
@@ -20,6 +20,10 @@ testApp.controller('listTest', function($scope, $log){
 testApp.controller('listImgTest', function($scope, $log){
   $scope.$log = $log;
   $scope.list = ['imgs/sample1.gif', 'imgs/sample2.gif', 'imgs/sample3.gif', 'imgs/sample4.gif'];
+});
+
+testApp.controller('wrapCtrl', function($scope, $log){
+  $scope.meone = function() { alert(''); }
 });
 
 testApp.controller('galleryTest', function($scope, $log){

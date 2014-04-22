@@ -18,6 +18,9 @@ Revision History
 * List Images Style's, Supports Dirty/Pristine
 * Improved Show functionality > hide arrows, half segement click (TODO: Animation)
 
+4r112.14
+* Added new component ngWarp see [plnkr]() for demo (TODO: Theme it up a bit)
+
 4r
 * Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
 
