@@ -4,14 +4,14 @@
 @import "bs.variables.less";
 
 .nu {
-	&.button.press {
-		#nu > #theme > .pb(@btn-default-border, @btn-default-color, @font-size-large);
-		&.primary { #nu > #theme > .pb(@btn-primary-border, @brand-primary); }
-		&.success { #nu > #theme > .pb(@btn-success-border, @brand-success); }
-		&.info { #nu > #theme > .pb(@btn-info-border, @brand-info); }
-		&.warning { #nu > #theme > .pb(@btn-warning-border, @brand-warning); }
-		&.danger { #nu > #theme > .pb(@btn-danger-border, @brand-danger); }
-	}
+  &.button.press {
+    #nu > #theme > .pb(@btn-default-border, @btn-default-color, @font-size-large);
+    &.primary { #nu > #theme > .pb(@btn-primary-border, @brand-primary); }
+    &.success { #nu > #theme > .pb(@btn-success-border, @brand-success); }
+    &.info { #nu > #theme > .pb(@btn-info-border, @brand-info); }
+    &.warning { #nu > #theme > .pb(@btn-warning-border, @brand-warning); }
+    &.danger { #nu > #theme > .pb(@btn-danger-border, @brand-danger); }
+  }
 
   &.switch {
     #nu > #theme > .switch({
@@ -23,49 +23,58 @@
     @font-size-base);
     #nu > #theme > .switch-handle(circle, @btn-default-color, @btn-default-border, @font-size-base);
     &.primary { 
-			#nu > #theme > .switch({
-	      #nu > #mixin > .color(@btn-primary-bg, @btn-primary-color);
-	    },
-	    {
-	      #nu > #mixin > .color(@btn-primary-border, @btn-primary-color);
-	    });
-    	#nu > #theme > .switch-handle(@btn-primary-color, darken(@btn-primary-border, 10%));
+      #nu > #theme > .switch({
+        #nu > #mixin > .color(@btn-primary-bg, @btn-primary-color);
+      },
+      {
+        #nu > #mixin > .color(@btn-primary-border, @btn-primary-color);
+      });
+      #nu > #theme > .switch-handle(@btn-primary-color, darken(@btn-primary-border, 10%));
+   
     }
     &.success { 
-			#nu > #theme > .switch({
-	      #nu > #mixin > .color(@btn-success-bg, @btn-success-color);
-	    },
-	    {
-	      #nu > #mixin > .color(@btn-success-border, @btn-success-color);
-	    });
-    	#nu > #theme > .switch-handle(@btn-success-color, darken(@btn-success-border, 10%));
+      #nu > #theme > .switch({
+        #nu > #mixin > .color(@btn-success-bg, @btn-success-color);
+      },
+      {
+        #nu > #mixin > .color(@btn-success-border, @btn-success-color);
+      });
+      #nu > #theme > .switch-handle(@btn-success-color, darken(@btn-success-border, 10%));
     }
     &.info { 
-			#nu > #theme > .switch({
-	      #nu > #mixin > .color(@btn-info-bg, @btn-info-color);
-	    },
-	    {
-	      #nu > #mixin > .color(@btn-info-border, @btn-info-color);
-	    });
-    	#nu > #theme > .switch-handle(@btn-info-color, darken(@btn-info-border, 10%));
+      #nu > #theme > .switch({
+        #nu > #mixin > .color(@btn-info-bg, @btn-info-color);
+      },
+      {
+        #nu > #mixin > .color(@btn-info-border, @btn-info-color);
+      });
+      #nu > #theme > .switch-handle(@btn-info-color, darken(@btn-info-border, 10%));
     }
     &.warning { 
-			#nu > #theme > .switch({
-	      #nu > #mixin > .color(@btn-warning-bg, @btn-warning-color);
-	    },
-	    {
-	      #nu > #mixin > .color(@btn-warning-border, @btn-warning-color);
-	    });
-    	#nu > #theme > .switch-handle(@btn-warning-color, darken(@btn-warning-border, 10%));
+      #nu > #theme > .switch({
+        #nu > #mixin > .color(@btn-warning-bg, @btn-warning-color);
+      },
+      {
+        #nu > #mixin > .color(@btn-warning-border, @btn-warning-color);
+      });
+      #nu > #theme > .switch-handle(@btn-warning-color, darken(@btn-warning-border, 10%));
     }
     &.danger { 
-			#nu > #theme > .switch({
-	      #nu > #mixin > .color(@btn-danger-bg, @btn-danger-color);
-	    },
-	    {
-	      #nu > #mixin > .color(@btn-danger-border, @btn-danger-color);
-	    });
-    	#nu > #theme > .switch-handle(@btn-danger-color, darken(@btn-danger-border, 10%));
+      #nu > #theme > .switch({
+        #nu > #mixin > .color(@btn-danger-bg, @btn-danger-color);
+      },
+      {
+        #nu > #mixin > .color(@btn-danger-border, @btn-danger-color);
+      });
+      #nu > #theme > .switch-handle(@btn-danger-color, darken(@btn-danger-border, 10%));
+    }
+  }
+
+  &.nu.wrap {
+    .w-view {
+      font-size: @font-family-base;
+      border: 1px solid transparent;
+      padding: @padding-base-vertical @padding-base-horizontal;
     }
   }
 }

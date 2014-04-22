@@ -46,3 +46,15 @@
 .nu.switch label:before {
   padding-left: 28px;
 }
+.nu.nu.wrap .w-view,
+.nu.nu.wrap .w-edit {
+  font-size: 14px;
+  margin: 2px;
+  padding: 2px 1px;
+}
+.nu.nu.wrap .w-view {
+  border: 1px solid transparent;
+  padding: 3px 2px;
+  min-width: 30px;
+  min-height: 13px;
+}
