@@ -68,6 +68,8 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
 
   this.$getItems = function() { return Array.prototype.slice.call(children, 0); };
   
+  $element.addClass(PRISTINE_CLASS);
+
   $scope.$watchCollection(model, function(modelValue) {
     if(!modelValue) {
       if(modelSet) { modelSet($scope, []); return; }
@@ -244,18 +246,20 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
       link: function(scope, element, attrs, nuList, transcludeFn) {
         var template = transcludeFn();
         template.scope().$destroy();
-        /* INFO: an hack to expose the controller, as the internal mechanism of angular is not
-        handling it properly as expected */
+        /* INFO: an hack to expose the controller, as the internal
+         * mechanism of angular is not handling it properly as expected
+         */
         element.data('$nuListController', nuList);
         var buffers = template.find('buffer').remove(),
             itemTemplate = trim(template.html()),
             children = element[0].children;
-        if(itemTemplate) {
-            if( !startsWith(itemTemplate, '<') ) {
-              itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
-            }
 
-            nuList.$itemCompiler = $compile(itemTemplate);
+        if(itemTemplate) {
+          if( !startsWith(itemTemplate, '<') ) {
+            itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
+          }
+
+          nuList.$itemCompiler = $compile(itemTemplate);
         }
 
         //INFO: Append Buffers, if Any
