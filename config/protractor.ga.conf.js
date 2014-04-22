@@ -26,6 +26,13 @@ if(process.env.TRAVIS) {
     build: process.env.TRAVIS_BUILD_NUMBER,
     name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
   };
+  exports.config.specs = [
+    '../test/protractor/util.js',
+    '../test/protractor/nu.switch.js',
+    '../test/protractor/nu.pb.js',
+    '../test/protractor/nu.show.js',
+    '../test/protractor/nu.list.js'
+  ];
 } else {
   exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }
