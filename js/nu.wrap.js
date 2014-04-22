@@ -68,7 +68,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
 
         var validatePlaceHolder = function(canShow) {
           placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
-        }
+        };
 
         if( isFunction(modelCtrl.$setViewValue) ) {
           // Bind the model so any change to it would reflect in the wrapView
