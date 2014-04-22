@@ -146,8 +146,15 @@
 .nu.switch.danger label:after {
   background: #b52b27;
 }
+.nu.nu.wrap {
+  /* Else the buttons would come next to the input's */
+}
 .nu.nu.wrap .w-view {
   font-size: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid transparent;
   padding: 6px 12px;
+}
+.nu.nu.wrap .w-edit {
+  display: inline-block;
+  width: auto;
 }
