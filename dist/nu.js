@@ -926,7 +926,8 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
             ngModelGet = $parse(attrs.ngModel),
             ngModelSet = ngModelGet.assign,
             actionScope = scope.$new(true),
-            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView);
+            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView),
+            placeHolderNode = document.createTextNode('');
 
         var wrap = angular.element(
           $templateCache.get(attrs.tmpl || wrapset.$template) )
@@ -944,11 +945,17 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         rawElement.parentNode.replaceChild(wrap[0], rawElement);
         wrap.find('wrap-in').replaceWith(element);
         wrap.find('wrap-view').replaceWith(wrapView);
-        
+
+        var validatePlaceHolder = function(canShow) {
+          placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
+        };
+
         if( isFunction(modelCtrl.$setViewValue) ) {
 
           wrapView.html(viewFormater.replace('$model$', attrs.ngModel));
           $compile(wrapView)(scope);
+          wrapView.append(placeHolderNode);
+          validatePlaceHolder(!modelCtrl.$viewValue);
           actionScope.valid = modelCtrl.$valid;
           actionScope.error = modelCtrl.$error;
           actionScope.value = actionScope.validValue = ngModelGet(scope);
@@ -958,6 +965,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
           modelCtrl.$render = function() {
             actionScope.show(false);
             ngRender.call(modelCtrl);
+            validatePlaceHolder(!modelCtrl.$viewValue);
           };
 
           modelCtrl.$setViewValue = function(value) {
@@ -965,6 +973,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
             ngSetViewValue.call(modelCtrl, value);
             actionScope.valid = modelCtrl.$valid;
             actionScope.validValue = modelCtrl.$modelValue;
+            validatePlaceHolder(!modelCtrl.$viewValue);
           };
 
           modelCtrl.$reset = function() {
@@ -982,6 +991,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         var keyDownHandler = function(event) {
           var keyCode = (event.which || event.keyCode);
           if( keyCode === 13 || keyCode === 27 ) {
+            event.preventDefault();
             if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
               modelCtrl.$reset();
             }
@@ -992,7 +1002,21 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         };
 
         attrs.$observe('defaultNav', function(value) {
-          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keyup', keyDownHandler);
+          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keydown', keyDownHandler);
+        });
+
+        element.on('focus', function() {
+          actionScope.resetValue = ngModelGet(scope) || actionScope.resetValue;
+          if( wrap.hasClass('ws-view') ) {
+            actionScope.show(true);
+          }
+        });
+
+        element.on('blur', function() {
+          if( actionScope.resetValue === modelCtrl.$viewValue ) {
+            actionScope.show(false);
+          }
+
         });
 
         wrapView.on('mousedown', function() {
