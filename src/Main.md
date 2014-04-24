@@ -1,3 +1,29 @@
+NU
+An AngularJS User Interface Kit
+
+### Input Wrap / In Line Editor
+<div ng-controller="main.inlineSample">
+  <div class="row">
+    <div class="col-sm-4">
+      <input ng-model="inlineSample" nu-wrap="" placeholder="In Line Editor"/>
+    </div>
+    <div class="col-sm-4">
+      <select ng-model="color" class="form-controller" nu-wrap="" ng-options="c.name for c in colors"></select>
+    </div>
+    <div class="col-sm-4">
+      <textarea ng-model="inlineTextArea" nu-wrap="" placeholder="Text Area Edit"></textarea>
+    </div>
+  </div>
+</div>
+
+### Switch
+
+### List / Tags
+
+### File Chooser
+
+### File Chooser
+
 # Nu <small>Angular JS UI Directive Collection</small>
 
 ## [Press Button](#/nuPressButton) <small>An Button with two states</small>
@@ -10,7 +36,7 @@
 <nu-list ng-init="listSample = ['This', 'Is', 'An', 'List']" src="listSample"><buffer type="txt"/></nu-list>
 
 ## [File Chooser](#/nuFileChooser) <small>An Bettor Looking File Chooser</small>
-<nu-file-chooser ng-model="noopFC"></file-chooser>
+<nu-list nu-file-chooser="" ng-model="noopFC"></nu-list>
 
 ## [Show](#/nuShow)
 <div style="

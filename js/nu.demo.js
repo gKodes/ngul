@@ -1,7 +1,7 @@
 //  Demo app module
 (function (angular) {
   var demo = angular.module('nu.Deno', ['nu.Switch', 'nu.PressButton', 'nu.List',
-    'nu.FileChooser', 'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event', 'ngRoute']);
+    'nu.FileChooser', 'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Wrap', 'ngRoute']);
 
 	demo.config(function($routeProvider, $locationProvider) {
 	  $routeProvider
@@ -44,6 +44,19 @@
     // color: #525252;
     // <script src="https://gist.github.com/gKodes/10728265.js"></script>
   //});
+
+  demo.controller('main.inlineSample', ['$scope', 
+    function($scope) {
+      $scope.colors = [
+        {name:'black', shade:'dark'},
+        {name:'white', shade:'light'},
+        {name:'red', shade:'dark'},
+        {name:'blue', shade:'dark'},
+        {name:'yellow', shade:'light'}
+      ];
+      $scope.color = $scope.colors[2]; 
+    }
+  ]);
 
   angular.element(document).ready(function() {
     angular.bootstrap(document, ['nu.Deno']);
