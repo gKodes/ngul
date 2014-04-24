@@ -1,4 +1,4 @@
-/*global angular, splitext, basename: true*/
+/*global angular, trim: true*/
 
 var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
 
@@ -23,7 +23,7 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
         
         if(nuList.$buffers.length === 0) {
           bufferNode = $compile( listBuffers.compile(
-              trim(buffer_tmpl), bufferScope ) )(bufferScope)
+              trim(buffer_tmpl), bufferScope ) )(bufferScope);
           nuList.$buffers.push(bufferNode[0]);
         } else { bufferNode = angular.element(nuList.$buffers[0]); }
 
@@ -41,12 +41,12 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           bufferNode.find('input').attr('multiple', 'multiple');
         }
 
-        nuList.$defaults.ext = function(path) { 
+        nuList.$defaults.ext = function(path) {
           if(path) {
-            var segments = path.split(/\.([\w\d]+)$/i)
+            var segments = path.split(/\.([\w\d]+)$/i);
             if( segments[1] ) { return segments[1].toLowerCase(); }
           }
-        }
+        };
 
         var appendItem = nuList.$bufferDefaults.$append;
         nuList.$bufferDefaults.$append = function(item) {

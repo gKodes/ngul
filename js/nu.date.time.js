@@ -1,14 +1,17 @@
+/*global angular: true*/
 var nuDateTime = angular.module('nu.DateTime', []);
 
 nuDateTime.service('DateFormater', [function() {
+    'use strict';
     //
   }
 ]);
 
-DateFormater - toDate, fromDate
+// DateFormater - toDate, fromDate
 
-nuFileChooser.directive('nuDay', ['DateFormater',
+nuDateTime.directive('nuDay', ['DateFormater',
   function(DateFormater) {
+    'use strict';
     return {
       restrict: 'AC',
       link: function(scope, element, attrs) {
@@ -17,8 +20,9 @@ nuFileChooser.directive('nuDay', ['DateFormater',
   }
 ]);
 
-nuFileChooser.directive('nuTime', [
+nuDateTime.directive('nuTime', [
   function() {
+    'use strict';
     return {
       restrict: 'AC',
       link: function(scope, element, attrs) {
@@ -28,8 +32,9 @@ nuFileChooser.directive('nuTime', [
 ]);
 
 
-nuFileChooser.directive('nuDateTime', ['DateFormater',
+nuDateTime.directive('nuDateTime', ['DateFormater',
   function(DateFormater) {
+    'use strict';
     return {
       restrict: 'AC',
       link: function(scope, element, attrs) {
