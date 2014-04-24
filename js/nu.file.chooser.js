@@ -1,86 +1,59 @@
 /*global angular, splitext, basename: true*/
 
-var nuFileChooser = angular.module('nu.FileChooser', ['nu.Event']);
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
 
-nuFileChooser.directive('nuFileChooser', ['nuEvent',
-  function(nuEvent) {
+nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
+  function($compile, listBuffers, nuEvent) {
     'use strict';
-    var _template =
-    '<label class="nu file chooser" style="position: relative;">' +
-      '<input type="file"/><span></span>' +
-      '<a class="remove"></a>' +
-    '</label>';
+    var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">{{item.name || item}}</span>';
+    var buffer_tmpl = '<buffer class="buffer" type="file"><label class="action">Browse<input type="file"></label></buffer>';
 
     return {
-      template: _template,
-      restrict: 'EACM',
-      replace: true,
-      require: '?ngModel',
-      link: function(scope, element, attrs, ngModel) {
-        var input = element.find('input');
-        var name = element.find('span');
-        var remove = element.find('a');
-        var Event = nuEvent(scope, attrs);
+      restrict: 'AC',
+      require: 'nuList',
+      priority: 99,
+      link: function(scope, element, attrs, nuList) {
+        // Setup the Template & Buffer
+        var rawElemenet = element[0],
+            children = rawElemenet.children,
+            bufferScope = nuList.$bufferDefaults.$new(),
+            bufferNode,
+            isMultiple = element.hasClass('multiple'),
+            itemRawNode = angular.element(item_tmpl);
+        
+        if(nuList.$buffers.length === 0) {
+          bufferNode = $compile( listBuffers.compile(
+              trim(buffer_tmpl), bufferScope ) )(bufferScope)
+          nuList.$buffers.push(bufferNode[0]);
+        } else { bufferNode = angular.element(nuList.$buffers[0]); }
 
-        var update_attrs = function(ext, mime, state) {
-          element.attr('ext', ext);
-          element.attr('mime', mime);
-          element.attr('state', state);
+        nuList.$itemCompiler = $compile(itemRawNode);
+        element.append(nuList.$buffers).addClass('file');
+
+        nuList.$getItems = function() {
+          return Array.prototype.slice.call(children, 0, -1);
         };
 
-        /**
-         * Derive to name only and then update attrs ext and mime
-         */
-        var nameOnly = function(value) {
-          if(angular.isDefined(value)) {
-            var ext, mime, path;
-            
-            if(angular.isDefined(value.name)) {
-              mime = value.type;
-              path = value.name;
-            } else { path = value; }
-
-            var splitPath = splitext(path);
-            ext = (splitPath.length > 1? splitPath[1] : splitPath[0]).toLowerCase();
-            update_attrs(ext, mime, 'selected');
-            return basename(path);
-          }
-          return value;
-        };
-
-        if( ngModel ) {
-          ngModel.$formatters.unshift(nameOnly);
-
-          ngModel.$render = function() {
-            name.html(ngModel.$viewValue);
-          };
-
-          remove.on('click', function() {
-            name.html('');
-            update_attrs('', '','','select');
-            scope.$apply(function() {
-              ngModel.$setViewValue(undefined);
-            });
-          });
+        if( !isMultiple ) {
+          element.addClass('single');
+        } else {
+          itemRawNode.addClass('erase');
+          bufferNode.find('input').attr('multiple', 'multiple');
         }
 
-
-        input.on('change', function(event) {
-          var eventBase = {'target': attrs.name};
-          if( event.currentTarget.files.length > 0 ) {
-            var file = event.currentTarget.files[0];
-            if(ngModel) {
-              scope.$apply(function() {
-                ngModel.$setViewValue(file);
-              });
-            }
-            name.html(nameOnly(file));
-            eventBase.value = event.currentTarget.files;
+        nuList.$defaults.ext = function(path) { 
+          if(path) {
+            var segments = path.split(/\.([\w\d]+)$/i)
+            if( segments[1] ) { return segments[1].toLowerCase(); }
           }
-          Event.trigger('change', eventBase);
-        });
+        }
 
-        //Event.bind(element, 'focus blur');
+        var appendItem = nuList.$bufferDefaults.$append;
+        nuList.$bufferDefaults.$append = function(item) {
+          if(isMultiple || !isMultiple && (nuList.$viewValue.length === 0)) {
+            appendItem(item);
+          } else if(!isMultiple) { nuList.$bufferDefaults.$update(0, item); }
+        };
       }
     };
   }

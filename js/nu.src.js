@@ -1,4 +1,4 @@
-/*global nu: true*/
+/*global angular: true*/
 var nuSrc = angular.module('nu.Src', []);
 
 nuSrc.directive('nuSrc', [
@@ -13,6 +13,7 @@ nuSrc.directive('nuSrc', [
             attrs.$set('src', value);
           } else if (window.File && window.FileReader &&
                 value.name && value.lastModifiedDate) { // value.isFile
+            // element.attr('src', URL.createObjectURL(value));
             var reader = new FileReader();
             reader.readAsDataURL(value);
             reader.onload = function(evt) {

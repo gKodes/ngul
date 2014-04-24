@@ -24,7 +24,7 @@
 
   // Style of the X button
   .erase {
-    &:before {
+    &:after {
       top: 0;
       right: 0;
       bottom: 0;
@@ -35,7 +35,7 @@
     }
 
     &:hover {
-      &:before {
+      &:after {
         opacity: 1;
       }
       // Padding to make the animation effect
@@ -59,7 +59,7 @@
         display: none;
       }
       &:hover { padding: 0; }
-      &:before {
+      &:after {
         content: '+';
         top: 0;
         left: 0;
@@ -92,13 +92,19 @@
   &[readonly='readonly'], &[readonly='true'] {
     .erase {
       &:hover {
-        &:before {
+        &:after {
           opacity: 0;
         }
 
         cursor: default;
         padding: @nu-list-padding;
       }
+    }
+  }
+
+  &.block {
+    .item, .buffer {
+      display: block;
     }
   }
 

@@ -25,6 +25,8 @@ if(process.env.TRAVIS) {
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     build: process.env.TRAVIS_BUILD_NUMBER,
     name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
+/*    'capture-html': true,
+    'max-duration': 350*/
   };
   exports.config.specs = [
     '../test/protractor/util.js',
@@ -36,3 +38,7 @@ if(process.env.TRAVIS) {
 } else {
   exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }
+
+{"browser": "googlechrome",
+"os": "Linux",
+"browser-version": "28"}

@@ -62,11 +62,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     },
     '$update': function(index, item) {
       angular.element(children[index]).scope().item = item;
+      nuList.$updateViewValue(nuList.$viewValue[index] = item);
     }
   });
 
   this.$getItems = function() { return Array.prototype.slice.call(children, 0); };
   
+  $element.addClass(PRISTINE_CLASS);
+
   $scope.$watchCollection(model, function(modelValue) {
     if(!modelValue) {
       if(modelSet) { modelSet($scope, []); return; }
@@ -106,6 +109,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
       nuList.$viewValue.splice(index, 1);
       angular.element(children[index]).css('display', 'none');
       appendItem(children[index]);
+      itemNodes.push(children[index]);
     }
     nuList.$updateViewValue();
   };
@@ -233,7 +237,7 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
     'use strict';
     return {
       terminal: true,
-      priority: 99, // 500 If Priority crosses 500 {{template}} system is now working
+      priority: 95, // 500 If Priority crosses 500 {{template}} system is now working
       template: '<div class="nu list"></div>',
       replace: true,
       transclude: 'element',
@@ -242,17 +246,22 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
       link: function(scope, element, attrs, nuList, transcludeFn) {
         var template = transcludeFn();
         template.scope().$destroy();
+        /* INFO: an hack to expose the controller, as the internal
+         * mechanism of angular is not handling it properly as expected
+         */
+        element.data('$nuListController', nuList);
         var buffers = template.find('buffer').remove(),
             itemTemplate = trim(template.html()),
             children = element[0].children;
-        if(itemTemplate) {
-            if( !startsWith(itemTemplate, '<') ) {
-              itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
-            }
 
-            nuList.$itemCompiler = $compile(itemTemplate);
+        if(itemTemplate) {
+          if( !startsWith(itemTemplate, '<') ) {
+            itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
+          }
+
+          nuList.$itemCompiler = $compile(itemTemplate);
         }
-//element.removeClass(DIRTY_CLASS).addClass(PRISTINE_CLASS);
+
         //INFO: Append Buffers, if Any
         if(buffers.length > 0) {
           if( buffers.find('buffer').length > 0 ) {

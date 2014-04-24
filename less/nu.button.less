@@ -1,12 +1,16 @@
 // nu.button.less
+
 .nu.button {
   &.press {
-    input[type='checkbox'], input[type='radio'] {
-      &:checked + label {
+    input[type="checkbox"], input[type="radio"] {
+      &:checked {
         & + label {
+          display: none;
+        }
+        //INFO: The usage of ~ because of Chrome/Webkit older versions selector issue
+        & ~ label[icon="On"], & + label + label {
           display: inherit;
         }
-        display: none;
       }
     }
 
@@ -19,7 +23,7 @@
       display: none;
     }
 
-    [disabled] {
+    &[disabled] {
       label {
         cursor: not-allowed;
       }
