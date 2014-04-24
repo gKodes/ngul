@@ -4,41 +4,41 @@
     }*/
 }
 .nu.button.press {
-  color: #cccccc;
+  color: #333333;
   font-size: 30px;
 }
 .nu.button.press label + label {
-  color: #333333;
+  color: #cccccc;
 }
 .nu.button.press.primary {
-  color: #357ebd;
-}
-.nu.button.press.primary label + label {
   color: #428bca;
 }
-.nu.button.press.success {
-  color: #4cae4c;
+.nu.button.press.primary label + label {
+  color: #357ebd;
 }
-.nu.button.press.success label + label {
+.nu.button.press.success {
   color: #5cb85c;
 }
-.nu.button.press.info {
-  color: #46b8da;
+.nu.button.press.success label + label {
+  color: #4cae4c;
 }
-.nu.button.press.info label + label {
+.nu.button.press.info {
   color: #5bc0de;
 }
-.nu.button.press.warning {
-  color: #eea236;
+.nu.button.press.info label + label {
+  color: #46b8da;
 }
-.nu.button.press.warning label + label {
+.nu.button.press.warning {
   color: #f0ad4e;
 }
+.nu.button.press.warning label + label {
+  color: #eea236;
+}
 .nu.button.press.danger {
-  color: #d43f3a;
+  color: #d9534f;
 }
 .nu.button.press.danger label + label {
-  color: #d9534f;
+  color: #d43f3a;
 }
 .nu.switch label {
   color: #ffffff;

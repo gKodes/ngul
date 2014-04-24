@@ -4,11 +4,11 @@
     }*/
 }
 .nu.button.press {
-  color: #000000;
+  color: #cccccc;
   font-size: 30px;
 }
 .nu.button.press label + label {
-  color: #cccccc;
+  color: #000000;
 }
 .nu.switch label {
   color: #1abc9c;

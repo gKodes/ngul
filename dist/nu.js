@@ -32,6 +32,7 @@ var split = split_re(RE_BASENAME);
 var basename = function(path) { return split(path)[1]; };
 var move = {},
     random = {},
+    nodes = {},
     noop = angular.noop,
     copy = angular.copy,
     equals = angular.equals,
@@ -81,6 +82,32 @@ move.attribute = function(dst, src, names) {
     src.removeAttr(names[count]);
   }
   return dst;
+};
+
+nodes.move = move;
+nodes.append = {};
+nodes.append.text = function(parent, text, beforeNode) {
+  var textNode = document.createTextNode(text);
+  parent.insertBefore(textNode, beforeNode);
+  return textNode;
+};
+
+var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
+    var length = scope.$$watchers.length,
+      $render = ngModel.$render,
+      uid = random.id(), isMatch = false;
+  ngModelSet(scope, random.id());
+  ngModel.$render = function() { isMatch = true; };
+  while(length--) {
+    if( scope.$$watchers[length].get === scope.$$watchers[length].exp ) {
+      if( scope.$$watchers[length].get() && isMatch ) {
+        break;
+      }
+    }
+  }
+  ngModel.$render = $render;
+  ngModelSet(scope, modelValue);
+  return scope.$$watchers[length];
 };
 
 var NuEventManager = (function() {
@@ -174,11 +201,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     },
     '$update': function(index, item) {
       angular.element(children[index]).scope().item = item;
+      nuList.$updateViewValue(nuList.$viewValue[index] = item);
     }
   });
 
   this.$getItems = function() { return Array.prototype.slice.call(children, 0); };
   
+  $element.addClass(PRISTINE_CLASS);
+
   $scope.$watchCollection(model, function(modelValue) {
     if(!modelValue) {
       if(modelSet) { modelSet($scope, []); return; }
@@ -218,6 +248,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
       nuList.$viewValue.splice(index, 1);
       angular.element(children[index]).css('display', 'none');
       appendItem(children[index]);
+      itemNodes.push(children[index]);
     }
     nuList.$updateViewValue();
   };
@@ -343,7 +374,7 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
   function($compile, $parse, listBuffers) {
         return {
       terminal: true,
-      priority: 99,
+      priority: 95,
       template: '<div class="nu list"></div>',
       replace: true,
       transclude: 'element',
@@ -352,15 +383,20 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
       link: function(scope, element, attrs, nuList, transcludeFn) {
         var template = transcludeFn();
         template.scope().$destroy();
+        /* INFO: an hack to expose the controller, as the internal
+         * mechanism of angular is not handling it properly as expected
+         */
+        element.data('$nuListController', nuList);
         var buffers = template.find('buffer').remove(),
             itemTemplate = trim(template.html()),
             children = element[0].children;
-        if(itemTemplate) {
-            if( !startsWith(itemTemplate, '<') ) {
-              itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
-            }
 
-            nuList.$itemCompiler = $compile(itemTemplate);
+        if(itemTemplate) {
+          if( !startsWith(itemTemplate, '<') ) {
+            itemTemplate = '<span ng-click="$erase(item)">' + itemTemplate + '</span>';
+          }
+
+          nuList.$itemCompiler = $compile(itemTemplate);
         }
 
 
@@ -602,86 +638,59 @@ nuSwitch.directive('nuSwitch', ['nuEvent',
 ]);
 
 
-var nuFileChooser = angular.module('nu.FileChooser', ['nu.Event']);
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
 
-nuFileChooser.directive('nuFileChooser', ['nuEvent',
-  function(nuEvent) {
-        var _template =
-    '<label class="nu file chooser" style="position: relative;">' +
-      '<input type="file"/><span></span>' +
-      '<a class="remove"></a>' +
-    '</label>';
+nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
+  function($compile, listBuffers, nuEvent) {
+        var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">{{item.name || item}}</span>';
+    var buffer_tmpl = '<buffer class="buffer" type="file"><label class="action">Browse<input type="file"></label></buffer>';
 
     return {
-      template: _template,
-      restrict: 'EACM',
-      replace: true,
-      require: '?ngModel',
-      link: function(scope, element, attrs, ngModel) {
-        var input = element.find('input');
-        var name = element.find('span');
-        var remove = element.find('a');
-        var Event = nuEvent(scope, attrs);
+      restrict: 'AC',
+      require: 'nuList',
+      priority: 99,
+      link: function(scope, element, attrs, nuList) {
 
-        var update_attrs = function(ext, mime, state) {
-          element.attr('ext', ext);
-          element.attr('mime', mime);
-          element.attr('state', state);
+        var rawElemenet = element[0],
+            children = rawElemenet.children,
+            bufferScope = nuList.$bufferDefaults.$new(),
+            bufferNode,
+            isMultiple = element.hasClass('multiple'),
+            itemRawNode = angular.element(item_tmpl);
+        
+        if(nuList.$buffers.length === 0) {
+          bufferNode = $compile( listBuffers.compile(
+              trim(buffer_tmpl), bufferScope ) )(bufferScope);
+          nuList.$buffers.push(bufferNode[0]);
+        } else { bufferNode = angular.element(nuList.$buffers[0]); }
+
+        nuList.$itemCompiler = $compile(itemRawNode);
+        element.append(nuList.$buffers).addClass('file');
+
+        nuList.$getItems = function() {
+          return Array.prototype.slice.call(children, 0, -1);
         };
 
-        /**
-         * Derive to name only and then update attrs ext and mime
-         */
-        var nameOnly = function(value) {
-          if(angular.isDefined(value)) {
-            var ext, mime, path;
-            
-            if(angular.isDefined(value.name)) {
-              mime = value.type;
-              path = value.name;
-            } else { path = value; }
-
-            var splitPath = splitext(path);
-            ext = (splitPath.length > 1? splitPath[1] : splitPath[0]).toLowerCase();
-            update_attrs(ext, mime, 'selected');
-            return basename(path);
-          }
-          return value;
-        };
-
-        if( ngModel ) {
-          ngModel.$formatters.unshift(nameOnly);
-
-          ngModel.$render = function() {
-            name.html(ngModel.$viewValue);
-          };
-
-          remove.on('click', function() {
-            name.html('');
-            update_attrs('', '','','select');
-            scope.$apply(function() {
-              ngModel.$setViewValue(undefined);
-            });
-          });
+        if( !isMultiple ) {
+          element.addClass('single');
+        } else {
+          itemRawNode.addClass('erase');
+          bufferNode.find('input').attr('multiple', 'multiple');
         }
 
-
-        input.on('change', function(event) {
-          var eventBase = {'target': attrs.name};
-          if( event.currentTarget.files.length > 0 ) {
-            var file = event.currentTarget.files[0];
-            if(ngModel) {
-              scope.$apply(function() {
-                ngModel.$setViewValue(file);
-              });
-            }
-            name.html(nameOnly(file));
-            eventBase.value = event.currentTarget.files;
+        nuList.$defaults.ext = function(path) {
+          if(path) {
+            var segments = path.split(/\.([\w\d]+)$/i);
+            if( segments[1] ) { return segments[1].toLowerCase(); }
           }
-          Event.trigger('change', eventBase);
-        });
+        };
 
-
+        var appendItem = nuList.$bufferDefaults.$append;
+        nuList.$bufferDefaults.$append = function(item) {
+          if(isMultiple || !isMultiple && (nuList.$viewValue.length === 0)) {
+            appendItem(item);
+          } else if(!isMultiple) { nuList.$bufferDefaults.$update(0, item); }
+        };
       }
     };
   }
@@ -870,6 +879,7 @@ nuSrc.directive('nuSrc', [
             attrs.$set('src', value);
           } else if (window.File && window.FileReader &&
                 value.name && value.lastModifiedDate) {
+
             var reader = new FileReader();
             reader.readAsDataURL(value);
             reader.onload = function(evt) {
@@ -897,108 +907,175 @@ nuWrap.run(['$templateCache', function($templateCache) {
     '</span>');
 }]);
 
-var SimpleModelCtrl = function(input, wrapView) {
-    wrapView.html(input.val() || input.attr('placeholder'));
-  input.on('keyup', function() {
-    wrapView.html(input.val() || input.attr('placeholder'));
+var SimpleModelCtrl = function(input, wrapView, actionScope) {
+    var ctrl = this;
+
+  input.on('keydown', function(event) {
+    var key = (event.which || event.keyCode);
+    if (key === 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){ return; }
+    ctrl.$toAccept = true;
   });
 
-  this.$reset = function() {
-    input.val(wrapView.html());
+  this.$accept = function() {
+    ctrl.$viewValue = input.val();
+    wrapView.html(ctrl.$viewValue || input.attr('placeholder'));
+    ctrl.$toAccept = false;
   };
+
+  this.$reset = function() {
+    input.val(wrapView.html() !== input.attr('placeholder')? 
+        wrapView.html() : '');
+    ctrl.$toAccept = false;
+  };
+
   this.isSimple = true;
+  this.$valid = true;
 };
 
 var nullWrapSetCtrl = {
   $template: 'nu.wrap.default'
 };
 
-nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
-  function ($templateCache, $parse, $compile) {
+var nullFormCtrl = {
+  $setDirty: noop
+};
+
+nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler', '$animate', 
+  function ($templateCache, $parse, $compile, $exceptionHandler, $animate) {
         return {
       restrict: 'AC',
-      require: ['?ngModel', '^?wrapset'],
+      require: ['?ngModel', '^?form', '^?wrapset'],
       priority: 10,
       link: function(scope, element, attrs, ctrls) {
         var rawElement = element[0],
-            wrapset = ctrls[1] || nullWrapSetCtrl,
             wrapView = angular.element('<a class="w-view show-view"></a>'),
-            ngModelGet = $parse(attrs.ngModel),
-            ngModelSet = ngModelGet.assign,
-            actionScope = scope.$new(true),
-            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView),
-            placeHolderNode = document.createTextNode('');
+            modelCtrl = ctrls[0] || new SimpleModelCtrl(element, wrapView, actionScope),
+            formCtrl = ctrls[1] || nullFormCtrl,
+            wrapset = ctrls[2] || nullWrapSetCtrl,
+            actionScope = scope.$new(true);
 
         var wrap = angular.element(
-          $templateCache.get(attrs.tmpl || wrapset.$template) )
-          .addClass('ws-view'),
-          viewFormater = wrap.find('wrap-view').html() || '{{$model$}}';
-        
-        $compile(wrap)(actionScope);
+            $templateCache.get(attrs.tmpl || wrapset.$template) )
+            .addClass('ws-view');
 
-        actionScope.resetValue = ngModelGet(scope);
+
+        wrap.find('wrap-view').replaceWith(wrapView.html(
+          (wrap.find('wrap-view').html() || '{{$model$}}' )
+            .replace('$model$', '$viewValue')) );
+
+        var placeHolderNode = nodes.append.text(wrapView[0], '');
+
+        $compile(wrap)(actionScope);
 
         element.addClass('show-editor w-edit');
         /* INFO: Why not use replaceWith? - because it daloc all 
          * the events & data which here we need to keep them
          */
         rawElement.parentNode.replaceChild(wrap[0], rawElement);
-        wrap.find('wrap-in').replaceWith(element);
-        wrap.find('wrap-view').replaceWith(wrapView);
+        wrap[0].replaceChild(rawElement, wrap.find('wrap-in')[0]);
 
         var validatePlaceHolder = function(canShow) {
           placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
         };
 
-        if( isFunction(modelCtrl.$setViewValue) ) {
+        modelCtrl.$toAccept = false;
 
-          wrapView.html(viewFormater.replace('$model$', attrs.ngModel));
-          $compile(wrapView)(scope);
-          wrapView.append(placeHolderNode);
-          validatePlaceHolder(!modelCtrl.$viewValue);
-          actionScope.valid = modelCtrl.$valid;
-          actionScope.error = modelCtrl.$error;
-          actionScope.value = actionScope.validValue = ngModelGet(scope);
-          var ngSetViewValue = modelCtrl.$setViewValue,
-              ngRender = modelCtrl.$render;
+        if( isFunction(modelCtrl.$setViewValue) ) {          
+          var ngModelGet = $parse(attrs.ngModel),
+              ngModelSet = ngModelGet.assign;
 
-          modelCtrl.$render = function() {
-            actionScope.show(false);
-            ngRender.call(modelCtrl);
-            validatePlaceHolder(!modelCtrl.$viewValue);
+          actionScope.$valid = modelCtrl.$valid;
+          actionScope.$error = modelCtrl.$error;
+          actionScope.$viewValue = modelCtrl.$viewValue;
+          actionScope.$modelValue = modelCtrl.$modelValue;
+
+          var watch = getngModelWatch(scope, modelCtrl, 
+            ngModelGet(scope), ngModelSet),
+              ngSetViewValue = modelCtrl.$setViewValue,
+              ngRender = modelCtrl.$render,
+              viewStateStore = false;
+
+          watch.get = function nuWrapModelWatch(scope) {
+            if( modelCtrl.$toAccept ) { return watch.last; }
+            var value = watch.exp(scope);
+            actionScope.$viewValue = modelCtrl.$viewValue;
+            actionScope.$modelValue = modelCtrl.$modelValue;
+            return value;
           };
 
           modelCtrl.$setViewValue = function(value) {
-            actionScope.value = value;
-            ngSetViewValue.call(modelCtrl, value);
-            actionScope.valid = modelCtrl.$valid;
-            actionScope.validValue = modelCtrl.$modelValue;
-            validatePlaceHolder(!modelCtrl.$viewValue);
+            modelCtrl.$viewValue = value;
+            modelCtrl.$toAccept = true;
+
+
+            if (modelCtrl.$pristine) {
+              modelCtrl.$dirty = true;
+              modelCtrl.$pristine = false;
+              $animate.removeClass(element, PRISTINE_CLASS);
+              $animate.addClass(element, DIRTY_CLASS);
+              formCtrl.$setDirty();
+            }
+
+            forEach(this.$parsers, function(fn) {
+              value = fn(value);
+            });
+            
+            actionScope.$viewValue = modelCtrl.$viewValue;
+            modelCtrl.$modelValue = actionScope.$modelValue = value;
+            actionScope.$valid = modelCtrl.$valid;
+          };
+
+          modelCtrl.$accept = function() {
+            ngModelSet(scope, actionScope.$modelValue);
+            forEach(modelCtrl.$viewChangeListeners, function(listener) {
+              try {
+                listener();
+              } catch(e) {
+                $exceptionHandler(e);
+              }
+            });
+            modelCtrl.$toAccept = false;
+            validatePlaceHolder(!modelCtrl.$modelValue || modelCtrl.$modelValue === '');
           };
 
           modelCtrl.$reset = function() {
-            ngModelSet(scope, actionScope.resetValue);
+            modelCtrl.$toAccept = false;
+            watch.exp(scope);
+            actionScope.$viewValue = modelCtrl.$viewValue;
+            actionScope.$modelValue = modelCtrl.$modelValue;
+            actionScope.$valid = modelCtrl.$valid;
           };
         }
 
+        validatePlaceHolder(!element.val());
+
         actionScope.reset = modelCtrl.$reset;
-        actionScope.show = function(showEdit) {
-          wrap
-            .removeClass(showEdit? WRAP_EDITOR_CLASS : WRAP_VIEW_CLASS)
-            .addClass(showEdit? WRAP_VIEW_CLASS : WRAP_EDITOR_CLASS);
+        actionScope.accept = modelCtrl.$accept;
+        actionScope.show = function(viewState) {
+          if(viewState !== viewStateStore) {
+            if(!modelCtrl.$toAccept) {
+              actionScope.resetValue = modelCtrl.$modelValue;
+            }
+
+            wrap
+              .removeClass(viewState? WRAP_EDITOR_CLASS : WRAP_VIEW_CLASS)
+              .addClass(viewState? WRAP_VIEW_CLASS : WRAP_EDITOR_CLASS);
+            viewStateStore = viewState;
+          }
         };
 
         var keyDownHandler = function(event) {
-          var keyCode = (event.which || event.keyCode);
-          if( keyCode === 13 || keyCode === 27 ) {
-            event.preventDefault();
-            if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
-              modelCtrl.$reset();
-            }
-            actionScope.show(false);
-            scope.$digest();
-            setTimeout(function() { rawElement.blur(); }, 0);
-          }
+          try {
+            var keyCode = (event.which || event.keyCode);
+            if( keyCode === 13 || keyCode === 27 ) {
+              event.preventDefault();
+              if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
+                modelCtrl.$reset();
+              } else { modelCtrl.$accept(); }
+              scope.$digest();
+              actionScope.show(false);
+            } else if( !modelCtrl.$toAccept ) { actionScope.show(true); }
+          } catch (e) { $exceptionHandler(e); }
         };
 
         attrs.$observe('defaultNav', function(value) {
@@ -1006,21 +1083,15 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         });
 
         element.on('focus', function() {
-          actionScope.resetValue = ngModelGet(scope) || actionScope.resetValue;
-          if( wrap.hasClass('ws-view') ) {
-            actionScope.show(true);
-          }
+          if( !modelCtrl.$toAccept ) { actionScope.show(true); }
         });
 
         element.on('blur', function() {
 
-          if( actionScope.resetValue === modelCtrl.$viewValue ) {
-            actionScope.show(false);
-          }
+          if( !modelCtrl.$toAccept ) { actionScope.show(false); }
         });
 
         wrapView.on('mousedown', function() {
-          actionScope.resetValue = ngModelGet(scope) || actionScope.resetValue;
           actionScope.show(true);
           setTimeout(function() { rawElement.focus(); }, 0);
         });
