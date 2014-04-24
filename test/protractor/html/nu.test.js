@@ -61,3 +61,12 @@ testApp.controller('galleryTest', function($scope, $log){
 angular.element(document).ready(function() {
     angular.bootstrap(document, ['nu.test']);
 });
+
+document.onkeydown=function keypress(e) {
+  e=(e||window.event);  
+    if (e.keyCode == 27) {
+        try{e.preventDefault();}//Non-IE
+        catch(x){e.returnValue=false;}//IE
+    };
+  console.info(e.keyCode);
+}

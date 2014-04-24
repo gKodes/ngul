@@ -24,6 +24,7 @@ var split = split_re(RE_BASENAME);
 var basename = function(path) { return split(path)[1]; };
 var move = {},
     random = {},
+    nodes = {},
     noop = angular.noop,
     copy = angular.copy,
     equals = angular.equals,
@@ -73,6 +74,33 @@ move.attribute = function(dst, src, names) {
     src.removeAttr(names[count]);
   }
   return dst;
+};
+
+nodes.move = move;
+nodes.append = {};
+nodes.append.text = function(parent, text, beforeNode) {
+  var textNode = document.createTextNode(text);
+  parent.insertBefore(textNode, beforeNode);
+  return textNode;
+};
+
+var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
+  'use strict';
+  var length = scope.$$watchers.length,
+      $render = ngModel.$render,
+      uid = random.id(), isMatch = false;
+  ngModelSet(scope, random.id());
+  ngModel.$render = function() { isMatch = true; };
+  while(length--) {
+    if( scope.$$watchers[length].get === scope.$$watchers[length].exp ) {
+      if( scope.$$watchers[length].get() && isMatch ) {
+        break;
+      }
+    }
+  }
+  ngModel.$render = $render;
+  ngModelSet(scope, modelValue);
+  return scope.$$watchers[length];
 };
 
 var NuEventManager = (function() {
