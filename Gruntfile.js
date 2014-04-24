@@ -83,13 +83,13 @@ module.exports = function(grunt) {
     protractor: {
       ga: {
         options: {
-          configFile: 'config/protractor.ga.conf',
+          configFile: 'config/protractor.ga.conf'
         }
       },
       dev: {
         options: {
           //debug: true,
-          configFile: 'config/protractor.dev.conf',
+          configFile: 'config/protractor.dev.conf'
         }
       }
     },

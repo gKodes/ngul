@@ -1,6 +1,6 @@
 /*global describe, expect, by, it, browser, require: true*/ // element
-//var nuList = require('./util.js').listNode;
-var get_unit = require('./util.js').get_unit;
+var get_unit = require('./util.js').get_unit,
+    Key = require('./util.js').Key;
 
 describe('nu list', function() {
   'use strict';
@@ -88,7 +88,7 @@ describe('nu list', function() {
 
   it('should have 5 items after bump of list using buffer', function() {
     var unit = get_unit(2);
-    unit.find('span.buffer').sendKeys('Test1\n').then(function() {
+    unit.find('span.buffer').sendKeys('Test1', Key.RETURN).then(function() {
       unit.findAll(by.css('span.item')).then(function(nodes) {
         expect(nodes.length).toEqual(5);
         nodes[4].getText().then(function(value) {

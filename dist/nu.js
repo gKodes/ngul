@@ -900,7 +900,7 @@ nuWrap.run(['$templateCache', function($templateCache) {
 var SimpleModelCtrl = function(input, wrapView) {
     wrapView.html(input.val() || input.attr('placeholder'));
   input.on('keyup', function() {
-    wrapView.html(input.val());
+    wrapView.html(input.val() || input.attr('placeholder'));
   });
 
   this.$reset = function() {
@@ -1013,10 +1013,10 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile',
         });
 
         element.on('blur', function() {
+
           if( actionScope.resetValue === modelCtrl.$viewValue ) {
             actionScope.show(false);
           }
-
         });
 
         wrapView.on('mousedown', function() {

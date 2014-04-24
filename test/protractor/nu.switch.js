@@ -160,8 +160,6 @@ describe('nu switch', function() {
         expect(derivative.input.isSelected()).toEqual(false);
       });
     });
-
-    browser.debugger();
   });
 
   it('should not have ng-model', function() {
