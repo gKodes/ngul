@@ -114,7 +114,7 @@
     }
   }
 
-  &.nu.wrap {
+  &.wrap {
     .w-view {
       border: 1px solid transparent;
       padding: @padding-base-vertical @padding-base-horizontal;
@@ -122,6 +122,14 @@
       overflow: auto;
     }
 
-    /*display: table;*/
+    &.input-group {
+      display: table !important;
+    }
+  }
+}
+
+.form-inline {
+  .nu.wrap {
+    display: inline-block;
   }
 }
