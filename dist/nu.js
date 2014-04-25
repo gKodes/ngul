@@ -1005,8 +1005,6 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           var ngModelGet = $parse(attrs.ngModel),
               ngModelSet = ngModelGet.assign;
 
-          // element.off();
-
           actionScope.$valid = modelCtrl.$valid;
           actionScope.$error = modelCtrl.$error;
           actionScope.$viewValue = modelCtrl.$viewValue;
@@ -1051,7 +1049,6 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           };
 
           modelCtrl.$accept = function() {
-            console.info('$accept', actionScope.$modelValue);
             ngModelSet(scope, actionScope.$modelValue);
             forEach(modelCtrl.$viewChangeListeners, function(listener) {
               try {
@@ -1098,24 +1095,39 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
         var keyDownHandler = function(event) {
           try {
             var keyCode = (event.which || event.keyCode);
-            if( keyCode === 13 || keyCode === 27 ) {
-              //event.preventDefault();
-              if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
+            if( (keyCode === 13 && !event.ctrlKey) || keyCode === 27 ) {
+              if ( !modelCtrl.$valid || keyCode === 27 ) {
                 modelCtrl.$reset();
               } else { modelCtrl.$accept(); }
-              console.info(modelCtrl.$viewValue);
               scope.$digest();
               actionScope.show(false);
-            } else if( !modelCtrl.$toAccept ) { actionScope.show(true); }
+            }
           } catch (e) { $exceptionHandler(e); }
         };
 
+        element.on('keydown', function(event) {
+          try {
+            var keyCode = (event.which || event.keyCode);
+            if( (keyCode === 13 && !event.ctrlKey) || keyCode === 27 ) {
+              event.preventDefault();
+            } else if ( !modelCtrl.$toAccept &&
+              !( (15 < keyCode && keyCode < 19) || keyCode === 91 ) ) { 
+              actionScope.show(true);
+            }
+          } catch (e) { $exceptionHandler(e); }
+        });
+
         attrs.$observe('defaultNav', function(value) {
+
           element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keyup', keyDownHandler);
         });
 
         element.on('focus', function() {
           if( !modelCtrl.$toAccept ) { actionScope.show(true); }
+        });
+
+        wrapView.on('focus', function() {
+          element.focus();
         });
 
         element.on('blur', function() {
@@ -1156,6 +1168,35 @@ nuWrap.directive('wrapset', [
     };
   }
 ]);
+
+var nuWrapBS = angular.module('nu.Wrap.bs', []);
+
+nuWrap.run(['$templateCache', function($templateCache) {
+    /**
+   * Show the input with an single addon showing ok/warning signs
+   */
+  $templateCache.put('nu.wrap.bs.status',
+		'<div class="input-group">' +
+		  '<wrap-in></wrap-in>' +
+		  '<span class="input-group-addon show-editor">' +
+		    '<span ng-class="{\'glyphicon-warning-sign\': !$valid, \'glyphicon-ok\': $valid}" class="glyphicon"></span>' +
+		  '</span>' +
+		'</div>');
+
+  /**
+   * Show the input with an two addion one for accept other for reset
+   */
+  $templateCache.put('nu.wrap.bs.acceptReject',
+		'<div class="input-group">' +
+		  '<wrap-in></wrap-in>' +
+		  '<span class="input-group-addon show-editor" ng-click="$valid && accept(); show(!$valid);">' +
+		    '<span class="glyphicon" ng-class="{\'glyphicon-warning-sign\': !$valid, \'glyphicon-ok\': $valid}"></span>' +
+		  '</span>' +
+		  '<span class="input-group-addon show-editor" ng-click="reset(); show(false);">' +
+		    '<span class="glyphicon glyphicon-remove"></span>' +
+		  '</span>' +
+		'</div>');
+}]);
 var nu = angular.module('nu', 
   ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 	
     'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Wrap']);

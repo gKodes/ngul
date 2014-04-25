@@ -181,12 +181,15 @@
 .nu.list.file .buffer label {
   margin: 0;
 }
-.nu.nu.wrap {
-  /*display: table;*/
-}
-.nu.nu.wrap .w-view {
+.nu.wrap .w-view {
   border: 1px solid transparent;
   padding: 6px 12px;
   bottom: 0px;
   overflow: auto;
+}
+.nu.wrap.input-group {
+  display: table !important;
+}
+.form-inline .nu.wrap {
+  display: inline-block;
 }
