@@ -1005,6 +1005,8 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           var ngModelGet = $parse(attrs.ngModel),
               ngModelSet = ngModelGet.assign;
 
+          // element.off();
+
           actionScope.$valid = modelCtrl.$valid;
           actionScope.$error = modelCtrl.$error;
           actionScope.$viewValue = modelCtrl.$viewValue;
@@ -1049,6 +1051,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           };
 
           modelCtrl.$accept = function() {
+            console.info('$accept', actionScope.$modelValue);
             ngModelSet(scope, actionScope.$modelValue);
             forEach(modelCtrl.$viewChangeListeners, function(listener) {
               try {
@@ -1096,10 +1099,11 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           try {
             var keyCode = (event.which || event.keyCode);
             if( keyCode === 13 || keyCode === 27 ) {
-              event.preventDefault();
+              //event.preventDefault();
               if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
                 modelCtrl.$reset();
               } else { modelCtrl.$accept(); }
+              console.info(modelCtrl.$viewValue);
               scope.$digest();
               actionScope.show(false);
             } else if( !modelCtrl.$toAccept ) { actionScope.show(true); }
@@ -1107,7 +1111,7 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
         };
 
         attrs.$observe('defaultNav', function(value) {
-          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keydown', keyDownHandler);
+          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keyup', keyDownHandler);
         });
 
         element.on('focus', function() {

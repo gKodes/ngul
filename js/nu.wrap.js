@@ -194,23 +194,39 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
         var keyDownHandler = function(event) {
           try {
             var keyCode = (event.which || event.keyCode);
-            if( keyCode === 13 || keyCode === 27 ) {
-              event.preventDefault();
-              if ( (keyCode === 13 && !modelCtrl.$valid) || keyCode === 27 ) {
+            if( (keyCode === 13 && !event.ctrlKey) || keyCode === 27 ) {
+              if ( !modelCtrl.$valid || keyCode === 27 ) {
                 modelCtrl.$reset();
               } else { modelCtrl.$accept(); }
               scope.$digest();
               actionScope.show(false);
-            } else if( !modelCtrl.$toAccept ) { actionScope.show(true); }
+            }
           } catch (e) { $exceptionHandler(e); }
         };
 
+        element.on('keydown', function(event) {
+          try {
+            var keyCode = (event.which || event.keyCode);
+            if( (keyCode === 13 && !event.ctrlKey) || keyCode === 27 ) {
+              event.preventDefault();
+            } else if ( !modelCtrl.$toAccept &&
+              !( (15 < keyCode && keyCode < 19) || keyCode === 91 ) ) { 
+              actionScope.show(true);
+            }
+          } catch (e) { $exceptionHandler(e); }
+        });
+
         attrs.$observe('defaultNav', function(value) {
-          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keydown', keyDownHandler);
+          // INFO: Changed event to Key for FF Issue && split the show into key up event
+          element[(isUndefined(value) || toBoolean(value)? 'on' : 'off')]('keyup', keyDownHandler);
         });
 
         element.on('focus', function() {
           if( !modelCtrl.$toAccept ) { actionScope.show(true); }
+        });
+
+        wrapView.on('focus', function() {
+          element.focus();
         });
 
         element.on('blur', function() {
