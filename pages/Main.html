@@ -1,26 +1,87 @@
-<p>NU<br>
-An AngularJS User Interface Kit</p>
-<h3>Input Wrap / In Line Editor</h3>
-<div ng-controller="main.inlineSample">
+<center style="margin: 100px 0;">
+  <h1 style="font-size: 99px;">NU</h1>
+  <h2>An AngularJS User Interface Directive's Library</h2>
+  <table>
+    <tr>
+      <td>
+        <iframe src="http://ghbtns.com/github-btn.html?user=gKodes&repo=ngul&type=watch&count=true" height="30" width="118" frameborder="0" scrolling="0" style="width:118px; height: 30px;" allowTransparency="true"></iframe>
+      </td>
+      <td>
+        <iframe src="http://ghbtns.com/github-btn.html?user=gKodes&repo=ngul&type=fork&count=true" height="30" width="118" frameborder="0" scrolling="0" style="width:118px; height: 30px;" allowTransparency="true"></iframe>
+      </td>
+    </tr>
+  </table>
+</center>
+
+<div class="row">
+  <div class="col-sm-12">
+    <center>
+      <button type="button" class="btn btn-default btn-lg">Source</button>
+      <br/><br/>
+      <b>NOTE:</b>The doc's are still being updated, please check the code insted</b>
+      <br/>
+    </center>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-sm-12">
+    <a href="#/nuWrap"><h3>Input Wrap / In Line Editor</h3></a>
+  </div>
+</div>
+<div>
+  <!-- nuWrap -->
   <div class="row">
-    <div class="col-sm-4">
+
+    <!-- input demo -->
+    <div class="col-sm-4" ng-controller="demo.input.inline">
+      <h4>Input</h4>
       <div class="form-group">
-        <label for="sampleUserInput">Email address</label>
-        <input type="email" class="form-control" nu-wrap="" id="sampleUserInput" placeholder="Enter email">
+        <label for="sampleUserInput">Username</label>
+        <input type="text" class="form-control" ng-model="user" nu-wrap="" id="sampleUserInput" placeholder="User Name">
       </div>
+
+      <script type="text/ng-template" id="input.validation">
+        <div class="input-group">
+          <wrap-in></wrap-in>
+          <span class="input-group-addon show-editor">
+            <span ng-hide="$valid" class="glyphicon glyphicon-warning-sign"></span>
+            <span ng-show="$valid" class="glyphicon glyphicon-ok"></span>
+          </span>
+        </div>
+      </script>
+
+      <div class="form-group">
+        <label for="sampleEmailInput">Email address</label>
+        <input type="email" class="form-control" ng-model="email" nu-wrap="input.validation" id="sampleEmailInput" placeholder="User Name">
+      </div>
+      
+      <script type="text/ng-template" id="input.password">
+        <wrap-view>{{$model$|asterises}}</wrap-view>
+        <wrap-in></wrap-in>
+      </script>
+
       <div class="form-group">
         <label for="samplePasswordInput">Password</label>
-        <input type="password" class="form-control" nu-wrap="" id="samplePasswordInput" placeholder="Password">
+        <input type="password" class="form-control" ng-model="password" nu-wrap="input.password" id="samplePasswordInput" placeholder="Password">
       </div>
+      
+<pre><code>user = {{user}}
+email = {{email}}
+password = {{password}}</code></pre>
+
     </div>
+    <!-- /input demo -->
+
     <!-- select demo -->
-    <div class="col-sm-4">
+    <div class="col-sm-4" ng-controller="demo.select.inline">
+      <h4>Select</h4>
       <script type="text/ng-template" id="simple.color">
-        <span class="nu wrap">
-          <wrap-view>{{$model$.name}}</wrap-view>
-          <wrap-in></wrap-in>
-        </span>
+        <wrap-view>{{$model$.name}}</wrap-view>
+        <wrap-in></wrap-in>
       </script>
+      
       <div class="form-group">
         <label for="simpleColor">Choose a Color</label>
         <select ng-model="color" id="simpleColor" class="form-control" nu-wrap="simple.color" ng-options="c.name for c in colors"></select>
@@ -32,22 +93,226 @@ An AngularJS User Interface Kit</p>
       <br/>
 
       <script type="text/ng-template" id="preview.color">
-        <span class="nu wrap">
+        <div class="input-group">
           <wrap-view>{{$model$.name}}</wrap-view>
           <wrap-in></wrap-in>
-          <span style="border:solid 1px black; height:24px; width: 24px; display: inline-block;" 
-            ng-style="{'background-color':$viewValue.name}"></span>
-        </span>
+          <span class="input-group-addon"  style="padding: 6px 19px;"
+            ng-style="{'background-color':$viewValue.name}">
+          </span>
+        </div>
       </script>
 
       <div class="form-group">
         <label for="customColor">Choose a Color</label>
         <select ng-model="color" id="customColor" class="form-control" nu-wrap="preview.color" ng-options="c.name for c in colors"></select>
       </div>
+      <br/>
+      <pre><code>color = {{color|json}}</code></pre>
     </div>
     <!-- /select demo -->
+
+    <!-- textarea demo -->
+    <div class="col-sm-4" ng-controller="demo.textarea.inline">
+      <h4>Textarea</h4>
+      <textarea class="form-control" ng-model="textArea" nu-wrap="" style="resize: none;" cols="30" rows="5" placeholder="Text Area Edit"></textarea>
+      <br/>
+      <pre><code>textArea = {{textArea}}</code></pre>
+    </div>
+    <!-- /textarea demo -->    
+  </div>
+  <!-- /nuWrap -->
+
+  <!-- nuPressButton, nuSwitch -->
+  <div class="row">
+    <div class="col-sm-8">
+
+      <div class="row">
+        <div class="col-sm-12">
+        <a href="#/nuSwitch"><h3>Switch</h3></a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6" ng-controller="demo.switch.separated">
+          <h4>Basic</h4>
+          <label>Default Values</label><br/>
+          <input type="checkbox" nu-switch="" ng-model="sampleOne"/><br/>
+          
+          <label>Custom Label</label><br/>
+          <input type="checkbox" nu-switch="" ng-model="sampleTwo" on="Female" off="Male"/><br/>
+          
+          <label>Custom Label & Value</label><br/>
+          <input type="checkbox" nu-switch="" ng-model="sampleThree" on="Bike" off="Car" ng-true-value="Bike" ng-false-value="Car" /><br/>
+          
+          <label>Disabled</label><br/>
+          <input type="checkbox" nu-switch="" disabled="" ng-model="sampleOne"/><br/>
+<pre><code>sampleOne = {{sampleOne}}
+sampleTwo = {{sampleTwo}}
+sampleThree = {{sampleThree}}</code></pre>
+        </div>
+
+        <div class="col-sm-6" ng-controller="demo.switch.separated">
+          <h4>Grouping</h4>
+          <label>One or None</label><br/>
+          <div class="row">
+            <div class="col-sm-3">Get a Car</div>
+            <div class="col-sm-3">
+              <input type="checkbox" nu-switch="" ng-model="sampleOne" on="Yes" off="No" ng-true-value="Car"/><br/>
+            </div>
+            <div class="col-sm-3">Get a Bike</div>
+            <div class="col-sm-3"><input type="checkbox" nu-switch="" ng-model="sampleOne" on="Yes" off="No" ng-true-value="Bike"/>
+            </div>
+          </div>
+          <label>Only One</label><br/>
+          <div class="row">
+            <div class="col-sm-3">Get a Car</div>
+            <div class="col-sm-3">
+              <input type="radio" nu-switch="" ng-model="sampleTwo" on="Yes" off="No" ng-true-value="Car"/><br/>
+            </div>
+            <div class="col-sm-3">Get a Bike</div>
+            <div class="col-sm-3"><input type="radio" nu-switch="" ng-model="sampleTwo" on="Yes" off="No" ng-true-value="Bike"/>
+            </div>
+          </div>
+          <pre><code>sampleOne = {{sampleOne}}
+sampleTwo = {{sampleTwo}}</code></pre>
+        </div>
+      </div>
+
+    </div>
     <div class="col-sm-4">
-      <textarea ng-model="inlineTextArea" class="form-control" nu-wrap="" style="resize: none;" cols="30" rows="5" placeholder="Text Area Edit"></textarea>
+
+      <div class="row">
+        <div class="col-sm-12"><a href="#/nuPressButton"><h3>Press Button</h3></a></div>
+      </div>
+      
+      <div class="row" ng-controller="demo.pb">
+        <div class="col-sm-12">
+            <h4>Basic</h4>
+            <label>Default Values</label><br/>
+            Mark it
+            <input type="checkbox" nu-press-button="glyphicon glyphicon-ok" ng-model="markIt"/><br/>
+            
+            <label>Custom Values</label><br/>
+            My Love<input type="checkbox" nu-press-button="fa" ng-model="myLove" on="fa-heart" off="fa-heart-o" ng-true-value="Love U2 :-)" ng-false-value="Hart Broken :'-("/><br/>
+            
+            <label>Grouping</label>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12"><b>Only One</b></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-12">
+                    <input type="radio" nu-press-button="glyphicon glyphicon-usd" ng-model="groupCurrency" ng-true-value="Buck"/>
+                    <input type="radio" nu-press-button="glyphicon glyphicon-gbp" ng-model="groupCurrency" ng-true-value="Quid"/>
+                  </div>
+                </div>
+              </div> <!-- /col-sm-6 -->
+
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-12"><b>None Or One</b></div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-sm-12">
+                    <input type="checkbox" nu-press-button="glyphicon glyphicon-plus" ng-model="groupUpDown" ng-true-value="Up By One"/>
+                    <input type="checkbox" nu-press-button="glyphicon glyphicon-minus" ng-model="groupUpDown" ng-true-value="Chopped by One"/>
+                  </div>
+                </div>
+              </div> <!-- /col-sm-6 -->
+
+            </div>
+            
+            <label>Disabled</label><br/>
+            <input type="checkbox" nu-press-button="glyphicon glyphicon-ok" disabled="" ng-model="sampleOne"/><br/>
+<pre><code>markIt = {{markIt}}
+myLove = {{myLove}}
+groupCurrency = {{groupCurrency}}
+groupUpDown = {{groupUpDown}}</code></pre>
+          </div>
+      </div>
     </div>
   </div>
+  <!-- /nuPressButton, nuSwitch -->
+
+
+  <!-- nuList -->
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-12"><a href="#/nuList"><h3>List / Tag</h3></a></div>
+      </div>
+      <div class="row" ng-controller="demo.tags">
+        <div class="col-sm-12">
+          <nu-list src="demo" class="form-control"><buffer type="txt"/></nu-list><br/>
+          <pre><code>demo = {{demo|json}}</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8" ng-controller="demo.fc">
+      <div class="row">
+        <div class="col-sm-12"><h3><a href="#/nuFileChooser">File Chooser</a><small class="preview">Preview</small></h3></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <nu-list nu-file-chooser src="sampleOne"></nu-list>
+          <br/>
+<pre><code>sampleOne.name = {{sampleOne[0].name}}
+sampleOne.type = {{sampleOne[0].type}}
+sampleOne.lastModifiedDate = {{sampleOne[0].lastModifiedDate}}
+sampleOne.size = {{sampleOne[0].size}}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-8"></div>
+  </div>
+  <!-- /nuList -->
+
+  <!-- Show, Slider -->
+  <div class="row">
+    <div class="col-sm-6" ng-controller="demo.show">
+      <div class="row">
+        <div class="col-sm-12">
+          <a href="#/nuShow"><h3>Show</h3></a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div style="
+              margin: auto;
+              height: 345px;
+          ">
+            <nu-show ng-model="gallery"></nu-show>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3><a href="#/nuSlider">Slider</a><small class="preview">Preview</small></h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <nu-slider style="height: 345px;">
+            <img src="https://farm8.staticflickr.com/7060/13536364143_32fdc6e057_h.jpg">
+          </nu-slider>
+          Picture By <a href="https://www.flickr.com/photos/ericflexyourhead/">Eric Flexyourhead</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- /Show, Slider -->
 </div>
