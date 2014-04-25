@@ -89,11 +89,12 @@ var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
   var length = scope.$$watchers.length,
       $render = ngModel.$render,
       uid = random.id(), isMatch = false;
-  ngModelSet(scope, random.id());
+  ngModelSet(scope, uid);
   ngModel.$render = function() { isMatch = true; };
   while(length--) {
     if( scope.$$watchers[length].get === scope.$$watchers[length].exp ) {
-      if( scope.$$watchers[length].get() && isMatch ) {
+      scope.$$watchers[length].get();
+      if( isMatch ) {
         break;
       }
     }

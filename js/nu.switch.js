@@ -2,8 +2,8 @@
 
 var nuSwitch = angular.module('nu.Switch', ['nu.Event']);
 
-nuSwitch.directive('nuSwitch', ['nuEvent',
-  function(nuEvent) {
+nuSwitch.directive('nuSwitch', ['nuEvent', '$parse',
+  function(nuEvent, $parse) {
     'use strict';
     var _template =
     '<div class="nu switch">' +
@@ -16,12 +16,13 @@ nuSwitch.directive('nuSwitch', ['nuEvent',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
-      //scope: true,
+      priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id;
-        var input = element.find('input');
-        var label = element.find('label');
-        var Event = nuEvent(scope, attrs);
+        var id = attrs.id,
+            input = element.find('input'),
+            label = element.find('label'),
+            Event = nuEvent(scope, attrs),
+            ngModelGet = $parse(attrs.ngModel);
 
         if (id) {
           element.removeAttr('id');
@@ -45,35 +46,39 @@ nuSwitch.directive('nuSwitch', ['nuEvent',
         });
 
         var formater = function(value) {
-          return ( (angular.isDefined(attrs.value) &&
-            value === attrs.value) || value === true);
+          return ( (angular.isDefined(attrs.ngTrueValue) &&
+            value === attrs.ngTrueValue) || value === true);
         };
 
         var parser = function(value) {
-          if(attrs.value) {
-            return value ? attrs.value : attrs.valueOff;
+          if(attrs.ngTrueValue) {
+            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
           }
           return value;
         };
 
         if( ngModel ) {
 
-          ngModel.$formatters.push(formater);
-          ngModel.$parsers.push(parser);
+          ngModel.$formatters = [formater];
+          ngModel.$parsers = [parser];
 
           ngModel.$isEmpty = function(value) {
-            return value !== attrs.value; // this.type !== 'radio'
+            return value !== attrs.ngTrueValue; // this.type !== 'radio'
           };
 
           ngModel.$render = function() {
             input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || input[0].defaultChecked) {
-            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              (input[0].defaultChecked && input[0].checked) );
+          var ngModelValue = ngModelGet(scope);
+          if(ngModelValue || input[0].defaultChecked) {
+            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
+              ngModel.$setViewValue(true);
+            }
             ngModel.$render();
           }
+
+          element.off('click');
         }
 
         input.on('change', function(event) {

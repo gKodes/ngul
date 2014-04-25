@@ -5,25 +5,25 @@
 
 <div unit="" ng-controller="angular.noop">
   <input nu-press-button="" icon="fa" 
-    icon-on="fa-flag" icon-off="fa-flag-o" 
-    value="Working" ng-model="unitCase"/>
+    on="fa-flag" off="fa-flag-o" 
+    ng-true-value="Working" ng-model="unitCase"/>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="angular.noop">
   <input nu-press-button="" icon="fa" 
-    icon-on="fa-flag" icon-off="fa-flag-o"  checked="" 
-    value="Working" value-off="It's Off" ng-model="unitCase"/>
+    on="fa-flag" off="fa-flag-o"  checked="" 
+    ng-true-value="Working" ng-false-value="It's Off" ng-model="unitCase"/>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="angular.noop">
   <nu-press-button name="switchName" type="radio"
-    icon="fa" icon-on="fa-flag" icon-off="fa-flag-o"
-    value="Case1" ng-model="unitCase"></nu-press-button>
+    icon="fa" on="fa-flag" off="fa-flag-o"
+    ng-true-value="Case1" ng-model="unitCase"></nu-press-button>
   <nu-press-button name="switchName" type="radio" 
-    icon="fa" icon-on="fa-bell" icon-off="fa-bell-o"
-    value="Case2" ng-model="unitCase"></nu-press-button>
+    icon="fa" on="fa-bell" off="fa-bell-o"
+    ng-true-value="Case2" ng-model="unitCase"></nu-press-button>
   <div result="">{{unitCase}}</div>
 </div>
 

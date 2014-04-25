@@ -14,18 +14,18 @@
 </div>
 
 <div unit="" ng-controller="angular.noop">
-  <input nu-switch="" ng-model="unitCase" value="Working"/>
+  <input nu-switch="" ng-model="unitCase" ng-true-value="Working"/>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="angular.noop">
-  <input nu-switch="" ng-model="unitCase" value="Working" value-off="It's Off" />
+  <input nu-switch="" ng-model="unitCase" ng-true-value="Working" ng-false-value="It's Off" />
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="angular.noop">
-  <nu-switch name="switchName" type="radio" value="Case1" ng-model="unitCase"></nu-switch>
-  <nu-switch name="switchName" type="radio" value="Case2" ng-model="unitCase"></nu-switch>
+  <nu-switch name="switchName" type="radio" ng-true-value="Case1" ng-model="unitCase"></nu-switch>
+  <nu-switch name="switchName" type="radio" ng-true-value="Case2" ng-model="unitCase"></nu-switch>
   <div result="">{{unitCase}}</div>
 </div>
 
@@ -44,6 +44,6 @@
 </div>
 
 <div unit="" ng-controller="angular.noop">
-  <input nu-switch="" value="Working" value-off="Ohh No" nu-change="unitCase = $event.value" />
+  <input nu-switch="" ng-true-value="Working" ng-false-value="Ohh No" nu-change="unitCase = $event.value" />
   <div result="">{{unitCase}}</div>
 </div>

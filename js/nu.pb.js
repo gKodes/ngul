@@ -1,8 +1,8 @@
-/*global angular, random, move, nu*/
+/*global angular, random, move */
 var nuPressButton = angular.module('nu.PressButton', ['nu.Event']);
 
-nuPressButton.directive('nuPressButton', ['nuEvent',
-  function(nuEvent) {
+nuPressButton.directive('nuPressButton', ['nuEvent', '$parse',
+  function(nuEvent, $parse) {
     'use strict';
     var _template =
     '<div class="nu button press">' +
@@ -16,11 +16,13 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
+      priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id;
-        var input = element.find('input');
-        var label = element.find('label');
-        var Event = nuEvent(scope, attrs);
+        var id = attrs.id,
+            input = element.find('input'),
+            label = element.find('label'),
+            Event = nuEvent(scope, attrs),
+            ngModelGet = $parse(attrs.ngModel);
 
         if (id) {
           element.removeAttr('id');
@@ -29,15 +31,13 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
         move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
-        attrs.$observe('iconOn', function(value) {
-          angular.element(label[0]).attr('class',
-            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-        });
+        var icon = attrs.nuPressButton || attrs.icon;
 
-        attrs.$observe('iconOff', function(value) {
-          angular.element(label[1]).attr('class',
-            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-        });
+        angular.element(label[1]).attr('class',
+          (icon? icon : '') + (attrs.on? ' ' + attrs.on : ''));
+
+        angular.element(label[0]).attr('class',
+          (icon? icon : '') + (attrs.off? ' ' + attrs.off : ''));
 
         attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
@@ -46,35 +46,39 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
         });
 
         var formater = function(value) {
-          return ( (angular.isDefined(attrs.value) &&
-            value === attrs.value) || value === true);
+          return ( (angular.isDefined(attrs.ngTrueValue) &&
+            value === attrs.ngTrueValue) || value === true);
         };
 
         var parser = function(value) {
-          if(attrs.value) {
-            return value ? attrs.value : attrs.valueOff;
+          if(attrs.ngTrueValue) {
+            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
           }
           return value;
         };
 
         if( ngModel ) {
 
-          ngModel.$formatters.unshift(formater);
-          ngModel.$parsers.unshift(parser);
+          ngModel.$formatters = [formater];
+          ngModel.$parsers = [parser];
 
           ngModel.$isEmpty = function(value) {
-            return value !== attrs.value; // this.type !== 'radio'
+            return value !== attrs.ngTrueValue;
           };
 
           ngModel.$render = function() {
             input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || input[0].defaultChecked) {
-            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              (input[0].defaultChecked && input[0].checked) );
+          var ngModelValue = ngModelGet(scope);
+          if(ngModelValue || input[0].defaultChecked) {
+            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
+              ngModel.$setViewValue(true);
+            }
             ngModel.$render();
           }
+
+          element.off('click');
         }
 
         input.on('change', function pbChange(event) {

@@ -1,13 +1,14 @@
 /*global exports, process: true*/
 exports.config = {
   specs: [
-    '../test/protractor/*.js'
+    '../test/protractor/nu*.js'
   ],
 
-  capabilities: {
-    'phantomjs.binary.path': 'node_modules/phantomjs/lib/phantom/bin/phantomjs',
-    'browserName': 'firefox'
-  },
+  chromeOnly: false,
+  multiCapabilities: [
+    { 'browserName': 'chrome'}, 
+    { 'browserName': 'firefox'}
+  ],
 
   baseUrl: 'http://localhost:8981/test/protractor/html/nu.ga.html',
   
@@ -38,7 +39,3 @@ if(process.env.TRAVIS) {
 } else {
   exports.config.seleniumAddress = 'http://localhost:4444/wd/hub';
 }
-
-{"browser": "googlechrome",
-"os": "Linux",
-"browser-version": "28"}

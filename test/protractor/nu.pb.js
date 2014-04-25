@@ -66,10 +66,10 @@ describe('nu press button', function() {
     var unit = get_unit(2);
     var derivative = new pressButtonNode(unit.find('.nu.button.press'));
     
-    derivative.labelOn.getAttribute('class').then(function(value){
+    derivative.labelOff.getAttribute('class').then(function(value){
       expect(value).toEqual('fa fa-flag-o');
     });
-    derivative.labelOff.getAttribute('class').then(function(value){
+    derivative.labelOn.getAttribute('class').then(function(value){
       expect(value).toEqual('fa fa-flag');
     });
   });

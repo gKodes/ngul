@@ -4,41 +4,44 @@
     }*/
 }
 .nu.button.press {
-  color: #333333;
+  color: #cccccc;
   font-size: 30px;
 }
 .nu.button.press label + label {
-  color: #cccccc;
+  color: #333333;
 }
 .nu.button.press.primary {
-  color: #428bca;
-}
-.nu.button.press.primary label + label {
   color: #357ebd;
 }
-.nu.button.press.success {
-  color: #5cb85c;
+.nu.button.press.primary label + label {
+  color: #428bca;
 }
-.nu.button.press.success label + label {
+.nu.button.press.success {
   color: #4cae4c;
 }
-.nu.button.press.info {
-  color: #5bc0de;
+.nu.button.press.success label + label {
+  color: #5cb85c;
 }
-.nu.button.press.info label + label {
+.nu.button.press.info {
   color: #46b8da;
 }
-.nu.button.press.warning {
-  color: #f0ad4e;
+.nu.button.press.info label + label {
+  color: #5bc0de;
 }
-.nu.button.press.warning label + label {
+.nu.button.press.warning {
   color: #eea236;
 }
+.nu.button.press.warning label + label {
+  color: #f0ad4e;
+}
 .nu.button.press.danger {
-  color: #d9534f;
+  color: #d43f3a;
 }
 .nu.button.press.danger label + label {
-  color: #d43f3a;
+  color: #d9534f;
+}
+.nu.button.press[disabled] {
+  opacity: 0.5;
 }
 .nu.switch label {
   color: #ffffff;
@@ -146,15 +149,44 @@
 .nu.switch.danger label:after {
   background: #b52b27;
 }
+.nu.switch[disabled] {
+  opacity: 0.5;
+}
+.nu.list.form-control {
+  padding: 3px 6px 0;
+  height: auto;
+  display: inherit;
+}
+.nu.list.form-control .item {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.nu.list.form-control .erase:after {
+  padding-top: 3px;
+}
+.nu.list.form-control .buffer[type="txt"] {
+  padding: 3px 0;
+  min-height: 20px;
+  min-width: 8px;
+  display: inline-block;
+}
+.nu.list.file.single .item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.nu.list.file .buffer {
+  padding: 9px 12px 8px;
+}
+.nu.list.file .buffer label {
+  margin: 0;
+}
 .nu.nu.wrap {
-  /* Else the buttons would come next to the input's */
+  /*display: table;*/
 }
 .nu.nu.wrap .w-view {
-  font-size: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid transparent;
   padding: 6px 12px;
-}
-.nu.nu.wrap .w-edit {
-  display: inline-block;
-  width: auto;
+  bottom: 0px;
+  overflow: auto;
 }

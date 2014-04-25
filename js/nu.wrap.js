@@ -1,4 +1,4 @@
-/*global angular, isFunction, noop, random, toBoolean, isUndefined */
+/*global angular, isFunction, noop, nodes, toBoolean, isUndefined, getngModelWatch, PRISTINE_CLASS, DIRTY_CLASS, forEach */
 
 var nuWrap = angular.module('nu.Wrap', []);
 
@@ -8,13 +8,13 @@ var WRAP_EDITOR_CLASS = 'ws-view', //wrap state view
 nuWrap.run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('nu.wrap.default',
-    '<span class="nu wrap">' +
+    '<div>' +
       '<wrap-view>{{$model$}}</wrap-view>' +
       '<wrap-in></wrap-in>' +
-    '</span>');
+    '</div>');
 }]);
 
-var SimpleModelCtrl = function(input, wrapView, actionScope) {
+var SimpleModelCtrl = function(input, wrapView) {
   'use strict';
   var ctrl = this;
 
@@ -31,7 +31,7 @@ var SimpleModelCtrl = function(input, wrapView, actionScope) {
   };
 
   this.$reset = function() {
-    input.val(wrapView.html() !== input.attr('placeholder')? 
+    input.val(wrapView.html() !== input.attr('placeholder')?
         wrapView.html() : '');
     ctrl.$toAccept = false;
   };
@@ -48,7 +48,7 @@ var nullFormCtrl = {
   $setDirty: noop
 };
 
-nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler', '$animate', 
+nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler', '$animate',
   function ($templateCache, $parse, $compile, $exceptionHandler, $animate) {
     'use strict';
 
@@ -65,13 +65,22 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
             actionScope = scope.$new(true);
 
         var wrap = angular.element(
-            $templateCache.get(attrs.tmpl || wrapset.$template) )
-            .addClass('ws-view');
+            $templateCache.get(attrs.nuWrap || wrapset.$template) );
+        
+        if(wrap.length > 1) {
+          wrap = angular.element('<div></div>').append(wrap);
+        }
+        
+        wrap.addClass('nu wrap ws-view');
 
         // Bind the model so any change to it would reflect in the wrapView
-        wrap.find('wrap-view').replaceWith(wrapView.html(
+        wrapView.html(
           (wrap.find('wrap-view').html() || '{{$model$}}' )
-            .replace('$model$', '$viewValue')) );
+            .replace('$model$', '$viewValue'));
+
+        if( !wrap.find('wrap-view').replaceWith(wrapView).length ) {
+          wrap.prepend(wrapView);
+        }
 
         var placeHolderNode = nodes.append.text(wrapView[0], '');
 
@@ -85,12 +94,13 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
         wrap[0].replaceChild(rawElement, wrap.find('wrap-in')[0]);
 
         var validatePlaceHolder = function(canShow) {
-          placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
+          var holderText = element.attr('placeholder');
+          placeHolderNode.nodeValue = holderText && canShow? holderText : '';
         };
 
         modelCtrl.$toAccept = false;
 
-        if( isFunction(modelCtrl.$setViewValue) ) {          
+        if( isFunction(modelCtrl.$setViewValue) ) {
           var ngModelGet = $parse(attrs.ngModel),
               ngModelSet = ngModelGet.assign;
 
@@ -99,19 +109,21 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           actionScope.$viewValue = modelCtrl.$viewValue;
           actionScope.$modelValue = modelCtrl.$modelValue;
 
-          var watch = getngModelWatch(scope, modelCtrl, 
+          var watch = getngModelWatch(scope, modelCtrl,
             ngModelGet(scope), ngModelSet),
-              ngSetViewValue = modelCtrl.$setViewValue,
-              ngRender = modelCtrl.$render,
               viewStateStore = false;
 
-          watch.get = function nuWrapModelWatch(scope) {
-            if( modelCtrl.$toAccept ) { return watch.last; }
-            var value = watch.exp(scope);
-            actionScope.$viewValue = modelCtrl.$viewValue;
-            actionScope.$modelValue = modelCtrl.$modelValue;
-            return value;
-          };
+          if(watch) {
+            watch.get = function nuWrapModelWatch(scope) {
+              if( modelCtrl.$toAccept ) { return watch.last; }
+              var value = watch.exp(scope);
+              actionScope.$viewValue = modelCtrl.$viewValue;
+              actionScope.$modelValue = modelCtrl.$modelValue;
+              validatePlaceHolder(!modelCtrl.$viewValue ||
+                modelCtrl.$viewValue === '');
+              return value;
+            };
+          }
 
           modelCtrl.$setViewValue = function(value) {
             modelCtrl.$viewValue = value;
@@ -145,12 +157,17 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
               }
             });
             modelCtrl.$toAccept = false;
-            validatePlaceHolder(!modelCtrl.$modelValue || modelCtrl.$modelValue === '');
+            validatePlaceHolder(!modelCtrl.$viewValue ||
+              modelCtrl.$viewValue === '');
           };
 
           modelCtrl.$reset = function() {
             modelCtrl.$toAccept = false;
-            watch.exp(scope);
+            var value = watch.exp(scope);
+            if( !value ) {
+              modelCtrl.$viewValue = modelCtrl.$modelValue = value;
+              element.val('');
+            }
             actionScope.$viewValue = modelCtrl.$viewValue;
             actionScope.$modelValue = modelCtrl.$modelValue;
             actionScope.$valid = modelCtrl.$valid;
@@ -209,6 +226,20 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
     };
   }
 ]);
+
+nuWrap.filter('asterises', function() {
+  'use strict';
+  return function(input, asterisk) {
+    if(input) {
+      var output = '';
+      for (var i = 0; i < input.length; i++) {
+        output += asterisk || '\u2022';
+      }
+      return output;
+    }
+    return input;
+  };
+});
 
 nuWrap.directive('wrapset', [
   function() {

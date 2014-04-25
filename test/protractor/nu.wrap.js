@@ -86,7 +86,7 @@ describe('nu wrap', function() {
     });
 
 /* The following TC are failing in FF dont know thw exact reason, thats y commented
-  mostly issue with how firefox dirver triggers sentKeys and input event
+  mostly issue with how firefox dirver triggers sentKeys and input even
     it('should auto focus edit append text', function() {
       nuWrap.input.sendKeys(extText).then(function() {
         expect(nuWrap.input.getCssValue('opacity')).not.toEqual('0');
@@ -95,11 +95,12 @@ describe('nu wrap', function() {
     });
 
     it('should revert back the view value', function() {
-      nuWrap.input.sendKeys(Key.NULL, Key.ESCAPE).then(function() {
+      nuWrap.input.sendKeys(Key.ESCAPE).then(function() {
+        browser.pause();
         expect(unit.result()).toEqual(typeText);
       });
-    });*/
-
+    });
+*/
     it('should have same text for editor and view', function() {
       expect(nuWrap.input.getCssValue('opacity')).not.toEqual('1');
       expect(nuWrap.anchor.getInnerHtml()).toEqual(typeText);

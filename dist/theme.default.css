@@ -46,6 +46,9 @@
 .nu.switch label:before {
   padding-left: 28px;
 }
+.nu.nu.wrap {
+  display: inline-block;
+}
 .nu.nu.wrap .w-view,
 .nu.nu.wrap .w-edit {
   font-size: 14px;

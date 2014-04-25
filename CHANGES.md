@@ -21,11 +21,12 @@ Revision History
 4r112.14
 * Added new component ngWarp see [plnkr](http://plnkr.co/edit/qvnLq1?p=info) for demo (TODO: Theme it up a bit)
 
-4r
-* Theme update for [File Chooser](http://gkodes.github.io/ngul/#nuFileChooser)
-
-5r
-* TypeAhead with easy customization like the List
-    - Including Multiple Data Sets
-    - Data Set Headers
-    - Data Set Result Template
+4r115.14
+* nuWrap working with input/select/textarea
+* Press Button (PB) & Switch update to use ngTrueValue & ngFalseValue insted off `value` & `valueOff`
+* PB & Switch fixed issue when used on input tag
+* PB renamed attr iconOn & iconOff to `on` & `off`
+* PB fixed issue of icon's for states getting swaped
+* PB fixed theme color swap issue
+* Preview of new File Chooser on Top off List
+* Preview of Slider

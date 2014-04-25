@@ -96,11 +96,12 @@ var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
     var length = scope.$$watchers.length,
       $render = ngModel.$render,
       uid = random.id(), isMatch = false;
-  ngModelSet(scope, random.id());
+  ngModelSet(scope, uid);
   ngModel.$render = function() { isMatch = true; };
   while(length--) {
     if( scope.$$watchers[length].get === scope.$$watchers[length].exp ) {
-      if( scope.$$watchers[length].get() && isMatch ) {
+      scope.$$watchers[length].get();
+      if( isMatch ) {
         break;
       }
     }
@@ -449,8 +450,8 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
 
 var nuPressButton = angular.module('nu.PressButton', ['nu.Event']);
 
-nuPressButton.directive('nuPressButton', ['nuEvent',
-  function(nuEvent) {
+nuPressButton.directive('nuPressButton', ['nuEvent', '$parse',
+  function(nuEvent, $parse) {
         var _template =
     '<div class="nu button press">' +
       '<input class="src" type="checkbox" autocomplete="off" style="display:none;">' +
@@ -463,11 +464,13 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
+      priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id;
-        var input = element.find('input');
-        var label = element.find('label');
-        var Event = nuEvent(scope, attrs);
+        var id = attrs.id,
+            input = element.find('input'),
+            label = element.find('label'),
+            Event = nuEvent(scope, attrs),
+            ngModelGet = $parse(attrs.ngModel);
 
         if (id) {
           element.removeAttr('id');
@@ -476,15 +479,13 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
         move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
         label.attr('for', id);
 
-        attrs.$observe('iconOn', function(value) {
-          angular.element(label[0]).attr('class',
-            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-        });
+        var icon = attrs.nuPressButton || attrs.icon;
 
-        attrs.$observe('iconOff', function(value) {
-          angular.element(label[1]).attr('class',
-            (attrs.icon? attrs.icon : '') + (value? ' ' + value : ''));
-        });
+        angular.element(label[1]).attr('class',
+          (icon? icon : '') + (attrs.on? ' ' + attrs.on : ''));
+
+        angular.element(label[0]).attr('class',
+          (icon? icon : '') + (attrs.off? ' ' + attrs.off : ''));
 
         attrs.$observe('disabled', function(value) {
           if( angular.isDefined(value) && value !== 'false' ) {
@@ -493,35 +494,39 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
         });
 
         var formater = function(value) {
-          return ( (angular.isDefined(attrs.value) &&
-            value === attrs.value) || value === true);
+          return ( (angular.isDefined(attrs.ngTrueValue) &&
+            value === attrs.ngTrueValue) || value === true);
         };
 
         var parser = function(value) {
-          if(attrs.value) {
-            return value ? attrs.value : attrs.valueOff;
+          if(attrs.ngTrueValue) {
+            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
           }
           return value;
         };
 
         if( ngModel ) {
 
-          ngModel.$formatters.unshift(formater);
-          ngModel.$parsers.unshift(parser);
+          ngModel.$formatters = [formater];
+          ngModel.$parsers = [parser];
 
           ngModel.$isEmpty = function(value) {
-            return value !== attrs.value;
+            return value !== attrs.ngTrueValue;
           };
 
           ngModel.$render = function() {
             input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || input[0].defaultChecked) {
-            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              (input[0].defaultChecked && input[0].checked) );
+          var ngModelValue = ngModelGet(scope);
+          if(ngModelValue || input[0].defaultChecked) {
+            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
+              ngModel.$setViewValue(true);
+            }
             ngModel.$render();
           }
+
+          element.off('click');
         }
 
         input.on('change', function pbChange(event) {
@@ -547,8 +552,8 @@ nuPressButton.directive('nuPressButton', ['nuEvent',
 
 var nuSwitch = angular.module('nu.Switch', ['nu.Event']);
 
-nuSwitch.directive('nuSwitch', ['nuEvent',
-  function(nuEvent) {
+nuSwitch.directive('nuSwitch', ['nuEvent', '$parse',
+  function(nuEvent, $parse) {
         var _template =
     '<div class="nu switch">' +
       '<input class="src" type="checkbox" autocomplete="off">' +
@@ -560,12 +565,13 @@ nuSwitch.directive('nuSwitch', ['nuEvent',
       restrict: 'EACM',
       replace: true,
       require: '?ngModel',
-
+      priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id;
-        var input = element.find('input');
-        var label = element.find('label');
-        var Event = nuEvent(scope, attrs);
+        var id = attrs.id,
+            input = element.find('input'),
+            label = element.find('label'),
+            Event = nuEvent(scope, attrs),
+            ngModelGet = $parse(attrs.ngModel);
 
         if (id) {
           element.removeAttr('id');
@@ -589,35 +595,39 @@ nuSwitch.directive('nuSwitch', ['nuEvent',
         });
 
         var formater = function(value) {
-          return ( (angular.isDefined(attrs.value) &&
-            value === attrs.value) || value === true);
+          return ( (angular.isDefined(attrs.ngTrueValue) &&
+            value === attrs.ngTrueValue) || value === true);
         };
 
         var parser = function(value) {
-          if(attrs.value) {
-            return value ? attrs.value : attrs.valueOff;
+          if(attrs.ngTrueValue) {
+            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
           }
           return value;
         };
 
         if( ngModel ) {
 
-          ngModel.$formatters.push(formater);
-          ngModel.$parsers.push(parser);
+          ngModel.$formatters = [formater];
+          ngModel.$parsers = [parser];
 
           ngModel.$isEmpty = function(value) {
-            return value !== attrs.value;
+            return value !== attrs.ngTrueValue;
           };
 
           ngModel.$render = function() {
             input[0].checked = ngModel.$viewValue;
           };
 
-          if(scope[attrs.ngModel] || input[0].defaultChecked) {
-            ngModel.$setViewValue( formater(scope[attrs.ngModel]) ||
-              (input[0].defaultChecked && input[0].checked) );
+          var ngModelValue = ngModelGet(scope);
+          if(ngModelValue || input[0].defaultChecked) {
+            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
+              ngModel.$setViewValue(true);
+            }
             ngModel.$render();
           }
+
+          element.off('click');
         }
 
         input.on('change', function(event) {
@@ -777,7 +787,7 @@ nuSlider.service('_ScrollSize', ['$window', function($window) {
   var calcDimension = function(element, frame) {
     var rawElement = element[0],
         rawFrame = frame[0];
-    if(rawFrame.offsetWidth >= rawElement.clientWidth) {
+    if(rawFrame.offsetWidth >= rawElement.clientWidth && !element.css('height')) {
       element.css({'maxHeight': rawFrame.clientHeight + 'px'});
     }
 
@@ -823,13 +833,10 @@ nuSlider.directive('nuSlider', ['_ScrollSize',
       template: template,
       restrict: 'EACM',
       transclude: true,
-      link: function(scope, element, attrs, ngController, transclude) {
+      link: function(scope, element, attrs, ngController, transcludeFn) {
         var frame = element.css('overflow','hidden').find('div');
-
-        transclude(scope, function(clone) {
-          frame.append(clone);
-          scrollSize.hideBars(element, frame);
-        });
+        frame.append(transcludeFn());
+        scrollSize.hideBars(element, frame);
       }
     };
   }
@@ -847,13 +854,17 @@ nuEvent.service('nuEvent', ['$parse', function($parse) {
     };
   };
 
-  var nuEventCreator = function(scope, attrs) {
-    var NuEventController = function($scope, $attrs) {
+  var nuEventCreator = function(scope, attrs, events) {
+    var NuEventController = function($scope, $attrs, $events) {
+      $events = $events || 'change click dblclick mousedown mouseup mouseover mouseout mousemove mouseenter mouseleave keydown keyup keypress submit focus blur copy cut paste ';
       NuEventManager.call(this);
       forEach($attrs, function(value, name) {
         if( isString(name) ) {
           if( startsWith(name, 'nu') ) {
-            this.on(name.substr(2).toLowerCase(), nuPartialEvent($parse(value), $scope));
+            var eventName = name.substr(2).toLowerCase();
+            if($events.indexOf(eventName + ' ') !== -1) {
+              this.on(eventName, nuPartialEvent($parse(value), $scope));
+            }
           }
         }
       }, this);
@@ -901,13 +912,13 @@ var WRAP_EDITOR_CLASS = 'ws-view',
 
 nuWrap.run(['$templateCache', function($templateCache) {
     $templateCache.put('nu.wrap.default',
-    '<span class="nu wrap">' +
+    '<div>' +
       '<wrap-view>{{$model$}}</wrap-view>' +
       '<wrap-in></wrap-in>' +
-    '</span>');
+    '</div>');
 }]);
 
-var SimpleModelCtrl = function(input, wrapView, actionScope) {
+var SimpleModelCtrl = function(input, wrapView) {
     var ctrl = this;
 
   input.on('keydown', function(event) {
@@ -923,7 +934,7 @@ var SimpleModelCtrl = function(input, wrapView, actionScope) {
   };
 
   this.$reset = function() {
-    input.val(wrapView.html() !== input.attr('placeholder')? 
+    input.val(wrapView.html() !== input.attr('placeholder')?
         wrapView.html() : '');
     ctrl.$toAccept = false;
   };
@@ -940,7 +951,7 @@ var nullFormCtrl = {
   $setDirty: noop
 };
 
-nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler', '$animate', 
+nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionHandler', '$animate',
   function ($templateCache, $parse, $compile, $exceptionHandler, $animate) {
         return {
       restrict: 'AC',
@@ -955,13 +966,22 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
             actionScope = scope.$new(true);
 
         var wrap = angular.element(
-            $templateCache.get(attrs.tmpl || wrapset.$template) )
-            .addClass('ws-view');
+            $templateCache.get(attrs.nuWrap || wrapset.$template) );
+        
+        if(wrap.length > 1) {
+          wrap = angular.element('<div></div>').append(wrap);
+        }
+        
+        wrap.addClass('nu wrap ws-view');
 
 
-        wrap.find('wrap-view').replaceWith(wrapView.html(
+        wrapView.html(
           (wrap.find('wrap-view').html() || '{{$model$}}' )
-            .replace('$model$', '$viewValue')) );
+            .replace('$model$', '$viewValue'));
+
+        if( !wrap.find('wrap-view').replaceWith(wrapView).length ) {
+          wrap.prepend(wrapView);
+        }
 
         var placeHolderNode = nodes.append.text(wrapView[0], '');
 
@@ -975,12 +995,13 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
         wrap[0].replaceChild(rawElement, wrap.find('wrap-in')[0]);
 
         var validatePlaceHolder = function(canShow) {
-          placeHolderNode.nodeValue = canShow? element.attr('placeholder') : '';
+          var holderText = element.attr('placeholder');
+          placeHolderNode.nodeValue = holderText && canShow? holderText : '';
         };
 
         modelCtrl.$toAccept = false;
 
-        if( isFunction(modelCtrl.$setViewValue) ) {          
+        if( isFunction(modelCtrl.$setViewValue) ) {
           var ngModelGet = $parse(attrs.ngModel),
               ngModelSet = ngModelGet.assign;
 
@@ -989,19 +1010,21 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
           actionScope.$viewValue = modelCtrl.$viewValue;
           actionScope.$modelValue = modelCtrl.$modelValue;
 
-          var watch = getngModelWatch(scope, modelCtrl, 
+          var watch = getngModelWatch(scope, modelCtrl,
             ngModelGet(scope), ngModelSet),
-              ngSetViewValue = modelCtrl.$setViewValue,
-              ngRender = modelCtrl.$render,
               viewStateStore = false;
 
-          watch.get = function nuWrapModelWatch(scope) {
-            if( modelCtrl.$toAccept ) { return watch.last; }
-            var value = watch.exp(scope);
-            actionScope.$viewValue = modelCtrl.$viewValue;
-            actionScope.$modelValue = modelCtrl.$modelValue;
-            return value;
-          };
+          if(watch) {
+            watch.get = function nuWrapModelWatch(scope) {
+              if( modelCtrl.$toAccept ) { return watch.last; }
+              var value = watch.exp(scope);
+              actionScope.$viewValue = modelCtrl.$viewValue;
+              actionScope.$modelValue = modelCtrl.$modelValue;
+              validatePlaceHolder(!modelCtrl.$viewValue ||
+                modelCtrl.$viewValue === '');
+              return value;
+            };
+          }
 
           modelCtrl.$setViewValue = function(value) {
             modelCtrl.$viewValue = value;
@@ -1035,12 +1058,17 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
               }
             });
             modelCtrl.$toAccept = false;
-            validatePlaceHolder(!modelCtrl.$modelValue || modelCtrl.$modelValue === '');
+            validatePlaceHolder(!modelCtrl.$viewValue ||
+              modelCtrl.$viewValue === '');
           };
 
           modelCtrl.$reset = function() {
             modelCtrl.$toAccept = false;
-            watch.exp(scope);
+            var value = watch.exp(scope);
+            if( !value ) {
+              modelCtrl.$viewValue = modelCtrl.$modelValue = value;
+              element.val('');
+            }
             actionScope.$viewValue = modelCtrl.$viewValue;
             actionScope.$modelValue = modelCtrl.$modelValue;
             actionScope.$valid = modelCtrl.$valid;
@@ -1100,6 +1128,19 @@ nuWrap.directive('nuWrap', ['$templateCache', '$parse', '$compile', '$exceptionH
   }
 ]);
 
+nuWrap.filter('asterises', function() {
+    return function(input, asterisk) {
+    if(input) {
+      var output = '';
+      for (var i = 0; i < input.length; i++) {
+        output += asterisk || '\u2022';
+      }
+      return output;
+    }
+    return input;
+  };
+});
+
 nuWrap.directive('wrapset', [
   function() {
         return {
@@ -1112,6 +1153,6 @@ nuWrap.directive('wrapset', [
   }
 ]);
 var nu = angular.module('nu', 
-  ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
-    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event', 'nu.Wrap']);
+  ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 	
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Wrap']);
 })(angular);

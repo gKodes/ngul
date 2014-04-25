@@ -12,7 +12,7 @@ nuSlider.service('_ScrollSize', ['$window', function($window) {
   var calcDimension = function(element, frame) {
     var rawElement = element[0],
         rawFrame = frame[0];
-    if(rawFrame.offsetWidth >= rawElement.clientWidth) {
+    if(rawFrame.offsetWidth >= rawElement.clientWidth && !element.css('height')) {
       element.css({'maxHeight': rawFrame.clientHeight + 'px'});
     }
 
@@ -59,13 +59,10 @@ nuSlider.directive('nuSlider', ['_ScrollSize', // Gallery
       template: template,
       restrict: 'EACM',
       transclude: true,
-      link: function(scope, element, attrs, ngController, transclude) {
+      link: function(scope, element, attrs, ngController, transcludeFn) {
         var frame = element.css('overflow','hidden').find('div');
-
-        transclude(scope, function(clone) {
-          frame.append(clone);
-          scrollSize.hideBars(element, frame);
-        });
+        frame.append(transcludeFn());
+        scrollSize.hideBars(element, frame);
       }
     };
   }

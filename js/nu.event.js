@@ -11,13 +11,17 @@ nuEvent.service('nuEvent', ['$parse', function($parse) {
     };
   };
 
-  var nuEventCreator = function(scope, attrs) {
-    var NuEventController = function($scope, $attrs) {
+  var nuEventCreator = function(scope, attrs, events) {
+    var NuEventController = function($scope, $attrs, $events) {
+      $events = $events || 'change click dblclick mousedown mouseup mouseover mouseout mousemove mouseenter mouseleave keydown keyup keypress submit focus blur copy cut paste ';
       NuEventManager.call(this);
       forEach($attrs, function(value, name) {
         if( isString(name) ) {
           if( startsWith(name, 'nu') ) {
-            this.on(name.substr(2).toLowerCase(), nuPartialEvent($parse(value), $scope));
+            var eventName = name.substr(2).toLowerCase();
+            if($events.indexOf(eventName + ' ') !== -1) {
+              this.on(eventName, nuPartialEvent($parse(value), $scope));
+            }
           }
         }
       }, this);

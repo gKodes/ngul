@@ -5,12 +5,13 @@
 
 .nu {
   &.button.press {
-    #nu > #theme > .pb(@btn-default-border, @btn-default-color, @font-size-large);
-    &.primary { #nu > #theme > .pb(@btn-primary-border, @brand-primary); }
-    &.success { #nu > #theme > .pb(@btn-success-border, @brand-success); }
-    &.info { #nu > #theme > .pb(@btn-info-border, @brand-info); }
-    &.warning { #nu > #theme > .pb(@btn-warning-border, @brand-warning); }
-    &.danger { #nu > #theme > .pb(@btn-danger-border, @brand-danger); }
+    #nu > #theme > .pb(@btn-default-color, @btn-default-border, @font-size-large);
+    &.primary { #nu > #theme > .pb(@brand-primary, @btn-primary-border); }
+    &.success { #nu > #theme > .pb(@brand-success, @btn-success-border); }
+    &.info { #nu > #theme > .pb(@brand-info, @btn-info-border); }
+    &.warning { #nu > #theme > .pb(@brand-warning, @btn-warning-border); }
+    &.danger { #nu > #theme > .pb(@brand-danger, @btn-danger-border); }
+    &[disabled] { opacity: 0.5; }
   }
 
   &.switch {
@@ -68,19 +69,59 @@
       });
       #nu > #theme > .switch-handle(@btn-danger-color, darken(@btn-danger-border, 10%));
     }
+    &[disabled] { opacity: 0.5; }
+  }
+  
+  &.list {
+    &.form-control {
+      @padding-vertical: (@padding-base-vertical / 2);
+
+      .item {
+        padding-top: @padding-vertical;
+        padding-bottom: @padding-vertical;
+      }
+
+      .erase:after {
+        padding-top: @padding-vertical;
+      }
+
+      .buffer[type="txt"] {
+        padding: @padding-vertical 0;
+        min-height: 20px;
+        min-width: 8px;
+        display: inline-block;
+      }
+
+      padding: @padding-vertical (@padding-base-horizontal / 2) 0;
+      height: auto;
+      display: inherit;
+    }
+
+    &.file {
+      &.single {
+        .item {
+          #nu > #mixin > .overflow(text, ellipsis);
+        }
+      }
+
+      .buffer {
+        @padding-vertical: (@padding-base-vertical + 3px); //3px because of item margin
+        padding: @padding-vertical @padding-base-horizontal (@padding-vertical - 1px);
+        label {
+          margin: 0;
+        }
+      }
+    }
   }
 
   &.nu.wrap {
     .w-view {
-      font-size: @font-family-base;
       border: 1px solid transparent;
       padding: @padding-base-vertical @padding-base-horizontal;
+      bottom: 0px;
+      overflow: auto;
     }
 
-    /* Else the buttons would come next to the input's */
-    .w-edit {
-      display: inline-block;
-      width: auto;
-    }
+    /*display: table;*/
   }
 }
