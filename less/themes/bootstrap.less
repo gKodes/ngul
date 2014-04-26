@@ -2,6 +2,7 @@
 @import "../nu.theme.less";
 @import "../nu.mixin.less";
 @import "bs.variables.less";
+@import "bootstrap.mixins.less";
 
 .nu {
   &.button.press {
@@ -74,27 +75,16 @@
   
   &.list {
     &.form-control {
-      @padding-vertical: (@padding-base-vertical / 2);
-
-      .item {
-        padding-top: @padding-vertical;
-        padding-bottom: @padding-vertical;
-      }
-
-      .erase:after {
-        padding-top: @padding-vertical;
-      }
-
-      .buffer[type="txt"] {
-        padding: @padding-vertical 0;
-        min-height: 20px;
-        min-width: 8px;
-        display: inline-block;
-      }
-
-      padding: @padding-vertical (@padding-base-horizontal / 2) 0;
+      .list-form-control(@padding-base-vertical, @padding-base-horizontal, @font-size-base, @input-height-base);
       height: auto;
       display: inherit;
+
+      &.input-lg {
+        .list-form-control(@padding-large-vertical, @padding-large-horizontal, @font-size-large, @input-height-large);
+      }
+      &.input-sm {
+        .list-form-control(@padding-small-vertical, @padding-small-horizontal, @font-size-small, @input-height-small);
+      }
     }
 
     &.file {

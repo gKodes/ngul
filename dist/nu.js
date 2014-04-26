@@ -531,6 +531,12 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
           } else { bufferNodes.removeClass('hidden-buffer'); }
         });
 
+        if(nuList.$buffers[0]) {
+          element.on('click', function() {
+            nuList.$buffers[0].focus();
+          });
+        }
+
         nuList.$render = function() {
           forEach(nuList.$viewValue, function(item, index) {
             nuList.$itemNodeFactory({'item' : item, '$index': index});
@@ -644,6 +650,10 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
 
         if( !isMultiple ) {
           element.addClass('single');
+          var input = bufferNode.find('input');
+          element.on('click', function() {
+            input[0].click();
+          });
         } else {
           itemRawNode.addClass('erase');
           bufferNode.find('input').attr('multiple', 'multiple');

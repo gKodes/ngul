@@ -153,6 +153,7 @@
   opacity: 0.5;
 }
 .nu.list.form-control {
+  line-height: 34px;
   padding: 3px 6px 0;
   height: auto;
   display: inherit;
@@ -166,7 +167,41 @@
 }
 .nu.list.form-control .buffer[type="txt"] {
   padding: 3px 0;
-  min-height: 20px;
+  min-height: 14px;
+  min-width: 8px;
+  display: inline-block;
+}
+.nu.list.form-control.input-lg {
+  line-height: 46px;
+  padding: 5px 6px 0;
+}
+.nu.list.form-control.input-lg .item {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.nu.list.form-control.input-lg .erase:after {
+  padding-top: 5px;
+}
+.nu.list.form-control.input-lg .buffer[type="txt"] {
+  padding: 5px 0;
+  min-height: 18px;
+  min-width: 8px;
+  display: inline-block;
+}
+.nu.list.form-control.input-sm {
+  line-height: 30px;
+  padding: 2.5px 6px 0;
+}
+.nu.list.form-control.input-sm .item {
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
+}
+.nu.list.form-control.input-sm .erase:after {
+  padding-top: 2.5px;
+}
+.nu.list.form-control.input-sm .buffer[type="txt"] {
+  padding: 2.5px 0;
+  min-height: 12px;
   min-width: 8px;
   display: inline-block;
 }

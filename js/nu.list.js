@@ -299,6 +299,12 @@ nuList.directive('nuList', ['$compile', '$parse', 'listBuffers',
           } else { bufferNodes.removeClass('hidden-buffer'); }
         });
 
+        if(nuList.$buffers[0]) {
+          element.on('click', function() {
+            nuList.$buffers[0].focus();
+          });
+        }
+
         nuList.$render = function() {
           forEach(nuList.$viewValue, function(item, index) {
             nuList.$itemNodeFactory({'item' : item, '$index': index});

@@ -36,6 +36,10 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
 
         if( !isMultiple ) {
           element.addClass('single');
+          var input = bufferNode.find('input');
+          element.on('click', function() {
+            input[0].click();
+          });
         } else {
           itemRawNode.addClass('erase');
           bufferNode.find('input').attr('multiple', 'multiple');
