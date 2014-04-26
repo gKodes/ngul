@@ -62,7 +62,7 @@ var move = {},
         var value = rawValue.toLowerCase();
         return !(value === 'false' || value === 'f' || value === 'off');
       }
-      return false;
+      return rawValu === true;
     };
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
@@ -139,6 +139,100 @@ var NuEventManager = (function() {
 
   return _export;
 })(forEach);
+
+
+var nullInputngModle = {
+  $isEmpty: angular.identity,
+  $formatters: [],
+  $parsers: [],
+  $setViewValue: function(value) {
+    forEach(this.$parsers, function(fn) {
+      value = fn(value);
+    });
+    this.$modelValue = value;
+  },
+  isNull: true
+};
+function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
+  var input = element.find('input'),
+      label = element.find('label'),
+      trueValue = attrs.ngTrueValue,
+      falseValue = attrs.ngFalseValue;
+
+  ngModel = ngModel || nullInputngModle;
+
+
+  if (attrs.id) {
+    element.removeAttr('id');
+  } else { attrs.id = random.id(); input.attr('id', attrs.id); }
+
+
+  move.attribute(input, element, ['type', 'name', 'checked']);
+  label.attr('for', attrs.id);
+
+  if( !ngModel.$isEmpty( isString(trueValue)? trueValue : true) || ngModel.isNull ) {
+
+    ngModel.$isEmpty = function(value) {
+      return value !== trueValue;
+    };
+
+    ngModel.$formatters.push(function(value) {
+      if( trueValue ) { 
+        return value === trueValue;
+      }
+      return value;
+    });
+
+    ngModel.$parsers.push(function(value) {
+      if( trueValue ) { 
+        return value ? trueValue : falseValue;
+      }
+      return value;
+    });
+  }
+
+  element.off('click');
+  input.off('click');
+
+  ngModel.$render = function() {
+    input[0].checked = ngModel.$viewValue;
+  };
+
+  if( input[0].defaultChecked && input[0].checked ) {
+    ngModel.$setViewValue(true);
+  }
+
+  if( !ngModel.isNull && angular.isDefined(defaultValue) ) {
+    var value;
+    if( isString(defaultValue) ) {
+      if(defaultValue === trueValue) { value = true; }
+        if(defaultValue === falseValue) { value = false; }
+    } else { value = defaultValue; }
+    
+    if(value) {
+      ngModel.$setViewValue(value);
+      ngModel.$render();
+    }
+  }
+
+  input.on('change', function pbChange(event) {
+    var isChecked = this.checked;
+    event.stopPropagation();
+    if( (this.type !== 'radio' || isChecked) ) {
+      ngModel.$setViewValue(isChecked);
+      if( !ngModel.isNull ) { scope.$digest(); }
+    }
+
+    Event.trigger('change', {'target': attrs.name, 'value': ngModel.$modelValue });
+  });
+
+  attrs.$observe('disabled', function(value) {
+    if( angular.isDefined(value) && value !== 'false' ) {
+      input.attr('disabled', value);
+    } else { input.removeAttr('disabled'); }
+  });
+}
+
 
 var nuList = angular.module('nu.List', []);
 
@@ -466,20 +560,8 @@ nuPressButton.directive('nuPressButton', ['nuEvent', '$parse',
       require: '?ngModel',
       priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id,
-            input = element.find('input'),
-            label = element.find('label'),
-            Event = nuEvent(scope, attrs),
-            ngModelGet = $parse(attrs.ngModel);
-
-        if (id) {
-          element.removeAttr('id');
-        } else { id = random.id(); }
-
-        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
-        label.attr('for', id);
-
-        var icon = attrs.nuPressButton || attrs.icon;
+        var icon = attrs.nuPressButton || attrs.icon,
+            label = element.find('label');
 
         angular.element(label[1]).attr('class',
           (icon? icon : '') + (attrs.on? ' ' + attrs.on : ''));
@@ -487,61 +569,8 @@ nuPressButton.directive('nuPressButton', ['nuEvent', '$parse',
         angular.element(label[0]).attr('class',
           (icon? icon : '') + (attrs.off? ' ' + attrs.off : ''));
 
-        attrs.$observe('disabled', function(value) {
-          if( angular.isDefined(value) && value !== 'false' ) {
-            input.attr('disabled', value);
-          } else { input.removeAttr('disabled'); }
-        });
-
-        var formater = function(value) {
-          return ( (angular.isDefined(attrs.ngTrueValue) &&
-            value === attrs.ngTrueValue) || value === true);
-        };
-
-        var parser = function(value) {
-          if(attrs.ngTrueValue) {
-            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
-          }
-          return value;
-        };
-
-        if( ngModel ) {
-
-          ngModel.$formatters = [formater];
-          ngModel.$parsers = [parser];
-
-          ngModel.$isEmpty = function(value) {
-            return value !== attrs.ngTrueValue;
-          };
-
-          ngModel.$render = function() {
-            input[0].checked = ngModel.$viewValue;
-          };
-
-          var ngModelValue = ngModelGet(scope);
-          if(ngModelValue || input[0].defaultChecked) {
-            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
-              ngModel.$setViewValue(true);
-            }
-            ngModel.$render();
-          }
-
-          element.off('click');
-        }
-
-        input.on('change', function pbChange(event) {
-          var isChecked = this.checked;
-          event.stopPropagation();
-          if( ngModel && (this.type !== 'radio' || isChecked) ) {
-            scope.$apply(function() {
-              ngModel.$setViewValue(isChecked);
-            });
-          }
-
-          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
-        });
-
-
+        initTwoStateSwtich(scope, element, attrs, ngModel,
+          nuEvent(scope, attrs), $parse(attrs.ngModel)(scope));
       }
     };
   }
@@ -567,81 +596,13 @@ nuSwitch.directive('nuSwitch', ['nuEvent', '$parse',
       require: '?ngModel',
       priority: 5,
       link: function(scope, element, attrs, ngModel) {
-        var id = attrs.id,
-            input = element.find('input'),
-            label = element.find('label'),
-            Event = nuEvent(scope, attrs),
-            ngModelGet = $parse(attrs.ngModel);
+        var label = element.find('label');
 
-        if (id) {
-          element.removeAttr('id');
-        } else { id = random.id(); }
+        label.text(attrs.on? attrs.on : 'On');
+        label.attr('label-off', attrs.off? attrs.off : 'Off');
 
-        move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
-        label.attr('for', id);
-
-        attrs.$observe('on', function (value) {
-          label.text(value? value : 'On');
-        });
-
-        attrs.$observe('off', function (value) {
-          label.attr('label-off', value? value : 'Off');
-        });
-
-        attrs.$observe('disabled', function(value) {
-          if( angular.isDefined(value) && value !== 'false' ) {
-            input.attr('disabled', value);
-          } else { input.removeAttr('disabled'); }
-        });
-
-        var formater = function(value) {
-          return ( (angular.isDefined(attrs.ngTrueValue) &&
-            value === attrs.ngTrueValue) || value === true);
-        };
-
-        var parser = function(value) {
-          if(attrs.ngTrueValue) {
-            return value ? attrs.ngTrueValue : attrs.ngFalseValue;
-          }
-          return value;
-        };
-
-        if( ngModel ) {
-
-          ngModel.$formatters = [formater];
-          ngModel.$parsers = [parser];
-
-          ngModel.$isEmpty = function(value) {
-            return value !== attrs.ngTrueValue;
-          };
-
-          ngModel.$render = function() {
-            input[0].checked = ngModel.$viewValue;
-          };
-
-          var ngModelValue = ngModelGet(scope);
-          if(ngModelValue || input[0].defaultChecked) {
-            if( formater(ngModelValue) || input[0].defaultChecked && input[0].checked ) {
-              ngModel.$setViewValue(true);
-            }
-            ngModel.$render();
-          }
-
-          element.off('click');
-        }
-
-        input.on('change', function(event) {
-          var isChecked = this.checked;
-          event.stopPropagation();
-          if( ngModel && (this.type !== 'radio' || isChecked) ) {
-            scope.$apply(function() {
-              ngModel.$setViewValue(isChecked);
-            });
-          }
-          Event.trigger('change', {'target': attrs.name, 'value': parser(isChecked)});
-        });
-
-
+        initTwoStateSwtich(scope, element, attrs, ngModel, 
+          nuEvent(scope, attrs), $parse(attrs.ngModel)(scope));
       }
     };
   }
