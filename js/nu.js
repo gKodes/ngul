@@ -147,7 +147,7 @@ var nullInputngModle = {
   isNull: true
 };
 function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
-  var id = attrs.id;
+  var id = attrs.id,
       input = element.find('input'),
       label = element.find('label'),
       trueValue = attrs.ngTrueValue,
