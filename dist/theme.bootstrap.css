@@ -153,7 +153,7 @@
   opacity: 0.5;
 }
 .nu.list.form-control {
-  line-height: 34px;
+  line-height: 1.42857143;
   padding: 3px 6px 0;
   height: auto;
   display: inherit;
@@ -172,7 +172,7 @@
   display: inline-block;
 }
 .nu.list.form-control.input-lg {
-  line-height: 46px;
+  line-height: 1.33;
   padding: 5px 6px 0;
 }
 .nu.list.form-control.input-lg .item {
@@ -189,7 +189,7 @@
   display: inline-block;
 }
 .nu.list.form-control.input-sm {
-  line-height: 30px;
+  line-height: 1.5;
   padding: 2.5px 6px 0;
 }
 .nu.list.form-control.input-sm .item {
