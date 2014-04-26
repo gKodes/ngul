@@ -147,7 +147,8 @@ var nullInputngModle = {
   isNull: true
 };
 function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
-  var input = element.find('input'),
+  var id = attrs.id;
+      input = element.find('input'),
       label = element.find('label'),
       trueValue = attrs.ngTrueValue,
       falseValue = attrs.ngFalseValue;
@@ -155,13 +156,13 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
   ngModel = ngModel || nullInputngModle;
 
   //Generate an unique id if not present
-  if (attrs.id) {
+  if (id) {
     element.removeAttr('id');
-  } else { attrs.id = random.id(); input.attr('id', attrs.id); }
+  } else { input.attr('id', id); }
 
   //move some common attributes over
   move.attribute(input, element, ['type', 'name', 'checked']);
-  label.attr('for', attrs.id);
+  label.attr('for', id);
 
   if( !ngModel.$isEmpty( isString(trueValue)? trueValue : true) || ngModel.isNull ) {
     //There are no default formaters for ngTrueValue/ngFalseValue
