@@ -1,0 +1,22 @@
+.list-form-control(@padding-vertical; @padding-horizontal; @font-size; @line-height) {
+  @padding-vertical-calc: (@padding-vertical / 2);
+
+  .item {
+    padding-top: @padding-vertical-calc;
+    padding-bottom: @padding-vertical-calc;
+  }
+
+  .erase:after {
+    padding-top: @padding-vertical-calc;
+  }
+
+  .buffer[type="txt"] {
+    padding: @padding-vertical-calc 0;
+    min-height: @font-size;
+    min-width: 8px;
+    display: inline-block;
+  }
+
+  line-height: @line-height;
+  padding: @padding-vertical-calc (@padding-base-horizontal / 2) 0;
+}

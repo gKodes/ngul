@@ -6,7 +6,7 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
   function($compile, listBuffers, nuEvent) {
     'use strict';
     var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">{{item.name || item}}</span>';
-    var buffer_tmpl = '<buffer class="buffer" type="file"><label class="action">Browse<input type="file"></label></buffer>';
+    var buffer_tmpl = '<buffer class="buffer" type="file"><span class="action">Browse<input type="file"></span></buffer>';
 
     return {
       restrict: 'AC',
