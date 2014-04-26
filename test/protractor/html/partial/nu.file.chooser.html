@@ -1,11 +1,18 @@
-<style type="text/css">input { display: block !important; }</style>
+<!-- style type="text/css">input { display: block !important; }</style -->
 
 <div unit="" ng-controller="angular.noop" ng-init="unitCase = ['My Fav Song.MP3']">
-  <nu-list nu-file-chooser="" src="unitCase"/>
+  <nu-list nu-file-chooser="" src="unitCase"></nu-list>
   <div result="">{{unitCase}}</div>
 </div>
 
 <div unit="" ng-controller="angular.noop">
-  <nu-list class="multiple" nu-file-chooser="" src="unitCase"/>
+  <nu-list class="multiple" nu-file-chooser="" src="unitCase"></nu-list>
+  <div result="">{{unitCase}}</div>
+</div>
+
+<div unit="" ng-controller="playBack">
+  <nu-list nu-file-chooser="" src="unitCase"></nu-list>
+  <a ng-click="play()">Play</a>
+  <a ng-click="pause()">Pause</a>
   <div result="">{{unitCase}}</div>
 </div>

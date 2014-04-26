@@ -1,7 +1,7 @@
 var testApp = angular.module('nu.test', [
   'ngRoute',
   'nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 
-    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event', 'nu.Wrap'
+    'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Event', 'nu.Wrap', 'nu.Media'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/:path', {templateUrl: function(parameters){
@@ -53,6 +53,16 @@ testApp.controller('galleryTest', function($scope, $log){
     {src: 'http://farm9.staticflickr.com/8315/7918425138_b739f0df53_b.jpg', desc: 'Image 05'},
     {src: 'http://farm9.staticflickr.com/8461/7918425364_fe6753aa75_b.jpg', desc: 'Image 06'}
   ];
+});
+
+testApp.controller('playBack', function($scope, nuMedia) {
+  $scope.play = function() {
+    nuMedia.audio.play($scope.unitCase[0]);
+  };
+
+  $scope.pause = function() {
+    nuMedia.audio.pause();
+  };
 });
 
 //http://farm8.staticflickr.com/7072/13349540283_fa28e565da_b.jpg

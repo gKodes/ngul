@@ -1,4 +1,4 @@
-/*global angular: true*/
+/*global angular */
 
 var VALID_CLASS = 'ng-valid',
     INVALID_CLASS = 'ng-invalid',
@@ -9,6 +9,7 @@ var RE_EXT = /\.([\w\d]+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
 var split_re = function(re) {
+  'use strict';
   var dummy_result = ['',''];
   return function(str) {
     if(str) {
@@ -19,9 +20,6 @@ var split_re = function(re) {
   };
 };
 
-var splitext = split_re(RE_EXT);
-var split = split_re(RE_BASENAME);
-var basename = function(path) { return split(path)[1]; };
 var move = {},
     random = {},
     nodes = {},
@@ -29,46 +27,65 @@ var move = {},
     copy = angular.copy,
     equals = angular.equals,
     forEach = angular.forEach,
+    isObject = angular.isObject,
     isString = angular.isString,
     isElement = angular.isElement,
     isFunction = angular.isFunction,
     isUndefined = angular.isUndefined,
+    lowercase = angular.lowercase,
     extend = angular.extend,
-    nuError = angular.$$minErr('nu'),
-    isDefinedAndNotNull = function(value) {
-      return typeof value != 'undefined' && value !== null;
-    },
-    trim = function(str) {
-      return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
-    },
-    partial = function(fn, args, scope) {
-      return function() {
-        return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
-      };
-    },
-    startsWith = function(str, subStr) {
-      return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
-    },
-    toBoolean = function(rawValue) {
-      if( rawValue && isString(rawValue) ) {
-        var value = rawValue.toLowerCase();
-        return !(value === 'false' || value === 'f' || value === 'off');
-      }
-      return rawValu === true;
-    };
+    nuError = angular.$$minErr('nu');
+
+function isDefinedAndNotNull(value) {
+  'use strict';
+  return typeof value != 'undefined' && value !== null;
+}
+
+function trim(str) {
+  'use strict';
+  return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
+}
+
+function partial(fn, args, scope) {
+  'use strict';
+  return function() {
+    return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
+  };
+}
+
+function startsWith(str, subStr) {
+  'use strict';
+  return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
+}
+
+function toBoolean(rawValue) {
+  'use strict';
+  if( rawValue && isString(rawValue) ) {
+    var value = rawValue.toLowerCase();
+    return !(value === 'false' || value === 'f' || value === 'off');
+  }
+  return rawValue === true;
+}
+
+function isFile(blob) {
+  'use strict';
+  return blob.lastModifiedDate && isString(blob.type);
+}
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
 random.id = function(options) {
-    options = extend(random.defaults, options);
+  'use strict';
+  options = extend(random.defaults, options);
 
-    var randStr = '';
-    for (var i = 0; i < options.size; i++) {
-      randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
-    }
-    return randStr;
+  var randStr = '';
+  for (var i = 0; i < options.size; i++) {
+    randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
+  }
+  return randStr;
 };
 
 move.attribute = function(dst, src, names) {
+'use strict';
   for (var count = 0; count < names.length; count++) {
     dst.attr(names[count], src.attr(names[count]));
     src.removeAttr(names[count]);
@@ -79,6 +96,7 @@ move.attribute = function(dst, src, names) {
 nodes.move = move;
 nodes.append = {};
 nodes.append.text = function(parent, text, beforeNode) {
+  'use strict';
   var textNode = document.createTextNode(text);
   parent.insertBefore(textNode, beforeNode);
   return textNode;
@@ -105,6 +123,7 @@ var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
 };
 
 var NuEventManager = (function() {
+  'use strict';
   var _export = function() {
     this.events = {};
   };
@@ -114,7 +133,7 @@ var NuEventManager = (function() {
     this.events[eventType].push(handler);
   };
   _export.prototype.off = function(eventType, handler) {
-    if( this.events[eventType] ) { 
+    if( this.events[eventType] ) {
       var index = this.events[eventType].indexOf;
       if ( index !== -1 ) {
         return this.events[eventType].split(index, 1)[0];
@@ -139,6 +158,7 @@ var nullInputngModle = {
   $formatters: [],
   $parsers: [],
   $setViewValue: function(value) {
+    'use strict';
     forEach(this.$parsers, function(fn) {
       value = fn(value);
     });
@@ -147,6 +167,7 @@ var nullInputngModle = {
   isNull: true
 };
 function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
+  'use strict';
   var id = attrs.id,
       input = element.find('input'),
       label = element.find('label'),
@@ -171,14 +192,14 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
     };
 
     ngModel.$formatters.push(function(value) {
-      if( trueValue ) { 
+      if( trueValue ) {
         return value === trueValue;
       }
       return value;
     });
 
     ngModel.$parsers.push(function(value) {
-      if( trueValue ) { 
+      if( trueValue ) {
         return value ? trueValue : falseValue;
       }
       return value;
@@ -227,3 +248,16 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
   });
 }
 /* Switch & PB Common */
+
+/* global
+   -isFile
+   -isString
+   -copy
+   -extend
+   -VALID_CLASS
+   -INVALID_CLASS
+   -PRISTINE_CLASS
+   -DIRTY_CLASS
+   -splitext
+   -noop
+*/
