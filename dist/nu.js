@@ -165,10 +165,10 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
 
   if (id) {
     element.removeAttr('id');
-  } else { input.attr('id', id); }
+  } else { id = random.id(); }
 
 
-  move.attribute(input, element, ['type', 'name', 'checked']);
+  move.attribute(input, element, ['type', 'name', 'checked']).attr('id', id);
   label.attr('for', id);
 
   if( !ngModel.$isEmpty( isString(trueValue)? trueValue : true) || ngModel.isNull ) {
