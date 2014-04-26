@@ -54,7 +54,7 @@ var move = {},
         var value = rawValue.toLowerCase();
         return !(value === 'false' || value === 'f' || value === 'off');
       }
-      return false;
+      return rawValu === true;
     };
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
@@ -132,3 +132,97 @@ var NuEventManager = (function() {
 
   return _export;
 })(forEach);
+
+/* Switch & PB Common */
+var nullInputngModle = {
+  $isEmpty: angular.identity,
+  $formatters: [],
+  $parsers: [],
+  $setViewValue: function(value) {
+    forEach(this.$parsers, function(fn) {
+      value = fn(value);
+    });
+    this.$modelValue = value;
+  },
+  isNull: true
+};
+function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
+  var input = element.find('input'),
+      label = element.find('label'),
+      trueValue = attrs.ngTrueValue,
+      falseValue = attrs.ngFalseValue;
+
+  ngModel = ngModel || nullInputngModle;
+
+  //Generate an unique id if not present
+  if (attrs.id) {
+    element.removeAttr('id');
+  } else { attrs.id = random.id(); input.attr('id', attrs.id); }
+
+  //move some common attributes over
+  move.attribute(input, element, ['type', 'name', 'checked']);
+  label.attr('for', attrs.id);
+
+  if( !ngModel.$isEmpty( isString(trueValue)? trueValue : true) || ngModel.isNull ) {
+    //There are no default formaters for ngTrueValue/ngFalseValue
+    ngModel.$isEmpty = function(value) {
+      return value !== trueValue;
+    };
+
+    ngModel.$formatters.push(function(value) {
+      if( trueValue ) { 
+        return value === trueValue;
+      }
+      return value;
+    });
+
+    ngModel.$parsers.push(function(value) {
+      if( trueValue ) { 
+        return value ? trueValue : falseValue;
+      }
+      return value;
+    });
+  }
+
+  element.off('click');
+  input.off('click');
+
+  ngModel.$render = function() {
+    input[0].checked = ngModel.$viewValue;
+  };
+
+  if( input[0].defaultChecked && input[0].checked ) {
+    ngModel.$setViewValue(true);
+  }
+
+  if( !ngModel.isNull && angular.isDefined(defaultValue) ) {
+    var value;
+    if( isString(defaultValue) ) {
+      if(defaultValue === trueValue) { value = true; }
+        if(defaultValue === falseValue) { value = false; }
+    } else { value = defaultValue; }
+    
+    if(value) {
+      ngModel.$setViewValue(value);
+      ngModel.$render();
+    }
+  }
+
+  input.on('change', function pbChange(event) {
+    var isChecked = this.checked;
+    event.stopPropagation();
+    if( (this.type !== 'radio' || isChecked) ) {
+      ngModel.$setViewValue(isChecked);
+      if( !ngModel.isNull ) { scope.$digest(); }
+    }
+
+    Event.trigger('change', {'target': attrs.name, 'value': ngModel.$modelValue });
+  });
+
+  attrs.$observe('disabled', function(value) {
+    if( angular.isDefined(value) && value !== 'false' ) {
+      input.attr('disabled', value);
+    } else { input.removeAttr('disabled'); }
+  });
+}
+/* Switch & PB Common */
