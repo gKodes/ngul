@@ -265,4 +265,38 @@ describe('nu press button', function() {
       });
     });
   });
+
+  describe('with "id" attribute', function() {
+    var unit, derivative;
+
+    it('should have input and result as TRUE on click', function() {
+      unit = get_unit(8);
+      derivative = new pressButtonNode(unit.find('.nu.button.press'));
+  
+      derivative.labelOff.click().then(function(){
+        expect(derivative.input.isSelected()).toEqual(true);
+        unit.result().then(function(value) {
+          expect(value).toEqual('true');
+        });
+      });
+    });
+
+    it('should have label ON diaplayed', function() {
+      expect(derivative.labelOn.isDisplayed()).toEqual(true);
+      expect(derivative.labelOff.isDisplayed()).toEqual(false);
+    });
+
+    it('should have input and result as FALSE on click', function() {
+      derivative.labelOn.click().then(function(){
+        expect(derivative.input.isSelected()).toEqual(false);
+        unit.result().then(function(value) {
+          expect(value).toEqual('false');
+        });
+      });
+    });
+
+    it('should have label OFF diaplayed', function() {
+      expect(derivative.labelOff.isDisplayed()).toEqual(true);
+    });
+  });
 });
