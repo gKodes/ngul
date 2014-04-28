@@ -92,10 +92,48 @@
     .switch-handle(square; @color-on; @color-off; @size) { // @icon
       //
     }
-
-/*    .list(@size; @color; @item) {
-    	//
-    }*/
   }
 }
 
+.view-button-icon(@color, @bgcolor) {
+  .view .icon {
+    &.play:after {
+      border-left-color: @color;
+    }
+
+    &.pause:after {
+      border-color: @color;
+    }
+
+    &.stop:after {
+      background: @color;
+    }
+
+    &.replay {
+      &:after {
+        border: 0.4em solid @bgcolor;
+        border-left-color: @color;
+      }
+
+      &:before {
+        border-color: @color;
+      }
+    }
+
+    &.image {
+      &:after {
+        border-color: black;
+      }
+
+      .icon-inner {
+        &:after {
+          border-bottom-color: @color;
+        }
+
+        &:before {
+          border-bottom-color: @color;
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,14 @@
+.vendor-prefix(@prop; @value; @prefixs: o ms moz webkit w3c; @counter: 1)
+  when not(extract(@prefixs, @counter) = w3c) and (@counter <= length(@prefixs)) {
+  @prefix: extract(@prefixs, @counter);
+  -@{prefix}-@{prop}: @value;
+  .vendor-prefix(@prop; @value; @prefixs; (@counter + 1));
+}
+
+.vendor-prefix(@prop; @value; @prefixs; @counter) when (extract(@prefixs, @counter) = w3c) {
+  @{prop}: @value;
+}
+
 #nu {
   #mixin {
     .overflow(hidden) {
@@ -26,28 +37,20 @@
       padding: 0 @right 0 @left;
     }
 
-    .browser(@prop; @value) {
-      @{prop}: @value; // Default
-      -o-@{prop}: @value; // Opera +
-      -ms-@{prop}: @value; // IE +
-      -moz-@{prop}: @value; // Firefox, other Gecko
-      -webkit-@{prop}: @value; // Safari/Chrome, other WebKit
-    }
-
     .box-shadow(@value) {
-      .browser(box-shadow, @value);
+      .vendor-prefix(box-shadow, @value);
     }
 
     .box-sizing(@value:border-box) {
-      .browser(box-sizing, @value);
+      .vendor-prefix(box-sizing, @value);
     }
 
     .transition(@value) {
-      .browser(transition; @value);
+      .vendor-prefix(transition; @value);
     }
 
     .unselectable() {
-      .browser(user-select, none);
+      .vendor-prefix(user-select, none, o ms moz webkit);
     }
 
     .color(@bg; @fg) {

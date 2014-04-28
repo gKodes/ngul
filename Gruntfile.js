@@ -1,4 +1,4 @@
-/*global module, require: true*/
+/*global module, require, process: true*/
 module.exports = function(grunt) {
   'use strict';
   // Project configuration.
@@ -111,6 +111,11 @@ module.exports = function(grunt) {
         files: {
           'less/themes/bs.variables.less': 'https://raw.githubusercontent.com/twbs/bootstrap/master/less/variables.less'
         }
+      },
+      mime: {
+        files: {
+          'mime.types': 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types'
+        }
       }
     }
   });
@@ -153,6 +158,52 @@ module.exports = function(grunt) {
       if(seleniumIsUp) {
         grunt.log.writeln(output);
       }
+    });
+  });
+
+  grunt.registerTask('mimetypes', 'Convert apache mime types to an javascript array', function() {
+    this.requires('wget:mime');
+
+    var done = this.async(),
+        fs = require('fs'),
+        mimes = {},
+        mimeRegx = /(audio|image|video)\//;
+    fs.readFile('mime.types', 'ascii', function (err, data) {
+      if (err) { return done(grunt.fail.fatal('Failed to access mime.types')); }
+      var lines = data.split(/[\r\n]+/);
+      fs.writeFileSync('js/mime.types.js', 'var mimetypes = {};\r\n');
+
+      for (var i = 0; i < lines.length; i++) {
+        if( lines[i][0] !== '#' ) {
+          var mime = lines[i].split(/[\t]+/);
+          if(mime[0] && mime[1]) {
+            var type = mimeRegx.exec(mime[0]);
+            if (type) {
+              mimes[type[1]] = (mimes[type[1]] || '') + '.' + mime[1].replace(/ /g, ' .') + ' ';
+            }
+          }
+        }
+      }
+
+      var mtype;
+      for(mtype in mimes) {
+        fs.appendFileSync('js/mime.types.js',
+          'mimetypes[\'' + mtype + '\'] = \'' + mimes[mtype].trim() + '\';\r\n');
+      }
+
+      fs.appendFileSync('js/mime.types.js',
+        '\r\nfunction typeOfExt(type) {\r\n' +
+        '  return function isTypeOf(ext) {\r\n' +
+        '    return (ext[0] === \'.\' && mimetypes[type].indexOf(ext) !== -1);\r\n' +
+        '  }\r\n' +
+        '}\r\n\r\n');
+
+      for(mtype in mimes) {
+        fs.appendFileSync('js/mime.types.js',
+          'var is' + mtype[0].toUpperCase() + mtype.substr(1) + 'ByExt = typeOfExt(\'' + mtype + '\');\r\n');
+      }
+
+      done();
     });
   });
 

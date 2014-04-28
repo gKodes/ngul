@@ -5,7 +5,7 @@ var VALID_CLASS = 'ng-valid',
     PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty';
 
-var RE_EXT = /\.([\w\d]+)$/i;
+var RE_EXT = /(\..+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
 var split_re = function(re) {
@@ -23,6 +23,7 @@ var split_re = function(re) {
 var move = {},
     random = {},
     nodes = {},
+    path = {},
     noop = angular.noop,
     copy = angular.copy,
     equals = angular.equals,
@@ -38,7 +39,7 @@ var move = {},
 
 function isDefinedAndNotNull(value) {
   'use strict';
-  return typeof value != 'undefined' && value !== null;
+  return typeof value !== 'undefined' && value !== null;
 }
 
 function trim(str) {
@@ -58,6 +59,27 @@ function startsWith(str, subStr) {
   return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
 }
 
+/**
+ * Split the pathname `path` into a pair (`root`, `ext`) such that `root + ext == path`.
+ * If `ext` is empty will return the basename it self, an `ext` begins with a period followed by any char's. 
+ * Leading periods on the basename are ignored; splitext('.cshrc') returns ('', '.cshrc').
+ */
+path.splitext = function(input_path) {
+  var basepath = path.basename(input_path),
+      exta = RE_EXT.exec(basepath),
+      result = [basepath, ((exta && exta.length === 2)? exta[1] : '')];
+  result[0] = result[0].substr(0, result[0].length - exta.length);
+  return result;
+}
+
+/**
+ * Return the base name of pathname path. Where basename for '/foo/bar' returns 'bar' and for '/foo/bar/' return an empty string ''.
+ */
+path.basename = function(input_path) {
+  var basea = RE_BASENAME.exec(input_path);
+  return basea? basea[1]: input_path;
+}
+
 function toBoolean(rawValue) {
   'use strict';
   if( rawValue && isString(rawValue) ) {
@@ -69,7 +91,7 @@ function toBoolean(rawValue) {
 
 function isFile(blob) {
   'use strict';
-  return blob.lastModifiedDate && isString(blob.type);
+  return blob && blob.lastModifiedDate && isString(blob.type);
 }
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
