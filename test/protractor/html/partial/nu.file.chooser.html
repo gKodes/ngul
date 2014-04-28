@@ -21,6 +21,6 @@
 <div unit="" ng-controller="playBack">
   <nu-list nu-file-chooser="" src="unitCase"></nu-list>
   <button ng-click="unitCaseX = unitCase[0]">Set The view</button>
-  <nu-button-view ng-model="unitCaseX"></nu-button-view>
+  <div nu-button-view="box" ng-model="unitCaseX"></div>
   <div result="">{{unitCase}}</div>
 </div>

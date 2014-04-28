@@ -70,7 +70,7 @@ path.splitext = function(input_path) {
       result = [basepath, ((exta && exta.length === 2)? exta[1] : '')];
   result[0] = result[0].substr(0, result[0].length - exta.length);
   return result;
-}
+};
 
 /**
  * Return the base name of pathname path. Where basename for '/foo/bar' returns 'bar' and for '/foo/bar/' return an empty string ''.
@@ -78,7 +78,7 @@ path.splitext = function(input_path) {
 path.basename = function(input_path) {
   var basea = RE_BASENAME.exec(input_path);
   return basea? basea[1]: input_path;
-}
+};
 
 function toBoolean(rawValue) {
   'use strict';

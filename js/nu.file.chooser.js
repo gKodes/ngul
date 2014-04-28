@@ -5,7 +5,8 @@ var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
 nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
   function($compile, listBuffers, nuEvent) {
     'use strict';
-    var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">{{item.name || item}}</span>';
+    var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">' +
+          '{{item.name || item}}<div nu-button-view="fcbox" ng-model="item"></div>' + '</span>';
     var buffer_tmpl = '<buffer class="buffer" type="file"><span class="action">Browse<input type="file"></span></buffer>';
 
     return {
@@ -34,15 +35,19 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           return Array.prototype.slice.call(children, 0, -1);
         };
 
+        var input = bufferNode.find('input');
+
         if( !isMultiple ) {
           element.addClass('single');
-          var input = bufferNode.find('input');
           element.on('click', function() {
             input[0].click();
           });
         } else {
           itemRawNode.addClass('erase');
-          bufferNode.find('input').attr('multiple', 'multiple');
+          bufferNode.on('click', function() {
+            input[0].click();
+          });
+          input.attr('multiple', 'multiple');
         }
 
         nuList.$defaults.ext = function(path) {

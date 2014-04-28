@@ -13,11 +13,11 @@ var VALID_CLASS = 'ng-valid',
     PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty';
 
-var RE_EXT = /\.([\w\d]+)$/i;
+var RE_EXT = /(\..+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
 var split_re = function(re) {
-  var dummy_result = ['',''];
+    var dummy_result = ['',''];
   return function(str) {
     if(str) {
       var splits = str.split(re);
@@ -27,53 +27,83 @@ var split_re = function(re) {
   };
 };
 
-var splitext = split_re(RE_EXT);
-var split = split_re(RE_BASENAME);
-var basename = function(path) { return split(path)[1]; };
 var move = {},
     random = {},
     nodes = {},
+    path = {},
     noop = angular.noop,
     copy = angular.copy,
     equals = angular.equals,
     forEach = angular.forEach,
+    isObject = angular.isObject,
     isString = angular.isString,
     isElement = angular.isElement,
     isFunction = angular.isFunction,
     isUndefined = angular.isUndefined,
+    lowercase = angular.lowercase,
     extend = angular.extend,
-    nuError = angular.$$minErr('nu'),
-    isDefinedAndNotNull = function(value) {
-      return typeof value != 'undefined' && value !== null;
-    },
-    trim = function(str) {
-      return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
-    },
-    partial = function(fn, args, scope) {
-      return function() {
-        return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
-      };
-    },
-    startsWith = function(str, subStr) {
-      return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
-    },
-    toBoolean = function(rawValue) {
-      if( rawValue && isString(rawValue) ) {
-        var value = rawValue.toLowerCase();
-        return !(value === 'false' || value === 'f' || value === 'off');
-      }
-      return rawValu === true;
-    };
+    nuError = angular.$$minErr('nu');
+
+function isDefinedAndNotNull(value) {
+    return typeof value !== 'undefined' && value !== null;
+}
+
+function trim(str) {
+    return isString(str)? str.replace(/^\s+|\s+$/g, '') : '';
+}
+
+function partial(fn, args, scope) {
+    return function() {
+    return fn.apply(scope, args.concat(Array.prototype.slice.call(arguments, 0)));
+  };
+}
+
+function startsWith(str, subStr) {
+    return isString(str) && isString(subStr) && str.indexOf(subStr) === 0;
+}
+
+/**
+ * Split the pathname `path` into a pair (`root`, `ext`) such that `root + ext == path`.
+ * If `ext` is empty will return the basename it self, an `ext` begins with a period followed by any char's. 
+ * Leading periods on the basename are ignored; splitext('.cshrc') returns ('', '.cshrc').
+ */
+path.splitext = function(input_path) {
+  var basepath = path.basename(input_path),
+      exta = RE_EXT.exec(basepath),
+      result = [basepath, ((exta && exta.length === 2)? exta[1] : '')];
+  result[0] = result[0].substr(0, result[0].length - exta.length);
+  return result;
+};
+
+/**
+ * Return the base name of pathname path. Where basename for '/foo/bar' returns 'bar' and for '/foo/bar/' return an empty string ''.
+ */
+path.basename = function(input_path) {
+  var basea = RE_BASENAME.exec(input_path);
+  return basea? basea[1]: input_path;
+};
+
+function toBoolean(rawValue) {
+    if( rawValue && isString(rawValue) ) {
+    var value = rawValue.toLowerCase();
+    return !(value === 'false' || value === 'f' || value === 'off');
+  }
+  return rawValue === true;
+}
+
+function isFile(blob) {
+    return blob && blob.lastModifiedDate && isString(blob.type);
+}
 
 random.defaults = { pool: '0123456789abcdefghiklmnopqrstuvwxyz', size: 8 };
 random.id = function(options) {
     options = extend(random.defaults, options);
 
-    var randStr = '';
-    for (var i = 0; i < options.size; i++) {
-      randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
-    }
-    return randStr;
+  var randStr = '';
+  for (var i = 0; i < options.size; i++) {
+    randStr += options.pool[Math.floor(Math.random() * options.pool.length)];
+  }
+  return randStr;
 };
 
 move.attribute = function(dst, src, names) {
@@ -87,7 +117,7 @@ move.attribute = function(dst, src, names) {
 nodes.move = move;
 nodes.append = {};
 nodes.append.text = function(parent, text, beforeNode) {
-  var textNode = document.createTextNode(text);
+    var textNode = document.createTextNode(text);
   parent.insertBefore(textNode, beforeNode);
   return textNode;
 };
@@ -112,7 +142,7 @@ var getngModelWatch = function(scope, ngModel, modelValue, ngModelSet) {
 };
 
 var NuEventManager = (function() {
-  var _export = function() {
+    var _export = function() {
     this.events = {};
   };
 
@@ -121,7 +151,7 @@ var NuEventManager = (function() {
     this.events[eventType].push(handler);
   };
   _export.prototype.off = function(eventType, handler) {
-    if( this.events[eventType] ) { 
+    if( this.events[eventType] ) {
       var index = this.events[eventType].indexOf;
       if ( index !== -1 ) {
         return this.events[eventType].split(index, 1)[0];
@@ -146,7 +176,7 @@ var nullInputngModle = {
   $formatters: [],
   $parsers: [],
   $setViewValue: function(value) {
-    forEach(this.$parsers, function(fn) {
+        forEach(this.$parsers, function(fn) {
       value = fn(value);
     });
     this.$modelValue = value;
@@ -154,7 +184,7 @@ var nullInputngModle = {
   isNull: true
 };
 function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue) {
-  var id = attrs.id,
+    var id = attrs.id,
       input = element.find('input'),
       label = element.find('label'),
       trueValue = attrs.ngTrueValue,
@@ -178,14 +208,14 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
     };
 
     ngModel.$formatters.push(function(value) {
-      if( trueValue ) { 
+      if( trueValue ) {
         return value === trueValue;
       }
       return value;
     });
 
     ngModel.$parsers.push(function(value) {
-      if( trueValue ) { 
+      if( trueValue ) {
         return value ? trueValue : falseValue;
       }
       return value;
@@ -233,6 +263,9 @@ function initTwoStateSwtich(scope, element, attrs, ngModel, Event, defaultValue)
     } else { input.removeAttr('disabled'); }
   });
 }
+
+
+
 
 
 var nuList = angular.module('nu.List', []);
@@ -620,8 +653,9 @@ var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
 
 nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
   function($compile, listBuffers, nuEvent) {
-        var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">{{item.name || item}}</span>';
-    var buffer_tmpl = '<buffer class="buffer" type="file"><label class="action">Browse<input type="file"></label></buffer>';
+        var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">' +
+          '{{item.name || item}}<div nu-button-view="fcbox" ng-model="item"></div>' + '</span>';
+    var buffer_tmpl = '<buffer class="buffer" type="file"><span class="action">Browse<input type="file"></span></buffer>';
 
     return {
       restrict: 'AC',
@@ -649,15 +683,19 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           return Array.prototype.slice.call(children, 0, -1);
         };
 
+        var input = bufferNode.find('input');
+
         if( !isMultiple ) {
           element.addClass('single');
-          var input = bufferNode.find('input');
           element.on('click', function() {
             input[0].click();
           });
         } else {
           itemRawNode.addClass('erase');
-          bufferNode.find('input').attr('multiple', 'multiple');
+          bufferNode.on('click', function() {
+            input[0].click();
+          });
+          input.attr('multiple', 'multiple');
         }
 
         nuList.$defaults.ext = function(path) {
@@ -1169,6 +1207,373 @@ nuWrap.run(['$templateCache', function($templateCache) {
 		  '</span>' +
 		'</div>');
 }]);
+var mimetypes = {};
+mimetypes['audio'] = '.adp .au .snd .mid .midi .kar .rmi .mp4a .mpga .mp2 .mp2a .mp3 .m2a .m3a .oga .ogg .spx .s3m .sil .uva .uvva .eol .dra .dts .dtshd .lvp .pya .ecelp4800 .ecelp7470 .ecelp9600 .rip .weba .aac .aif .aiff .aifc .caf .flac .mka .m3u .wax .wma .ram .ra .rmp .wav .xm';
+mimetypes['image'] = '.bmp .cgm .g3 .gif .ief .jpeg .jpg .jpe .ktx .png .btif .sgi .svg .svgz .tiff .tif .psd .uvi .uvvi .uvg .uvvg .sub .djvu .djv .dwg .dxf .fbs .fpx .fst .mmr .rlc .mdi .wdp .npx .wbmp .xif .webp .3ds .ras .cmx .fh .fhc .fh4 .fh5 .fh7 .ico .sid .pcx .pic .pct .pnm .pbm .pgm .ppm .rgb .tga .xbm .xpm .xwd';
+mimetypes['video'] = '.3gp .3g2 .h261 .h263 .h264 .jpgv .jpm .jpgm .mj2 .mjp2 .mp4 .mp4v .mpg4 .mpeg .mpg .mpe .m1v .m2v .ogv .qt .mov .uvh .uvvh .uvm .uvvm .uvp .uvvp .uvs .uvvs .uvv .uvvv .dvb .fvt .mxu .m4u .pyv .uvu .uvvu .viv .webm .f4v .fli .flv .m4v .mkv .mk3d .mks .mng .asf .asx .vob .wm .wmv .wmx .wvx .avi .movie .smv';
+
+function typeOfExt(type) {
+  return function isTypeOf(ext) {
+    return (ext[0] === '.' && mimetypes[type].indexOf(ext) !== -1);
+  };
+}
+
+var isAudioByExt = typeOfExt('audio');
+var isImageByExt = typeOfExt('image');
+var isVideoByExt = typeOfExt('video');
+
+
+var nuMedia = angular.module('nu.Media', []);
+
+nuMedia.service('nuMedia', ['$q',
+    function($q) {
+    var NUMedia = function(type) {
+    var $el = this.$el = angular.element('<' + type + '/>');
+    var el = this.el = $el[0];
+
+    this.available = !!el.canPlayType;
+    
+    angular.element(document.body).append($el.css('display', 'none'));
+
+
+    this.toSource = function(blob, timeRange) {
+      if( lowercase(blob.tagName) === 'source' ) {
+        return blob;
+      }
+      
+      var uri, type;
+      if( isFile(blob) ) {
+        if( !el.canPlayType(blob.type) ) { return; }
+        uri = URL.createObjectURL(blob);
+        type = blob.type;
+      }
+      if ( isObject(blob) && blob.src ) {
+        if(blob.type) {
+          uri = blob.src;
+          type = blob.type;
+        } else { blob = blob.src; }
+      }
+      if ( isString(blob) ) { uri = blob; }
+
+
+      if(timeRange) { uri += '#t=' + timeRange; }
+
+      if(uri) {
+        var source = angular.element('<source/>').attr('src', uri);
+        if(type) { source.attr('type', type); }
+        return source;
+      }
+    };
+
+    var nuMedia = this;
+    function notify(name, data) {
+      if(nuMedia.$deferred.notify) {
+        var eventObj = {}; eventObj[name] = data;
+        nuMedia.$deferred.notify(eventObj);
+      }
+    }
+
+
+    
+    $el.on('error emptied abort', function() {});
+
+    $el.on('loadedmetadata', function() {
+      nuMedia.$deferred.promise.media = {
+        'duration': nuMedia.el.duration,
+        'uri': nuMedia.$el.find('source').attr('src')
+      };
+
+
+    });
+    
+    this.onStop = function onMediaStopOrEnd() {
+      var target = nuMedia.current,
+          completed = (nuMedia.el.currentTime === nuMedia.el.duration);
+
+        if(nuMedia.$deferred && nuMedia.$deferred.promise.media &&
+          startsWith(nuMedia.$deferred.promise.media.uri, 'blob:')) {
+        URL.revokeObjectURL(nuMedia.$deferred.promise.media.uri);
+      }
+      nuMedia.current = null;
+      
+
+      nuMedia.$el.attr('src', '').removeAttr('src').html('');
+      if(nuMedia.$deferred.resolve) {
+        nuMedia.$deferred.resolve({
+          'end': {
+            'target': target,
+            'completed': completed
+          }
+        });
+      }
+    };
+
+    $el.on('ended', this.onStop);
+    
+    $el.on('timeupdate durationchange', function(event) {
+      notify('duration', {
+        duration: event.target.currentTime,
+        currentTime: event.target.duration,
+        progress: (event.target.currentTime / event.target.duration)
+      });
+    });
+  };
+
+
+
+
+  NUMedia.prototype.play = function(src, timeRange) {
+    if( this.current === src || (isUndefined(src) && this.el.duration) ) {
+      this.el.play();
+      return this.$deferred.promise;
+    }
+
+    var source;
+    if( isFile(src) || isString(src) ) {
+      source = this.toSource(src, timeRange);
+    } else if ( isObject(src) ) {
+      for(var index in src) {
+        source = this.toSource(src[index], timeRange);
+        if( source ) { break; }
+      }
+    }
+
+    if(source) {
+      this.stop();
+      this.$deferred = $q.defer();
+      this.$el.append(source);
+      this.el.play();
+      this.current = src;
+    }
+    return this.$deferred.promise;
+  };
+  
+  NUMedia.prototype.pause = function() {
+    if(this.el.duration) {
+      this.el.pause();
+      return this.current;
+    }
+  };
+  
+  NUMedia.prototype.stop = function() {
+    if(this.el.duration) {
+      this.pause();
+      this.onStop();
+    }
+  };
+  
+  NUMedia.prototype.seek = function(timeRange) {};
+  NUMedia.prototype.canPlay = function(blod) {
+    return this.el.canPlayType(blod.type || blod);
+  };
+
+  var audio = new NUMedia('audio'),
+      video = new NUMedia('video'),
+      result = {'audio': audio, 'video': video};
+  
+  result.typeOf = function(blob) {
+    if( isFile(blob) ) {
+      if( startsWith(blob.type, 'audio') ) { return 'audio'; }
+      else if( startsWith(blob.type, 'video') ) { return 'audio'; }
+      else if( startsWith(blob.type, 'image') ) { return 'image'; }
+      blob = blob.name;
+    }
+    if ( isString(blob) ) {
+      var ext = path.splitext(blob)[1];
+      if(ext) {
+        for(var mediaType in mimetypes) {
+          if(ext[0] === '.' && mimetypes[mediaType].indexOf(ext) !== -1) {
+            return mediaType;
+          }
+        }
+      }
+    }
+  };
+  return result;
+}]);
+
+nuMedia.run(['$templateCache',
+      function($templateCache) {
+        $templateCache.put('nu.button.view.icon.coin',
+      '<div class="icon play"><div class="icon-inner"></div></div>'
+    );
+    $templateCache.put('nu.button.view.progress.coin',
+      '<div class="progress"><div class="progress-inner"></div></div>'
+    );
+
+    $templateCache.put('nu.button.view.icon.box',
+      '<div class="icon play"><div class="icon-inner"></div></div>'
+    );
+    $templateCache.put('nu.button.view.progress.box',
+      '<div class="progress"><div class="progress-inner"></div></div>'
+    );
+  }
+]);
+
+
+var nuButtonView = angular.module('nu.ButtonView', ['nu.Media']);
+
+nuButtonView.service('nuButtonViewTypes', ['$templateCache',
+  function($templateCache) {
+        var buttonCtrlBase = {
+      setIcon: function(name) {
+        this.removeIcon();
+        if(name) { this.el.icon.addClass(name); }
+      },
+      removeIcon: function() {
+        this.el.icon.removeClass('image replay play pause stop');
+      }
+    };
+
+    var nuButtonViewTypes = {
+      'coin': function(element) {
+        this.el = {};
+        this.el.icon = angular.element(
+              $templateCache.get('nu.button.view.icon.coin') );
+        this.el.progress = angular.element(
+              $templateCache.get('nu.button.view.progress.coin') );
+        var ctrl = this;
+
+        element.append(this.el.icon).append(this.el.progress);
+
+        this.progressUpdate = function(evt) {
+          if(evt.duration) {
+            var position = 'rotate(' + (evt.duration.progress + 0.12) + 'turn)';
+            ctrl.el.progress.css({
+              '-webkit-transform': position,
+              '-moz-transform': position,
+              'transform': position
+            });
+          }
+        };
+      },
+      'box': function(element) {
+        this.el = {};
+        this.el.icon = angular.element(
+              $templateCache.get('nu.button.view.icon.box') );
+        this.el.progress = angular.element(
+              $templateCache.get('nu.button.view.progress.box') );
+        var ctrl = this;
+
+        element.append(this.el.icon).append(this.el.progress);
+        var rawProgress = this.el.progress[0];
+
+        this.progressUpdate = function(evt) {
+          if(evt.duration) {
+            ctrl.el.progress.css('box-shadow',
+              'inset ' + Math.floor(rawProgress.clientWidth * evt.duration.progress) +
+              'px 0px 0px 0px rgba(53, 126, 189, 0.5)');
+          }
+        };
+      },
+      'fcbox': function(element) {
+        this.el = {};
+        this.el.icon = angular.element(
+              $templateCache.get('nu.button.view.icon.box') );
+        this.el.progress = element.parent();
+        var ctrl = this;
+
+        element.append(this.el.icon);
+        var rawProgress = this.el.progress[0];
+
+        this.progressUpdate = function(evt) {
+          if(evt.duration) {
+            ctrl.el.progress.css('box-shadow',
+              'inset ' + Math.floor(rawProgress.clientWidth * evt.duration.progress) +
+              'px 0px 4px 0px rgba(53, 126, 189, 1)');
+          }
+        };
+      }
+    };
+
+    extend(nuButtonViewTypes.coin.prototype, buttonCtrlBase);
+    extend(nuButtonViewTypes.box.prototype, buttonCtrlBase);
+    extend(nuButtonViewTypes.fcbox.prototype, buttonCtrlBase);
+
+    var result = {
+      bind: function(type, element) {
+        return new nuButtonViewTypes[type](element);
+      },
+      defaultIcon: {
+        audio: 'play', image: 'image'
+      }
+    };
+
+    result.defaultIcon.video = result.defaultIcon.audio;
+    return result;
+  }
+]);
+
+nuButtonView.directive('nuButtonView', ['nuMedia', 'nuButtonViewTypes',
+  function(nuMedia, nuButtonViewTypes) {
+        var _template =
+      '<div class="nu button view">' +
+        '<input type="radio" style="display: none;"/>' +
+      '</div>';
+
+    return {
+      template: _template,
+      restrict: 'EACM',
+      replace: true,
+      require: '?ngModel',
+
+      link: function(scope, element, attrs, ngModel) {
+        var type = attrs.nuButtonView || 'coin',
+            typeCtrl = nuButtonViewTypes.bind(type, element),
+            mediaType,
+            isPlaying = false,
+            isMedia = false,
+            isImage = false;
+
+        element.addClass(type);
+
+        function mediaEnd(evt) {
+          if( isPlaying ) {
+            if(evt.end) {
+              typeCtrl.setIcon(evt.end.completed? 'replay' : 'play');
+              evt.duration = {progress: 0};
+              typeCtrl.progressUpdate(evt);
+            }
+            isPlaying = false;
+          }
+        }
+        
+        function playPause() {
+          if(isPlaying) {  nuMedia.audio.pause(); }
+          else { nuMedia.audio.play(ngModel.$viewValue).then(
+            mediaEnd, mediaEnd, typeCtrl.progressUpdate); }
+          isPlaying = !isPlaying;
+          typeCtrl.setIcon(isPlaying? 'pause' : 'play');
+        }
+
+        function showImage() {}
+
+        ngModel.$render = function() {
+          if(isPlaying && nuMedia[mediaType]) {
+            nuMedia[mediaType].stop();
+            this.isPlaying = false;
+          }
+
+          mediaType = nuMedia.typeOf(ngModel.$viewValue);
+          if( isDefinedAndNotNull(mediaType) ) {
+            isMedia = isImage = false;
+            isImage = mediaType === 'image';
+            isMedia = !isImage;
+          }
+
+          typeCtrl.setIcon(nuButtonViewTypes.defaultIcon[mediaType]);
+        };
+
+        element.on('click', function() {
+          if(isMedia) { playPause(); }
+          else if(isImage) { showImage(); }
+          event.stopPropagation();
+        });
+      }
+    };
+  }
+]);
+
 var nu = angular.module('nu', 
   ['nu.Switch', 'nu.PressButton', 'nu.List', 'nu.FileChooser', 	
     'nu.Show', 'nu.Src', 'nu.Slider', 'nu.Wrap']);

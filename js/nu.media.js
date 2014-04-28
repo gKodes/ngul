@@ -1,4 +1,4 @@
-/*global angular, isFile, isString, isObject, lowercase, isUndefined, startsWith:*/
+/*global angular, isFile, isString, isObject, lowercase, isUndefined, startsWith, mimetypes, path*/
 var nuMedia = angular.module('nu.Media', []);
 
 nuMedia.service('nuMedia', ['$q',
@@ -173,92 +173,18 @@ nuMedia.service('nuMedia', ['$q',
 nuMedia.run(['$templateCache',
       function($templateCache) {
     'use strict';
-    $templateCache.put('nu.button.view.icon',
+    $templateCache.put('nu.button.view.icon.coin',
       '<div class="icon play"><div class="icon-inner"></div></div>'
     );
-    $templateCache.put('nu.button.view.progress',
+    $templateCache.put('nu.button.view.progress.coin',
       '<div class="progress"><div class="progress-inner"></div></div>'
     );
-  }
-]);
 
-nuMedia.directive('nuButtonView', ['nuMedia', '$templateCache',
-  function(nuMedia, $templateCache) {
-    'use strict';
-    var _template =
-      '<div class="nu button view">' +
-        '<input type="radio" style="display: none;"/>' +
-      '</div>';
-
-    return {
-      template: _template,
-      restrict: 'EACM',
-      replace: true,
-      require: '?ngModel',
-      // controller: NuButtonViewController, nuButtonView
-      link: function(scope, element, attrs, ngModel) {
-        element.addClass(attrs.nuButtonView || 'coin');
-        var icon = angular.element(
-              $templateCache.get('nu.button.view.icon') ),
-            progress = angular.element(
-              $templateCache.get('nu.button.view.progress') ),
-            isPlaying = false,
-            isMedia = false,
-            isImage = false;
-        element.append(icon).append(progress);
-
-        function mediaProgress(evt) {
-          if(evt.duration) {
-            var position = 'rotate(' + (evt.duration.progress + 0.12) + 'turn)';
-            progress.css({
-              '-webkit-transform': position,
-              '-moz-transform': position,
-              'transform': position
-            });
-          }
-        }
-
-        function mediaEnd(evt) {
-          if( !isPlaying ) {
-            icon.removeClass('pause');
-            if(evt.end) { icon.addClass(evt.end.completed? 'replay' : 'play'); }
-            else { icon.addClass('play'); }
-          }
-          //reset progress
-        }
-        
-        function playPause() {
-          icon.removeClass('image replay play pause stop');
-          isPlaying? nuMedia.audio.pause() : nuMedia.audio.play(
-            ngModel.$viewValue).then(mediaEnd, mediaEnd, mediaProgress);
-          isPlaying = !isPlaying;
-          icon.addClass(isPlaying? 'pause' : 'play');
-        }
-
-        function showImage() {}
-
-        ngModel.$render = function() {
-          var type = nuMedia.typeOf(ngModel.$viewValue);
-          if( isDefinedAndNotNull(type) ) {
-            isMedia = isImage = false;
-            isImage = type === 'image';
-            isMedia = !isImage;
-          }
-          
-          if(isMedia) {
-            if(isPlaying) { isPlaying = false; playPause(); }
-            else { icon.removeClass('image replay pause').addClass('play'); }
-          } else if(isImage) {
-            if(isPlaying) { nuMedia.audio.stop(); isPlaying = false; }
-            icon.removeClass('play replay pause').addClass('image');
-          }
-        };
-
-        element.on('click', function() {
-          if(isMedia) { playPause(); }
-          else if(isImage) { showImage(); }
-        });
-      }
-    };
+    $templateCache.put('nu.button.view.icon.box',
+      '<div class="icon play"><div class="icon-inner"></div></div>'
+    );
+    $templateCache.put('nu.button.view.progress.box',
+      '<div class="progress"><div class="progress-inner"></div></div>'
+    );
   }
 ]);
