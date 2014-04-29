@@ -13,7 +13,6 @@ var VALID_CLASS = 'ng-valid',
     PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty';
 
-var RE_EXT = /(\..+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
 var split_re = function(re) {
@@ -35,6 +34,7 @@ var move = {},
     copy = angular.copy,
     equals = angular.equals,
     forEach = angular.forEach,
+    isArray = angular.isArray,
     isObject = angular.isObject,
     isString = angular.isString,
     isElement = angular.isElement,
@@ -69,10 +69,9 @@ function startsWith(str, subStr) {
  */
 path.splitext = function(input_path) {
   var basepath = path.basename(input_path),
-      exta = RE_EXT.exec(basepath),
-      result = [basepath, ((exta && exta.length === 2)? exta[1] : '')];
-  result[0] = result[0].substr(0, result[0].length - exta.length);
-  return result;
+      index = basepath.lastIndexOf('.');
+  return index === -1? [basepath, ''] : 
+    [basepath.substr(0, index), basepath.substr(index)];
 };
 
 /**
@@ -312,11 +311,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
 
   this.$dirty = false;
   this.$pristine = true;
-  this.$viewValue = Number.NaN;
+  this.$viewValue = [];
   this.$modelValue = Number.NaN;
   this.$render = noop;
   this.$name = $attrs.name;
   this.$buffers = [];
+  this.$parsers = [];
+  this.$formatters = [];
+
   this.$defaults = extend($scope.$new(), {
     '$erase': function() {
       nuList.$removeItem(this.item);
@@ -338,22 +340,24 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
   
   $element.addClass(PRISTINE_CLASS);
 
-  $scope.$watchCollection(model, function(modelValue) {
-    if(!modelValue) {
-      if(modelSet) { modelSet($scope, []); return; }
-      nuList.$viewValue = [];
-      return;
-    }
-
+  $scope.$watch(function(scope) {
     if( !internalChange ) {
+      var value = modelGet(scope);
+      
+      nuList.$modelValue = value;
 
-      nuList.$viewValue = nuList.$modelValue = modelValue;
+      var idx = nuList.$formatters.length;
+      while(idx--) {
+        value = nuList.$formatters[idx](value);
+      }
+
+      if(isDefinedAndNotNull(value)) { nuList.$viewValue = value; }
+      else { nuList.$viewValue.splice(0); }
       itemNodes = nuList.$getItems();
       nuList.$render();
       angular.element(itemNodes.splice(capacity - 1)).remove();
       angular.element(itemNodes).css('display', 'none');
     }
-
     internalChange = false;
   });
 
@@ -398,7 +402,9 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     if (nuList.$pristine) { nuList.$setDirty(); }
     if(modelSet) {
       internalChange = true;
-      modelSet($scope, nuList.$viewValue);
+      var value = nuList.$viewValue;
+      forEach(nuList.$parsers, function(fn) { value = fn(value); });
+      modelSet($scope, value);
     }
   };
 }];
@@ -662,22 +668,15 @@ nuFileChooser.filter('basename', function() {
 nuFileChooser.filter('pathExt', function() {
     return function(blob) {
     if( isFile(blob) ) { blob = blob.name; }
-    if( isString(blob) ) { return lowercase(path.splitext(blob)[1].substr(1)); }
+    if( isString(blob) ) { return lowercase(path.splitext(blob)[1]).substr(1); }
     return blob;
   };
 });
 
-nuFileChooser.filter('canPreview', ['nuMedia',
-    function(nuMedia) {
-    return function(blob) {
-    return isDefinedAndNotNull(nuMedia.typeOf(blob));
-  };
-}]);
-
 nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
-  function($compile, listBuffers, nuEvent) {
+  function($compile, listBuffers) {
         var item_tmpl = '<span class="list item" ext="{{item|pathExt}}" ng-click="$erase()">' +
-          '{{item|basename}}<div ng-show="item|canPreview" nu-button-view="fcbox" ng-model="item"></div></span>';
+          '{{item|basename}}' +  '</span>';
     var buffer_tmpl = '<label class="buffer" type="file"><span class="action">Browse<input type="file"></span></label>';
 
     return {
@@ -713,11 +712,21 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           element.on('click', function() {
             input[0].click();
           });
+
+          nuList.$formatters.push(function(value) {
+            if( value && !isArray(value) ) { return [value]; }
+            return value;
+          });
+
+          nuList.$parsers.push(function(value) { return value[0]; });
         } else {
           itemRawNode.addClass('erase');
-          bufferNode.on('click', function() { event.stopPropagation(); });
           input.attr('multiple', 'multiple');
         }
+
+        bufferNode.on('click', function() {
+          event.stopPropagation();
+        });
 
         var appendItem = nuList.$bufferDefaults.$append;
         nuList.$bufferDefaults.$append = function(item) {

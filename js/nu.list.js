@@ -94,25 +94,6 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     internalChange = false;
   });
 
-/*  $scope.$watchCollection(model, function(modelValue) {
-    if(!modelValue) {
-      if(modelSet) { modelSet($scope, []); return; }
-      nuList.$viewValue = [];
-      return;
-    }
-
-    if( !internalChange ) {
-      // TODO: need to find an alternative for this
-      nuList.$viewValue = nuList.$modelValue = modelValue;
-      itemNodes = nuList.$getItems();
-      nuList.$render();
-      angular.element(itemNodes.splice(capacity - 1)).remove();
-      angular.element(itemNodes).css('display', 'none');
-    }
-
-    internalChange = false;
-  });*/
-
   this.$itemCompiler = $compile('<span class="list item erase" ng-click="$erase(item)">{{item}}</span>');
 
   this.$itemNodeFactory = function(scopeExtend) {

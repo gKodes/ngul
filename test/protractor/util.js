@@ -16,13 +16,6 @@ exports.switchNode = function(node) {
   };
 };
 
-exports.fileChooser = function(node) {
-  'use strict';
-  this.label = node;
-  this.span = node.findElement(by.tagName('span'));
-  this.input = node.findElement(by.tagName('input'));
-};
-
 exports.show = function(node) {
   'use strict';
   this.next = node.findElement(by.css('a:nth-of-type(1)'));
@@ -83,8 +76,27 @@ exports.find = {
     node.anchor = node.findElement(by.tagName('a'));
     node.input = node.findElement(by.tagName('input'));
     return node;
+  },
+  nuFileChooser: function(unit) {
+    'use strict';
+    var node = unit.find('.nu.list.file');
+    node.firstItem = node.findElement(by.css('.list.item'));
+    node.items = function() {
+      return node.findElements(by.css('.list.item'));
+    };
+    node.buffer = node.findElement(by.css('.buffer'));
+    //console.info(node.firstItem, node.buffer);
+    return node;
   }
 };
+
+exports.fileChooser = function(node) {
+  'use strict';
+  this.label = node;
+  this.span = node.findElement(by.tagName('span'));
+  this.input = node.findElement(by.tagName('input'));
+};
+
 
 exports.Key = {
   NULL:         '\uE000',

@@ -2,22 +2,22 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    '../test/protractor/nu*.js'
+    '../test/protractor/nu.file.chooser.js'
   ],
-/*
+
   capabilities: {
     'phantomjs.binary.path': 'node_modules/phantomjs/lib/phantom/bin/phantomjs',
-    'browserName': 'firefox'
+    'browserName': 'chrome'
   },
-*/
-  chromeOnly: false,
+
+/*  chromeOnly: false,
   multiCapabilities: [
     { 'browserName': 'chrome'}, 
     { 'browserName': 'firefox'}
-  ],
+  ],*/
 
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  baseUrl: 'http://localhost:8981/test/protractor/html/nu.dev.html',
+  baseUrl: 'http://localhost:8888/test/protractor/html/nu.dev.html',
   
   framework: 'jasmine',
 
