@@ -68,6 +68,9 @@
   min-width: 30px;
   min-height: 13px;
 }
+.nu.button.view:hover .icon {
+  box-shadow: 0px 0px 8px #357ebd;
+}
 .nu.button.view .icon.play:after {
   top: 0.25em;
   left: 0.7em;

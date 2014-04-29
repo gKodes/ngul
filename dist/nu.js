@@ -649,13 +649,36 @@ nuSwitch.directive('nuSwitch', ['nuEvent', '$parse',
 ]);
 
 
-var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event']);
+var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event', 'nu.Media']);
+
+nuFileChooser.filter('basename', function() {
+    return function(blob) {
+    if( isFile(blob) ) { blob = blob.name; }
+    if( isString(blob) ) { return path.basename(blob); }
+    return blob;
+  };
+});
+
+nuFileChooser.filter('pathExt', function() {
+    return function(blob) {
+    if( isFile(blob) ) { blob = blob.name; }
+    if( isString(blob) ) { return lowercase(path.splitext(blob)[1].substr(1)); }
+    return blob;
+  };
+});
+
+nuFileChooser.filter('canPreview', ['nuMedia',
+    function(nuMedia) {
+    return function(blob) {
+    return isDefinedAndNotNull(nuMedia.typeOf(blob));
+  };
+}]);
 
 nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
   function($compile, listBuffers, nuEvent) {
-        var item_tmpl = '<span class="list item" ext="{{ext(item.name || item)}}" ng-click="$erase()">' +
-          '{{item.name || item}}<div nu-button-view="fcbox" ng-model="item"></div>' + '</span>';
-    var buffer_tmpl = '<buffer class="buffer" type="file"><span class="action">Browse<input type="file"></span></buffer>';
+        var item_tmpl = '<span class="list item" ext="{{item|pathExt}}" ng-click="$erase()">' +
+          '{{item|basename}}<div ng-show="item|canPreview" nu-button-view="fcbox" ng-model="item"></div></span>';
+    var buffer_tmpl = '<label class="buffer" type="file"><span class="action">Browse<input type="file"></span></label>';
 
     return {
       restrict: 'AC',
@@ -692,18 +715,9 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           });
         } else {
           itemRawNode.addClass('erase');
-          bufferNode.on('click', function() {
-            input[0].click();
-          });
+          bufferNode.on('click', function() { event.stopPropagation(); });
           input.attr('multiple', 'multiple');
         }
-
-        nuList.$defaults.ext = function(path) {
-          if(path) {
-            var segments = path.split(/\.([\w\d]+)$/i);
-            if( segments[1] ) { return segments[1].toLowerCase(); }
-          }
-        };
 
         var appendItem = nuList.$bufferDefaults.$append;
         nuList.$bufferDefaults.$append = function(item) {
@@ -1422,6 +1436,9 @@ nuButtonView.service('nuButtonViewTypes', ['$templateCache',
       },
       removeIcon: function() {
         this.el.icon.removeClass('image replay play pause stop');
+      },
+      progressReset: function() {
+        this.progressUpdate({duration: {progress: 0}});
       }
     };
 
@@ -1483,6 +1500,10 @@ nuButtonView.service('nuButtonViewTypes', ['$templateCache',
               'px 0px 4px 0px rgba(53, 126, 189, 1)');
           }
         };
+
+        this.progressReset = function() {
+          ctrl.el.progress.css('box-shadow', 'none');
+        };
       }
     };
 
@@ -1531,8 +1552,7 @@ nuButtonView.directive('nuButtonView', ['nuMedia', 'nuButtonViewTypes',
           if( isPlaying ) {
             if(evt.end) {
               typeCtrl.setIcon(evt.end.completed? 'replay' : 'play');
-              evt.duration = {progress: 0};
-              typeCtrl.progressUpdate(evt);
+              typeCtrl.progressReset();
             }
             isPlaying = false;
           }
@@ -1551,8 +1571,8 @@ nuButtonView.directive('nuButtonView', ['nuMedia', 'nuButtonViewTypes',
         ngModel.$render = function() {
           if(isPlaying && nuMedia[mediaType]) {
             nuMedia[mediaType].stop();
-            this.isPlaying = false;
           }
+          typeCtrl.progressReset();
 
           mediaType = nuMedia.typeOf(ngModel.$viewValue);
           if( isDefinedAndNotNull(mediaType) ) {
