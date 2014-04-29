@@ -10,7 +10,7 @@ exports.config = {
     { 'browserName': 'firefox'}
   ],
 
-  baseUrl: 'http://localhost:8888/test/protractor/html/nu.ga.html',
+  baseUrl: 'http://localhost:8000/test/protractor/html/nu.ga.html',
   
   framework: 'jasmine',
 

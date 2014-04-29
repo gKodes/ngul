@@ -17,7 +17,7 @@ exports.config = {
   ],*/
 
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  baseUrl: 'http://localhost:8888/test/protractor/html/nu.dev.html',
+  baseUrl: 'http://localhost:8000/test/protractor/html/nu.dev.html',
   
   framework: 'jasmine',
 
