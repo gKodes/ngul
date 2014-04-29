@@ -23,12 +23,7 @@ exports.config = {
   ],
 
   baseUrl: 'http://localhost:8000/test/protractor/html/nu.ga.html',
-  
-  framework: 'jasmine',
-
-  jasmineNodeOpts: {
-    defaultTimeoutInterval: 3000
-  }
+  framework: 'jasmine'
 };
 
 if(process.env.TRAVIS) {
