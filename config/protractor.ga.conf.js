@@ -6,8 +6,20 @@ exports.config = {
 
   chromeOnly: false,
   multiCapabilities: [
-    { 'browserName': 'chrome'}, 
-    { 'browserName': 'firefox'}
+    {
+      'browserName': 'chrome',
+      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+      build: process.env.TRAVIS_BUILD_NUMBER,
+      name: 'gKodes.Nu build Chrome ' + process.env.TRAVIS_BUILD_NUMBER
+    }, 
+    {
+      'browserName': 'firefox',
+      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+      build: process.env.TRAVIS_BUILD_NUMBER,
+      name: 'gKodes.Nu build FF ' + process.env.TRAVIS_BUILD_NUMBER
+/*    'capture-html': true,
+    'max-duration': 350*/
+    }
   ],
 
   baseUrl: 'http://localhost:8000/test/protractor/html/nu.ga.html',
@@ -22,13 +34,6 @@ exports.config = {
 if(process.env.TRAVIS) {
   exports.config.sauceUser = process.env.SAUCE_USERNAME;
   exports.config.sauceKey = process.env.SAUCE_ACCESS_KEY;
-  exports.config.capabilities = {
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    build: process.env.TRAVIS_BUILD_NUMBER,
-    name: 'gKodes.Nu build ' + process.env.TRAVIS_BUILD_NUMBER
-/*    'capture-html': true,
-    'max-duration': 350*/
-  };
   exports.config.specs = [
     '../test/protractor/util.js',
     '../test/protractor/nu.switch.js',
