@@ -9,6 +9,7 @@ Do check out the [demo][1]'s at https://gkodes.github.io/ngul/ for the following
 - `nuList` -- List/Tag to be able to add remove items
 - `nuFileChooser` -- Built on top of the List an better UI for the `input type='file'`
 - `nuShow` -- an image slide show
+- `nuButtonView` -- preview an audio, video and images us an single button
 - `nuSlider` -- helps hide the scroll bar's
 
 [![devDependency Status](https://david-dm.org/gkodes/ngul/dev-status.png)](https://david-dm.org/gkodes/ngul#info=devDependencies)
