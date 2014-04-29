@@ -89,7 +89,7 @@
 
   demo.controller('demo.fc', ['$scope', 
     function($scope) {
-      $scope.sampleOne = [];
+      $scope.sampleOne = 'http://freedownloads.last.fm/download/626522452/Flow.mp3';
     }
   ]);
 
