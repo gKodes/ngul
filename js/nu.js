@@ -5,7 +5,6 @@ var VALID_CLASS = 'ng-valid',
     PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty';
 
-var RE_EXT = /(\..+)$/i;
 var RE_BASENAME = /([^\\\/]+)$/;
 
 var split_re = function(re) {
@@ -28,6 +27,7 @@ var move = {},
     copy = angular.copy,
     equals = angular.equals,
     forEach = angular.forEach,
+    isArray = angular.isArray,
     isObject = angular.isObject,
     isString = angular.isString,
     isElement = angular.isElement,
@@ -66,10 +66,9 @@ function startsWith(str, subStr) {
  */
 path.splitext = function(input_path) {
   var basepath = path.basename(input_path),
-      exta = RE_EXT.exec(basepath),
-      result = [basepath, ((exta && exta.length === 2)? exta[1] : '')];
-  result[0] = result[0].substr(0, result[0].length - exta.length);
-  return result;
+      index = basepath.lastIndexOf('.');
+  return index === -1? [basepath, ''] : 
+    [basepath.substr(0, index), basepath.substr(index)];
 };
 
 /**

@@ -1,4 +1,4 @@
-/*global angular, trim, isFile, isString, isDefinedAndNotNull: true*/
+/*global angular, trim, isFile, isString, isArray, path, lowercase, isDefinedAndNotNull: true*/
 
 var nuFileChooser = angular.module('nu.FileChooser', ['nu.List', 'nu.Event', 'nu.Media']);
 
@@ -15,24 +15,16 @@ nuFileChooser.filter('pathExt', function() {
   'use strict';
   return function(blob) {
     if( isFile(blob) ) { blob = blob.name; }
-    if( isString(blob) ) { return lowercase(path.splitext(blob)[1].substr(1)); }
+    if( isString(blob) ) { return lowercase(path.splitext(blob)[1]).substr(1); }
     return blob;
   };
 });
 
-nuFileChooser.filter('canPreview', ['nuMedia',
-    function(nuMedia) {
-  'use strict';
-  return function(blob) {
-    return isDefinedAndNotNull(nuMedia.typeOf(blob));
-  };
-}]);
-
 nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
-  function($compile, listBuffers, nuEvent) {
+  function($compile, listBuffers) {
     'use strict';
     var item_tmpl = '<span class="list item" ext="{{item|pathExt}}" ng-click="$erase()">' +
-          '{{item|basename}}<div ng-show="item|canPreview" nu-button-view="fcbox" ng-model="item"></div></span>';
+          '{{item|basename}}' + /*<div ng-show="hasPreview" nu-button-view="fcbox" ng-model="item"></div> +*/ '</span>';
     var buffer_tmpl = '<label class="buffer" type="file"><span class="action">Browse<input type="file"></span></label>';
 
     return {
@@ -68,11 +60,21 @@ nuFileChooser.directive('nuFileChooser', ['$compile', 'listBuffers', 'nuEvent',
           element.on('click', function() {
             input[0].click();
           });
+
+          nuList.$formatters.push(function(value) {
+            if( value && !isArray(value) ) { return [value]; }
+            return value;
+          });
+
+          nuList.$parsers.push(function(value) { return value[0]; });
         } else {
           itemRawNode.addClass('erase');
-          bufferNode.on('click', function() { event.stopPropagation(); });
           input.attr('multiple', 'multiple');
         }
+
+        bufferNode.on('click', function() {
+          event.stopPropagation();
+        });
 
         var appendItem = nuList.$bufferDefaults.$append;
         nuList.$bufferDefaults.$append = function(item) {

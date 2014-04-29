@@ -56,7 +56,7 @@ testApp.controller('galleryTest', function($scope, $log){
 });
 
 testApp.controller('playBack', function($scope, nuMedia) {
-  $scope.unitCase = ['http://www.noiseaddicts.com/samples/2558.mp3'];
+  $scope.unitCase = 'http://www.noiseaddicts.com/samples/2558.mp3';
   $scope.play = function() {
     nuMedia.audio.play($scope.unitCase[0]);
   };

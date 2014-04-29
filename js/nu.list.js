@@ -44,11 +44,14 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
 
   this.$dirty = false;
   this.$pristine = true;
-  this.$viewValue = Number.NaN;
+  this.$viewValue = [];
   this.$modelValue = Number.NaN;
   this.$render = noop;
   this.$name = $attrs.name;
   this.$buffers = [];
+  this.$parsers = [];
+  this.$formatters = [];
+  //this.$viewChangeListeners = [];
   this.$defaults = extend($scope.$new(), {
     '$erase': function() {
       nuList.$removeItem(this.item);
@@ -70,7 +73,28 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
   
   $element.addClass(PRISTINE_CLASS);
 
-  $scope.$watchCollection(model, function(modelValue) {
+  $scope.$watch(function(scope) {
+    if( !internalChange ) {
+      var value = modelGet(scope);
+      
+      nuList.$modelValue = value;
+      //Same as to ngModel
+      var idx = nuList.$formatters.length;
+      while(idx--) {
+        value = nuList.$formatters[idx](value);
+      }
+
+      if(isDefinedAndNotNull(value)) { nuList.$viewValue = value; }
+      else { nuList.$viewValue.splice(0); }
+      itemNodes = nuList.$getItems();
+      nuList.$render();
+      angular.element(itemNodes.splice(capacity - 1)).remove();
+      angular.element(itemNodes).css('display', 'none');
+    }
+    internalChange = false;
+  });
+
+/*  $scope.$watchCollection(model, function(modelValue) {
     if(!modelValue) {
       if(modelSet) { modelSet($scope, []); return; }
       nuList.$viewValue = [];
@@ -87,7 +111,7 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     }
 
     internalChange = false;
-  });
+  });*/
 
   this.$itemCompiler = $compile('<span class="list item erase" ng-click="$erase(item)">{{item}}</span>');
 
@@ -130,7 +154,9 @@ var NuListController  = ['$scope', '$element', '$exceptionHandler', '$attrs', '$
     if (nuList.$pristine) { nuList.$setDirty(); }
     if(modelSet) {
       internalChange = true;
-      modelSet($scope, nuList.$viewValue);
+      var value = nuList.$viewValue;
+      forEach(nuList.$parsers, function(fn) { value = fn(value); });
+      modelSet($scope, value);
     }
   };
 }];
